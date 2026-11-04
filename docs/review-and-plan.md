@@ -23,7 +23,7 @@ Against the pitch's "done looks like", none of the three steps works yet. Kept f
 
 ## The bet, and what's most likely wrong
 
-If a firm is a record, and the clean-up suggests merges for a person to confirm, Josh will trust the CRM over his sheet. The likeliest thing to be wrong: in this prototype, "log it once, show it on three people" is a few lines; in the real product a meeting is stored against one contact (Exhibit L), so it may mean changing how meetings are stored. First question for Jimmy; it decides whether day 2–3 is a day or a week.
+If a firm is a record, and the clean-up suggests merges for a person to confirm, Josh will trust the CRM over his sheet. What I can't tell from the outside: in this prototype, logging a meeting once and seeing it on three people was easy; the pack suggests a meeting sits against one person in the real product, so it may be a bigger change than it looks. First thing to understand with Jimmy; it decides whether day 2–3 is a day or a week.
 
 ## The calls I made
 
@@ -55,17 +55,17 @@ Josh logs the February roadshow on firms, not in the sheet; the Funds tab stops 
 - A written summary per firm: a canned one in a prototype would be a fake.
 - General CRM UX: filters, tags, sorting, pagination. Real, not this cycle.
 
-## Questions for Jimmy
+## What I'd want to understand with Jimmy
 
-- Organisation was built as a text field on each person rather than its own record. Was that a week-one time call, or a reason not to? If we make it a record, how much of the back end changes?
-- A meeting is stored against one person today. To show one meeting on a firm and three people, does how meetings are stored have to change, or can it be handled on screen for now?
-- In other clients' CRMs, how messy is the company field: dozens of duplicate groups to review, or hundreds?
+- Organisation is a text field on each person today. Is making it a proper record a small change or a big one?
+- A meeting seems to live on one person. How hard is it to have it on a firm and on the people who were there?
+- Across other clients, how messy is the company field? That tells us whether the clean-up is a one-off or a feature.
 
 ## What I'd want to learn from Josh
 
-- Does he have an email address for everyone in the Funds tab? The import matches people by email and drops rows without one; his sheet lists names.
-- What he does with the Funds tab week to week: roadshows, % held, follow-ups. It decides what the firm page shows first.
-- How often one meeting involves more than one firm (the Hartley lunch, the conference). I built one firm per meeting.
+- Does he have an email for everyone in his sheet? The import seems to need one per person.
+- What he actually does with the Funds tab each week. It decides what the firm page shows first.
+- How often one meeting is with several firms (the Hartley lunch, the conference). I built one firm per meeting.
 
 ## Assumptions
 

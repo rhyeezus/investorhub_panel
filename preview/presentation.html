@@ -429,7 +429,7 @@ body.show-overview .overview{display:block}
 <ol class="steps">
   <li><b>Read the brief before the solution.</b> I deliberately didn't look at the pitch's answer until I'd written down the problem in my own words.</li>
   <li><b>Used both CRMs like Josh would.</b> Today, then the branch. Wrote down everything I couldn't do.</li>
-  <li><b>Built in their file.</b> Plain JavaScript, their design system, double-click to open.</li>
+  <li><b>Built on their CRM file,</b> in their design system, so it opens with a double-click.</li>
   <li><b>Audited my own build four times</b> and changed it each time. That's most of what I'll show you.</li>
 </ol>
 <p class="muted">Two briefs arrived: the pack asked for a plan, the email for a prototype and a note. I followed the email and folded the plan in.</p>
@@ -493,20 +493,20 @@ body.show-overview .overview{display:block}
 <h2>If a firm is a record and the clean-up is suggest-then-confirm, Josh will trust the CRM over his sheet.</h2>
 <div class="cols">
   <div class="card warn">
-    <div class="eyebrow">What's most likely to be wrong</div>
-    <p>In my prototype, "log it once, show it on three people" is a few lines. In the real product it may not be. The pack's data page says every meeting or note is stored against <b>one</b> contact. Showing one meeting on a firm and three people means changing how meetings are stored, not just a screen.</p>
-    <p><b>Only Jimmy knows how big that change is.</b> It's the first thing I'd ask, and it decides whether days 2 to 3 are a day or a week.</p>
+    <div class="eyebrow">What I can't tell from the outside</div>
+    <p>In my prototype, logging a meeting once and seeing it on three people was easy. In the real product it may not be: the pack suggests a meeting sits against one person. If so, this is a bigger change than it looks.</p>
+    <p><b>That's the first thing I'd want to understand with Jimmy.</b> It decides whether days 2 to 3 are a day or a week.</p>
   </div>
   <div>
     <div class="eyebrow">What I'm assuming</div>
     <ul>
       <li>CS will run the clean-up for clients who won't.</li>
       <li>A firm is the right unit this cycle. Funds within a firm are the next bet, as the pitch says.</li>
-      <li>Suggesting duplicates by name is enough. The pitch rules out guessing from email domains, so I didn't.</li>
+      <li>Suggesting duplicates by name is enough for now. The pitch rules out guessing from email addresses.</li>
     </ul>
   </div>
 </div>
-</div><div class="notes" role="note" aria-label="Speaker notes">Say the riskiest assumption before anyone asks it. In plain words: in the real database a meeting lives on one person; I need it to live on a firm and several people. I can't tell from a mock how hard that is.</div></section><section class="slide dark" id="s8" data-label="Built" aria-label="Slide 8: Built"><div class="inner">
+</div><div class="notes" role="note" aria-label="Speaker notes">Say what I can't see from the outside before anyone asks. I built it in a mock, so I don't know how hard the real version is. That's a question, not a claim.</div></section><section class="slide dark" id="s8" data-label="Built" aria-label="Slide 8: Built"><div class="inner">
 <div class="eyebrow">What I built</div>
 <h2>In their file, on their design system, clickable.</h2>
 <p class="lead">Four screens, then the four rounds of changes that got it here.</p>
@@ -567,23 +567,23 @@ body.show-overview .overview{display:block}
 </ol>
 <p class="muted">How we'd know: Josh logs the February roadshow on firms, not in the sheet. The Funds tab stops being updated. CS stop hearing "can't group by firm". Corella first; wrong merges stop the rollout.</p>
 </div><div class="notes" role="note" aria-label="Speaker notes">If Jimmy's schema answer is bad, days 2 to 3 stretch and 4 to 5 compress. Say that.</div></section><section class="slide light" id="s14" data-label="Questions" aria-label="Slide 14: Questions"><div class="inner">
-<div class="eyebrow">What I need to know</div>
-<h2>Three for Jimmy. Three for Josh, via customer success.</h2>
+<div class="eyebrow">What I'd want to understand</div>
+<h2>Enough to judge scope and feasibility. Three for Jimmy, three for Josh.</h2>
 <div class="cols">
   <div>
     <div class="eyebrow">Jimmy</div>
     <ul>
-      <li>You built organisation as a text field on each person rather than its own record. Was that to get something working in week one, or is there a reason not to? If we make it a record, how much of the back end changes?</li>
-      <li>Today a meeting is stored against one person. To show one meeting on a firm and on three people, do we have to change how meetings are stored, or can we handle it on screen for now?</li>
-      <li>In other clients' CRMs, how messy is the company field? Dozens of duplicate groups to review, or hundreds? That decides whether the clean-up is a one-off job for CS or a feature.</li>
+      <li>Organisation is a text field on each person today. Is making it a proper record a small change or a big one?</li>
+      <li>A meeting seems to live on one person. How hard is it to have it on a firm and on the people who were there?</li>
+      <li>Across other clients, how messy is the company field? That tells us whether the clean-up is a one-off or a feature.</li>
     </ul>
   </div>
   <div>
     <div class="eyebrow">Josh</div>
     <ul>
-      <li>Does Josh have an email address for everyone in his Funds tab? The CRM's import matches people by email and drops rows without one, and his sheet lists people by name. If the emails don't exist, loading the sheet needs a different approach.</li>
-      <li>What does he actually do with that tab week to week: plan roadshows, report on % held, chase follow-ups? Whichever it is decides what the firm's page shows first.</li>
-      <li>How often does one meeting involve more than one firm, like the Hartley lunch with six funds? I built one firm per meeting.</li>
+      <li>Does he have an email for everyone in his sheet? The import seems to need one per person.</li>
+      <li>What does he actually do with the Funds tab each week? That decides what the firm's page shows first.</li>
+      <li>How often is one meeting with several firms, like the Hartley lunch? I built one firm per meeting.</li>
     </ul>
   </div>
 </div>
@@ -593,18 +593,18 @@ body.show-overview .overview{display:block}
 <p class="lead">Prototype: <span class="mono">crm / 4 - Corella CRM - Branch (reviewed).html</span><br>Note: <span class="mono">crm / 5 - Review and plan.html</span></p>
 </div></section><section class="slide light" id="s16" data-label="Live fix" aria-label="Slide 16: Live fix"><div class="inner">
 <div class="eyebrow">Appendix · for the 20 minutes with Jimmy</div>
-<h2>One fix that proves the point, in his branch.</h2>
+<h2>One fix to suggest, and let Jimmy size it.</h2>
 <div class="cols">
   <div class="card lift">
-    <h3>Do this</h3>
-    <p>In Jimmy's version the "who attended" box on a firm's log form is free text. Swap it for tick-boxes of the firm's people, save who was ticked on the meeting, and make each person's timeline show meetings they were ticked on.</p>
-    <p class="muted">About twenty lines. Result: the meeting Josh logs on Larkspur appears on Priya, David and Tom. That's the pitch's test, passing in his branch.</p>
+    <h3>Suggest this</h3>
+    <p>The "who attended" box on a firm's log form is free text. Make it tick-boxes of the firm's people, and show the meeting on each person who was ticked.</p>
+    <p class="muted">If it's quick, the meeting Josh logs on Larkspur appears on Priya, David and Tom: the pitch's test, passing in his branch. If it isn't quick, that's the answer to my first question.</p>
   </div>
   <div class="card">
-    <h3>Don't do this</h3>
-    <p>Don't try to rebuild organisation as a proper record in twenty minutes. That's the day 1 job in the plan, not a live demo.</p>
+    <h3>Not this</h3>
+    <p>Rebuilding organisation as a proper record. That's the day 1 job, not a twenty-minute demo.</p>
     <h3 style="margin-top:20px">Then ask</h3>
-    <p>"If we made this real, what has to change in the database, and what else depends on it?" That's what I mean by cost: back-end changes, how many things lean on them, and how long. Then listen.</p>
+    <p>"What would have to change underneath to make this real, and what else depends on it?" Then listen.</p>
   </div>
 </div>
 </div><div class="notes" role="note" aria-label="Speaker notes">For me, not the panel.</div></section><section class="slide light" id="s17" data-label="Decisions" aria-label="Slide 17: Decisions"><div class="inner">
