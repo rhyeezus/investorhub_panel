@@ -27,10 +27,11 @@ async def main():
 
         # Merge the Larkspur group: pick 'Larkspur Capital' as master
         row = review.filter(has_text="Larkspur").first
-        opts = await row.locator(".radios label").all_inner_texts()
+        await row.locator("button[data-action=merge-group]").click(); await pg.wait_for_timeout(200)
+        opts = await pg.locator("form[data-form=merge-dialog] label").all_inner_texts()
         print("larkspur options:", [o.replace("\n", " ") for o in opts])
-        await row.locator(".radios label", has_text="Larkspur Capital").first.locator("input").check()
-        await row.locator("button:has-text('Merge')").click(); await pg.wait_for_timeout(300)
+        await pg.locator("form[data-form=merge-dialog] label", has_text="Larkspur Capital").first.locator("input").check()
+        await pg.click("form[data-form=merge-dialog] button[type=submit]"); await pg.wait_for_timeout(300)
         print("after merge, review groups:", await pg.locator(".review-row").count())
         await shot("02-organisations-after-merge")
 

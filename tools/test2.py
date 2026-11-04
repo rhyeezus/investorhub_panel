@@ -20,8 +20,10 @@ async def main():
         print("review rows open:", await pg.locator(".review-row").count())
         await shot("r2-02-orgs-review-open")
         lark = pg.locator(".review-row").filter(has_text="Larkspur").first
-        await lark.locator(".radios label", has_text="Larkspur Capital").first.locator("input").check()
-        await lark.locator("button:has-text('Merge')").click(); await pg.wait_for_timeout(300)
+        await lark.locator("button[data-action=merge-group]").click(); await pg.wait_for_timeout(200)
+        await pg.locator("form[data-form=merge-dialog] label", has_text="Larkspur Capital").first.locator("input").check()
+        await shot("r4-merge-dialog")
+        await pg.click("form[data-form=merge-dialog] button[type=submit]"); await pg.wait_for_timeout(300)
         print("after Larkspur merge, review rows:", await pg.locator(".review-row").count())
 
         # Bulk bar: tick Meridian Lane + Meridian Lane AM → bar appears → Merge
@@ -54,6 +56,8 @@ async def main():
         print("after search 'grace':", await pg.locator(".picker-item").count(), "|", (await text(".picker-item")).replace("\n", " · "))
         await shot("r2-05-picker-add-person")
         await pg.click(".picker-item"); await pg.wait_for_timeout(300)
+        print("picker still open after pick:", await pg.locator(".picker").count(), "| note:", await text(".picker .help"))
+        await pg.click(".picker button[data-action=close-picker]"); await pg.wait_for_timeout(200)
         print("people now:", (await text("aside .section")).replace("\n", " | ")[:160])
 
         # Add someone new from the picker
@@ -119,6 +123,25 @@ async def main():
         await shot("r3-contacts")
         print("template link:", await pg.locator("button[data-action=download-org-template]").count())
 
+        # New organisation: duplicate check, near-duplicate, then create → add people
+        await pg.goto(URL + "#/organisations"); await pg.wait_for_timeout(200)
+        await pg.click("button[data-action=add-org]"); await pg.wait_for_timeout(100)
+        await pg.fill("#new-org-name", "lcm"); await pg.wait_for_timeout(100)
+        print("exact dup:", (await text("#new-org-check")).replace("\n", " "), "| create disabled:", await pg.locator("#new-org-create").is_disabled())
+        await pg.fill("#new-org-name", "Bluegum Partners Pty Ltd"); await pg.wait_for_timeout(100)
+        print("near dup:", (await text("#new-org-check")).replace("\n", " ")[:80], "| create disabled:", await pg.locator("#new-org-create").is_disabled())
+        await shot("r4-new-org-check")
+        await pg.fill("#new-org-name", "Tidewater Investment Management"); await pg.wait_for_timeout(100)
+        print("clean name check empty:", (await text("#new-org-check")) == "")
+        await pg.click("#new-org-create"); await pg.wait_for_timeout(400)
+        print("after create → url has org page:", "#/organisations/o" in pg.url, "| picker open:", await pg.locator(".picker").count(), "| title:", await text(".picker h2"))
+        await pg.fill("#picker-search", "wei"); await pg.wait_for_timeout(100)
+        n = await pg.locator(".picker-item").count()
+        print("wei items:", n)
+        if n: await pg.click(".picker-item"); await pg.wait_for_timeout(300)
+        await pg.click(".picker button[data-action=close-picker]"); await pg.wait_for_timeout(200)
+        print("Tidewater people:", (await text("aside .eyebrow")))
+        await shot("r4-new-org-page")
         print("ERRORS:", errors if errors else "none")
         await b.close()
 asyncio.run(main())

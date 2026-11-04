@@ -35,7 +35,7 @@ If a firm is a record, and the one-off clean-up suggests merges for a person to 
 4. **A meeting is logged once on the firm with attendees ticked**, and shows on the firm and on each person.
 5. **Organisation on a contact is picked, not typed** — a searchable picker from the contact's page or straight from the contacts list, with "create new" as a separate, explicit step. The free-text box goes.
 6. **Role reuses the occupation field**, relabelled. The data was already there.
-7. **Each firm has its own import template**, with the company column pre-filled, so a file Josh sends for Larkspur lands on Larkspur.
+7. **Creating a firm runs straight into adding its people**, and warns if the name already exists or looks like one that does.
 
 ## What I'd fix in the five days, in order
 
@@ -52,7 +52,7 @@ Josh logs the February roadshow on firms instead of in the sheet; the Funds tab 
 
 ## What I left out, and why
 
-- Importing Josh's spreadsheet — the second problem above. The prototype leaves the failing import visible on purpose.
+- Importing Josh's spreadsheet — the second problem above. The prototype leaves the failing import visible on purpose. A per-firm import template (company column pre-filled) is a small, useful piece of that, and waits for it.
 - Organisation type (fund manager / broker / super), owner per firm, follow-ups with a done status, email audiences by firm, any permissions model, linking firms to the ownership report (the pitch's next bet).
 - A written summary of everything with a firm. Worth doing once there's enough logged to summarise; a canned one in a prototype would be a fake.
 - General UX of the CRM — filters, tag creation and taxonomy, table sorting, pagination, phone formats. Real, not this cycle.
