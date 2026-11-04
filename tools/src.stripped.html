@@ -59,6 +59,8 @@ body {
 b, strong, th, h1, h2, h3, h4 { font-weight: 500; }
 a { color: var(--accent-foreground); text-decoration: none; }
 a:hover { text-decoration: underline; }
+table.t a, .kv a, .rows a, .sub a { text-decoration: underline; text-decoration-color: color-mix(in oklab, var(--accent-foreground) 45%, transparent); text-underline-offset: 2px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 :focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
 
 .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
@@ -200,7 +202,7 @@ table.t td:last-child, table.t th:last-child { padding-right: 28px; }
   --h: var(--hue-gray);
   background: color-mix(in oklab, var(--h) 12%, var(--card));
   border: 1px solid color-mix(in oklab, var(--h) 30%, var(--card));
-  color: var(--h);
+  color: color-mix(in oklab, var(--h) 78%, var(--foreground));
 }
 .badge.green { --h: var(--hue-green); }
 .badge.blue { --h: var(--hue-blue); }
@@ -208,7 +210,7 @@ table.t td:last-child, table.t th:last-child { padding-right: 28px; }
 .badge.amber { --h: var(--hue-amber); }
 .badge.orange { --h: var(--hue-orange); }
 .badge.rose { --h: var(--hue-rose); }
-.badge .x { cursor: pointer; opacity: 0.7; margin-left: 2px; }
+.badge .x { cursor: pointer; opacity: 0.8; margin-left: 2px; background: none; border: 0; padding: 0 2px; font: inherit; color: inherit; line-height: 1; }
 .badge .x:hover { opacity: 1; }
 .tags { display: flex; flex-wrap: wrap; gap: 4px; }
 .dot { width: 7px; height: 7px; border-radius: 9999px; background: var(--h); display: inline-block; }
@@ -680,6 +682,7 @@ window.CRM_SEED = (function () {
   function toast(msg) {
     const el = document.createElement("div");
     el.className = "toast";
+    el.setAttribute("role", "status");
     el.textContent = msg;
     document.body.appendChild(el);
     setTimeout(function () { el.remove(); }, 2200);
@@ -720,16 +723,16 @@ window.CRM_SEED = (function () {
 
   function layout(section, inner) {
     const links = navItems().map(function (n) {
-      return '<a href="' + n[1] + '" class="' + (section === n[2] ? "active" : "") + '">' + n[0] + "</a>";
+      return '<a href="' + n[1] + '" class="' + (section === n[2] ? "active" : "") + '"' + (section === n[2] ? ' aria-current="page"' : "") + ">" + n[0] + "</a>";
     }).join("");
     return (
-      '<nav class="nav">' +
-        '<div class="chip-company"><span class="logo">CF</span>' + esc(state.company.name) + "</div>" +
-        '<span class="badge version ' + VERSION.tone + '"><span class="dot"></span>' + esc(VERSION.label) + "</span>" +
+      '<nav class="nav" aria-label="Main">' +
+        '<div class="chip-company"><span class="logo" aria-hidden="true">CF</span>' + esc(state.company.name) + "</div>" +
+        '<span class="badge version ' + VERSION.tone + '"><span class="dot" aria-hidden="true"></span>' + esc(VERSION.label) + "</span>" +
         '<div class="nav-links">' + links + "</div>" +
         '<div class="nav-right">' +
-          '<form data-form="search"><input class="input nav-search" name="q" placeholder="Search" value="' + esc(currentSearch()) + '"></form>' +
-          '<div class="avatar" title="Josh (investor relations)">JO</div>' +
+          '<form data-form="search" role="search"><input class="input nav-search" name="q" placeholder="Search" aria-label="Search contacts and organisations" value="' + esc(currentSearch()) + '"></form>' +
+          '<div class="avatar" title="Josh (investor relations)" aria-label="Josh (investor relations)" role="img">JO</div>' +
         "</div>" +
       "</nav>" +
       '<main class="page"><div class="card">' + inner + "</div></main>" +
@@ -759,7 +762,7 @@ window.CRM_SEED = (function () {
   let confirming = null;
   function confirmBox(key, message, confirmLabel, confirmAction, confirmId) {
     return (
-      '<div class="confirm"><span class="grow">' + message + "</span>" +
+      '<div class="confirm" role="alert"><span class="grow">' + message + "</span>" +
         '<button class="btn danger sm" data-action="' + confirmAction + '"' + (confirmId ? ' data-id="' + confirmId + '"' : "") + ">" + esc(confirmLabel) + "</button>" +
         '<button class="btn sm" data-action="cancel-confirm">Cancel</button>' +
       "</div>"
@@ -819,7 +822,20 @@ window.CRM_SEED = (function () {
   // Pages that need wiring after they're drawn register a function here.
   let afterRenderHook = null;
   function afterRender() {
+    wireLabels(app);
     if (afterRenderHook) { const f = afterRenderHook; afterRenderHook = null; f(); }
+  }
+
+  // Give each form field's label a `for`, so screen readers and clicks reach the control.
+  let labelSeq = 0;
+  function wireLabels(root) {
+    (root || document).querySelectorAll(".field").forEach(function (field) {
+      const label = field.querySelector(":scope > label");
+      const ctl = field.querySelector("input:not([type=hidden]), select, textarea");
+      if (!label || !ctl || label.getAttribute("for")) return;
+      if (!ctl.id) ctl.id = "f" + (++labelSeq);
+      label.setAttribute("for", ctl.id);
+    });
   }
 
   // ---------------------------------------------------------------------------
@@ -832,7 +848,7 @@ window.CRM_SEED = (function () {
     const shares = sharesHeld(c);
     return (
       '<tr class="click" data-href="#/contacts/' + c.id + '">' +
-        '<td class="name-cell"><div class="n">' + esc(fullName(c)) + '</div><div class="e">' + esc(c.email || "No email") + "</div></td>" +
+        '<td class="name-cell"><div class="n"><a href="#/contacts/' + c.id + '" style="color:inherit;text-decoration:none">' + esc(fullName(c)) + '</a></div><div class="e">' + esc(c.email || "No email") + "</div></td>" +
         '<td class="name-cell">' + orgLink(c) + (c.organisationId && c.occupation ? '<div class="e">' + esc(c.occupation) + "</div>" : "") + "</td>" +
         '<td><button class="btn sm' + (c.organisationId ? "" : " neon") + '" data-action="pick-org-row" data-id="' + c.id + '">' + (c.organisationId ? "Change" : "Add to organisation") + "</button></td>" +
         "<td>" + tagBadges(c.tags) + "</td>" +
@@ -846,7 +862,7 @@ window.CRM_SEED = (function () {
     if (!list.length) return '<div class="empty">No contacts match.</div>';
     return (
       '<div class="table-wrap"><table class="t"><thead><tr>' +
-        "<th>Name</th><th>Organisation</th><th></th><th>Tags</th><th class=\"num\">Shares</th><th class=\"num\">Last activity</th>" +
+        "<th>Name</th><th>Organisation</th><th><span class=\"sr-only\">Change organisation</span></th><th>Tags</th><th class=\"num\">Shares</th><th class=\"num\">Last activity</th>" +
       "</tr></thead><tbody>" + list.map(contactRow).join("") + "</tbody></table></div>"
     );
   }
@@ -883,14 +899,14 @@ window.CRM_SEED = (function () {
         ["Investor website", fmtNum(all.filter(function (c) { return c.hub; }).length)]
       ]) +
       '<div class="toolbar">' +
-        '<input id="contact-filter" class="input grow" placeholder="Filter by name, email or organisation" value="' + esc(listFilter.text) + '">' +
-        '<select class="input" data-change="tag-filter"><option value="">All tags</option>' + tagOptions + "</select>" +
-        '<select class="input" data-change="holder-filter">' +
+        '<input id="contact-filter" class="input grow" aria-label="Filter contacts" placeholder="Filter by name, email or organisation" value="' + esc(listFilter.text) + '">' +
+        '<select class="input" data-change="tag-filter" aria-label="Filter by tag"><option value="">All tags</option>' + tagOptions + "</select>" +
+        '<select class="input" data-change="holder-filter" aria-label="Filter by shareholding">' +
           '<option value="all"' + (listFilter.holders === "all" ? " selected" : "") + ">Everyone</option>" +
           '<option value="yes"' + (listFilter.holders === "yes" ? " selected" : "") + ">Shareholders</option>" +
           '<option value="no"' + (listFilter.holders === "no" ? " selected" : "") + ">Not shareholders</option>" +
         "</select>" +
-        '<select class="input" data-change="org-filter">' +
+        '<select class="input" data-change="org-filter" aria-label="Filter by organisation">' +
           '<option value="all"' + (listFilter.org === "all" ? " selected" : "") + ">Any organisation</option>" +
           '<option value="yes"' + (listFilter.org === "yes" ? " selected" : "") + ">In an organisation</option>" +
           '<option value="no"' + (listFilter.org === "no" ? " selected" : "") + ">No organisation</option>" +
@@ -972,12 +988,13 @@ window.CRM_SEED = (function () {
     closePicker();
     const el = document.createElement("div");
     el.className = "overlay picker";
+    el.setAttribute("role", "dialog"); el.setAttribute("aria-modal", "true"); el.setAttribute("aria-labelledby", "picker-title");
     el.innerHTML =
       '<div class="dialog">' +
-        '<div class="dh"><h2>' + esc(opts.title) + "</h2>" + (opts.note ? '<div class="help" style="margin-top:4px">' + esc(opts.note) + "</div>" : "") + "</div>" +
+        '<div class="dh"><h2 id="picker-title">' + esc(opts.title) + "</h2>" + (opts.note ? '<div class="help" style="margin-top:4px">' + esc(opts.note) + "</div>" : "") + "</div>" +
         '<div class="db">' +
-          '<input class="input" id="picker-search" placeholder="' + esc(opts.placeholder || "Search") + '" autocomplete="off">' +
-          '<div class="picker-list" id="picker-list"></div>' +
+          '<input class="input" id="picker-search" aria-label="' + esc(opts.placeholder || "Search") + '" placeholder="' + esc(opts.placeholder || "Search") + '" autocomplete="off">' +
+          '<div class="picker-list" id="picker-list" role="listbox" aria-label="Matches"></div>' +
           (opts.create ?
             '<form data-form="picker-create" class="picker-create">' +
               '<div class="eyebrow" style="margin-bottom:6px">' + esc(opts.create.label) + "</div>" +
@@ -989,6 +1006,7 @@ window.CRM_SEED = (function () {
         '<div class="df"><button class="btn' + (opts.closeLabel ? " primary" : "") + '" type="button" data-action="close-picker">' + esc(opts.closeLabel || "Cancel") + "</button></div>" +
       "</div>";
     document.body.appendChild(el);
+    wireLabels(el);
     picker = opts;
     renderPickerList("");
     el.querySelector("#picker-search").focus();
@@ -1001,7 +1019,7 @@ window.CRM_SEED = (function () {
     const items = picker.items.filter(function (i) { return !q || (i.label + " " + (i.sub || "")).toLowerCase().indexOf(q) > -1; });
     const shown = items.slice(0, 50);
     list.innerHTML = shown.length ? shown.map(function (i) {
-      return '<button type="button" class="picker-item" data-action="pick" data-id="' + i.id + '"><span class="n">' + esc(i.label) + "</span>" +
+      return '<button type="button" class="picker-item" role="option" data-action="pick" data-id="' + i.id + '"><span class="n">' + esc(i.label) + "</span>" +
         (i.sub ? '<span class="e">' + esc(i.sub) + "</span>" : "") + "</button>";
     }).join("") + (items.length > shown.length ? '<div class="muted small" style="padding:8px 12px">' + (items.length - shown.length) + " more. Keep typing to narrow it down.</div>" : "")
       : '<div class="muted small" style="padding:10px 12px">Nothing matches.</div>';
@@ -1054,7 +1072,7 @@ window.CRM_SEED = (function () {
     return (
       '<div class="org-field">' +
         '<input type="hidden" name="organisationId" value="' + (o ? o.id : "") + '"><input type="hidden" name="newOrganisation" value="">' +
-        '<span class="org-field-name">' + (o ? esc(o.name) : '<span class="muted">None</span>') + "</span>" +
+        '<span class="org-field-name" aria-live="polite">' + (o ? esc(o.name) : '<span class="muted">None</span>') + "</span>" +
         '<button type="button" class="btn sm" data-action="pick-org">' + (o ? "Change" : "Choose") + "</button>" +
         '<button type="button" class="btn ghost sm" data-action="clear-org"' + (o ? "" : ' style="display:none"') + ">Remove</button>" +
       "</div>"
@@ -1162,11 +1180,11 @@ window.CRM_SEED = (function () {
       '<div class="section"><div class="eyebrow">Tags</div>' +
         '<div class="tags" style="margin-bottom:10px">' +
           (c.tags.length ? c.tags.map(function (t) {
-            return '<span class="badge">' + esc(t) + '<span class="x" data-action="remove-tag" data-id="' + c.id + '" data-tag="' + esc(t) + '">×</span></span>';
+            return '<span class="badge">' + esc(t) + '<button type="button" class="x" data-action="remove-tag" data-id="' + c.id + '" data-tag="' + esc(t) + '" aria-label="Remove tag ' + esc(t) + '">×</button></span>';
           }).join("") : '<span class="muted small">No tags</span>') +
         "</div>" +
         '<form data-form="add-tag" data-id="' + c.id + '" class="row" style="gap:8px">' +
-          '<input class="input" name="tag" list="tag-list" placeholder="Add a tag"><datalist id="tag-list">' + existing + "</datalist>" +
+          '<input class="input" name="tag" list="tag-list" placeholder="Add a tag" aria-label="Add a tag"><datalist id="tag-list">' + existing + "</datalist>" +
           '<button class="btn" type="submit" style="flex:0">Add</button>' +
         "</form>" +
       "</div>"
@@ -1217,9 +1235,10 @@ window.CRM_SEED = (function () {
     const o = orgId ? orgById(orgId) : null;
     const el = document.createElement("div");
     el.className = "overlay";
+    el.setAttribute("role", "dialog"); el.setAttribute("aria-modal", "true"); el.setAttribute("aria-labelledby", "dlg-title");
     el.innerHTML =
       '<form class="dialog" data-form="add-contact">' +
-        '<div class="dh"><h2>' + (o ? "Add a person to " + esc(o.name) : "Add contact") + "</h2></div>" +
+        '<div class="dh"><h2 id="dlg-title">' + (o ? "Add a person to " + esc(o.name) : "Add contact") + "</h2></div>" +
         '<div class="db">' +
           '<div class="row"><div class="field"><label>First name</label><input class="input" name="firstName" required></div>' +
           '<div class="field"><label>Last name</label><input class="input" name="lastName"></div></div>' +
@@ -1232,6 +1251,7 @@ window.CRM_SEED = (function () {
         '<div class="df"><button class="btn" type="button" data-action="close-dialog">Cancel</button><button class="btn primary" type="submit">Add contact</button></div>' +
       "</form>";
     document.body.appendChild(el);
+    wireLabels(el);
     el.querySelector("input").focus();
   }
 
@@ -1249,7 +1269,7 @@ window.CRM_SEED = (function () {
     const n = groups.length;
     const notice =
       '<div class="notice">' +
-        '<span class="badge"><span class="dot"></span>' + n + (n === 1 ? " likely duplicate" : " likely duplicates") + "</span>" +
+        '<span class="badge"><span class="dot" aria-hidden="true"></span>' + n + (n === 1 ? " likely duplicate" : " likely duplicates") + "</span>" +
         '<span class="grow">' + (reviewOpen ? "Each row looks like one firm spelled more than one way. Merge opens a check where you choose the name to keep." :
           "Created from the old company field; they look like the same firm. Nothing is merged until you say so.") + "</span>" +
         '<button class="btn ' + (reviewOpen ? "" : "neon ") + 'sm" data-action="toggle-review">' + (reviewOpen ? "Hide" : "Review") + "</button>" +
@@ -1310,8 +1330,8 @@ window.CRM_SEED = (function () {
     const checked = orgSelection.indexOf(o.id) > -1;
     return (
       '<tr class="click" data-href="#/organisations/' + o.id + '">' +
-        '<td style="width:36px"><input type="checkbox" class="org-check" data-change="org-check" value="' + o.id + '"' + (checked ? " checked" : "") + "></td>" +
-        '<td class="name-cell"><div class="n">' + esc(o.name) + "</div>" +
+        '<td style="width:36px"><input type="checkbox" class="org-check" data-change="org-check" value="' + o.id + '" aria-label="Select ' + esc(o.name) + '"' + (checked ? " checked" : "") + "></td>" +
+        '<td class="name-cell"><div class="n"><a href="#/organisations/' + o.id + '" style="color:inherit;text-decoration:none">' + esc(o.name) + '</a></div>' +
           ((o.aliases || []).length ? '<div class="e">Also known as ' + esc(o.aliases.join(", ")) + "</div>" : "") + "</td>" +
         "<td>" + (members.length ? esc(members.slice(0, 3).map(fullName).join(", ")) + (members.length > 3 ? '<span class="muted"> +' + (members.length - 3) + "</span>" : "") : '<span class="muted">Nobody yet</span>') + "</td>" +
         '<td class="num">' + fmtNum(members.length) + "</td>" +
@@ -1335,7 +1355,7 @@ window.CRM_SEED = (function () {
     if (!list.length) return '<div class="empty">No organisations match.</div>';
     return (
       '<div class="table-wrap"><table class="t"><thead><tr>' +
-        '<th></th><th>Organisation</th><th>People</th><th class="num">Count</th><th class="num">Last activity</th>' +
+        '<th><span class="sr-only">Select</span></th><th>Organisation</th><th>People</th><th class="num">Count</th><th class="num">Last activity</th>' +
       "</tr></thead><tbody>" + list.map(orgRow).join("") + "</tbody></table></div>"
     );
   }
@@ -1359,7 +1379,7 @@ window.CRM_SEED = (function () {
       ]) +
       reviewSection() +
       '<div class="toolbar">' +
-        '<input id="org-filter" class="input grow" placeholder="Filter by organisation, or by a person to find their firm" value="' + esc(orgListFilter.text) + '">' +
+        '<input id="org-filter" class="input grow" aria-label="Filter organisations" placeholder="Filter by organisation, or by a person to find their firm" value="' + esc(orgListFilter.text) + '">' +
         '<span class="muted small" id="org-count"></span>' +
       "</div>" +
       bulkBar() +
@@ -1370,9 +1390,10 @@ window.CRM_SEED = (function () {
   function openAddOrg() {
     const el = document.createElement("div");
     el.className = "overlay";
+    el.setAttribute("role", "dialog"); el.setAttribute("aria-modal", "true"); el.setAttribute("aria-labelledby", "dlg-title");
     el.innerHTML =
       '<form class="dialog" data-form="add-org">' +
-        '<div class="dh"><h2>New organisation</h2></div>' +
+        '<div class="dh"><h2 id="dlg-title">New organisation</h2></div>' +
         '<div class="db">' +
           '<div class="field"><label>Name</label><input class="input" name="name" id="new-org-name" required placeholder="Larkspur Capital" autocomplete="off">' +
             '<div class="help">A name is enough. You\'ll add its people next.</div></div>' +
@@ -1381,6 +1402,7 @@ window.CRM_SEED = (function () {
         '<div class="df"><button class="btn" type="button" data-action="close-dialog">Cancel</button><button class="btn primary" type="submit" id="new-org-create">Create and add people</button></div>' +
       "</form>";
     document.body.appendChild(el);
+    wireLabels(el);
     el.querySelector("input").focus();
   }
 
@@ -1421,9 +1443,10 @@ window.CRM_SEED = (function () {
     if (orgs.length < 2) return;
     const el = document.createElement("div");
     el.className = "overlay";
+    el.setAttribute("role", "dialog"); el.setAttribute("aria-modal", "true"); el.setAttribute("aria-labelledby", "dlg-title");
     el.innerHTML =
       '<form class="dialog" data-form="merge-dialog">' +
-        '<div class="dh"><h2>Merge ' + orgs.length + " organisations into one</h2></div>" +
+        '<div class="dh"><h2 id="dlg-title">Merge ' + orgs.length + " organisations into one</h2></div>" +
         '<div class="db">' +
           '<div class="field"><label>Which name do we keep?</label>' +
             '<div class="radios" style="flex-direction:column;gap:8px">' + orgs.map(function (o, i) {
@@ -1437,6 +1460,8 @@ window.CRM_SEED = (function () {
         '<div class="df"><button class="btn" type="button" data-action="close-dialog">Cancel</button><button class="btn primary" type="submit">Merge</button></div>' +
       "</form>";
     document.body.appendChild(el);
+    wireLabels(el);
+    const first = el.querySelector("input[type=radio]"); if (first) first.focus();
   }
 
   // ---------------------------------------------------------------------------
@@ -2041,6 +2066,12 @@ window.CRM_SEED = (function () {
       save(); closeDialog(); render();
       toast(n ? "Merged into " + orgById(data.masterId).name : "Nothing to merge");
     }
+  });
+
+  document.addEventListener("keydown", function (ev) {
+    if (ev.key !== "Escape") return;
+    if (document.querySelector(".overlay.picker")) { closePicker(); return; }
+    if (document.querySelector(".overlay")) closeDialog();
   });
 
   window.addEventListener("hashchange", function () { editingDetails = false; editingOrg = false; meetingOpen = false; confirming = null; closePicker(); render(); });

@@ -28,6 +28,7 @@ preview/presentation.html                       the panel talk-through as a slid
 preview/design-system.html                      the extracted style guide, rendered
 preview/corella-crm-branch-reviewed.html        a copy of crm/4 for the preview links
   build_deck.py                                 slides (in the script) → preview/presentation.html
+  a11y.py                                       axe-core audit of all three pages, incl. the prototype's dialogs
 ```
 
 ## The presentation
@@ -49,6 +50,7 @@ That's the pitch's "done looks like". The note explains the calls, what was left
 
 - Edit `tools/src.stripped.html`, then `python3 tools/reassemble.py "crm/4 - Corella CRM - Branch (reviewed).html"`.
 - Edit `docs/review-and-plan.md`, then `python3 tools/build_note.py`.
-- `python3 tools/test.py` needs Playwright and a Chrome binary; it prints what it finds at each step.
+- `python3 tools/test.py` and `test2.py` need Playwright and a Chrome binary; they print what they find at each step.
+- `python3 tools/a11y.py` runs axe-core (WCAG 2.1 AA plus best practice) over the deck, the note and thirteen states of the prototype; it expects `/tmp/axe.min.js` from `npm pack axe-core`. Last run: zero violations.
 
 All people, firms and figures are fictional, as in the pack.

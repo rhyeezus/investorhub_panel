@@ -59,7 +59,7 @@ slide("light", """
 <h2>Josh works by firm. The CRM only knows people.</h2>
 <div class="cols">
   <div>
-    <p class="big">A fund manager is a team — a portfolio manager and a couple of analysts — and Josh meets, plans and reports by the team. So Corella's institutional investors live in a spreadsheet, and the CRM can't load it.</p>
+    <p class="big">A fund manager is a team (a portfolio manager and a couple of analysts) and Josh meets, plans and reports by the team. So Corella's institutional investors live in a spreadsheet, and the CRM can't load it.</p>
     <p>What he actually asked for: <q>Here's our investor CRM. Can you load it into InvestorHub so we can run everything from there?</q></p>
   </div>
   <div class="stats">
@@ -75,17 +75,17 @@ slide("light", """
 <h2>Customer, users, and the people in between.</h2>
 <div class="grid3">
   <div class="card"><div class="eyebrow">Customer</div><h3>Corella Finance</h3><p>Pays for the CRM. The sales deal was waiting on this.</p></div>
-  <div class="card"><div class="eyebrow">Users</div><h3>Josh and Hannah</h3><p>Investor relations. They feel the pain every roadshow, and they're the ones who'll stop using the spreadsheet — or won't.</p></div>
+  <div class="card"><div class="eyebrow">Users</div><h3>Josh and Hannah</h3><p>Investor relations. They feel the pain every roadshow, and they're the ones who'll stop using the spreadsheet, or won't.</p></div>
   <div class="card"><div class="eyebrow">In between</div><h3>Customer success</h3><p>Already writing notes in Corella's CRM. They'll run the clean-up for clients who won't do it themselves.</p></div>
 </div>
-<p class="muted">The firms — Larkspur, Hartley — are the subject of the data, not users of it.</p>
+<p class="muted">The firms, Larkspur and Hartley, are the subject of the data, not users of it.</p>
 """, notes="Two-sided business: the panel will listen for whether I collapse customer and user into one. I don't.", label="Who's who")
 
 slide("light", """
 <div class="eyebrow">Framing</div>
 <h2>Two problems, not one.</h2>
 <div class="cols">
-  <div class="card accent">
+  <div class="card lift">
     <div class="eyebrow">This cycle</div>
     <h3>The CRM needs a place for a firm.</h3>
     <p>The pitch is right. A record for a firm that people belong to, with its meetings in one place. This is what the five days are for.</p>
@@ -96,7 +96,7 @@ slide("light", """
     <p>The importer keys on email and his sheet has names. Notes can't import. People and roles sit in one cell. Bigger than organisations, and it needs organisations to exist first.</p>
   </div>
 </div>
-""", notes="Separating these is the most important framing move. Jimmy's branch leaves the Corella sample import dropping every row — and so does my prototype, on purpose.", label="Two problems")
+""", notes="Separating these is the most important framing move. Jimmy's branch leaves the Corella sample import dropping every row, and so does my prototype, on purpose.", label="Two problems")
 
 slide("light", """
 <div class="eyebrow">The pitch's own test</div>
@@ -110,14 +110,14 @@ slide("light", """
 <h2>Against the pitch's five parts</h2>
 <table class="t">
   <tr><th>Pitch</th><th>Branch</th></tr>
-  <tr><td>Organisations list — every firm with its people</td><td>Not built. A "group by organisation" checkbox on Contacts. <b>18 groups for 9 firms.</b></td></tr>
-  <tr><td>Organisation page — people, roles, everything that's happened</td><td>Not a page. The contacts table filtered to one string, company-wide stats still on top, no roles.</td></tr>
+  <tr><td>Organisations list: every firm with its people</td><td>Not built. A "group by organisation" checkbox on Contacts. <b>18 groups for 9 firms.</b></td></tr>
+  <tr><td>Organisation page: people, roles, everything that's happened</td><td>Not a page. The contacts table filtered to one string, company-wide stats still on top, no roles.</td></tr>
   <tr><td>Log a meeting once</td><td>Partly. Attendees as free text, stored against the name string. <b>Never reaches Priya, David or Tom.</b></td></tr>
   <tr><td>Organisation on a contact, changeable</td><td>A renamed free-text box with suggestions. New spellings still get typed.</td></tr>
   <tr><td>Start with what's there</td><td>Company field copied verbatim. No review, no merge. "Seeing a firm twice? Open each person."</td></tr>
 </table>
 <p class="muted">Kept from week 1: the audit line when a person's firm changes, and the import mapping the company column.</p>
-""", notes="Facts only here; the diagnosis is the next slide. Credit what Jimmy did well — the org_change audit trail is a good instinct and it survives into my version.", label="Week-1 build")
+""", notes="Facts only here; the diagnosis is the next slide. Credit what Jimmy did well: the org_change audit trail is a good instinct and it survives into my version.", label="Week-1 build")
 
 slide("dark", """
 <div class="eyebrow">Diagnosis</div>
@@ -161,11 +161,11 @@ slide("light", """
 <div class="eyebrow">The calls I made</div>
 <h2>Seven decisions, one of them doing most of the work.</h2>
 <ol class="calls">
-  <li><b>Organisation is a record</b> — id, name, and the spellings it absorbed.</li>
+  <li><b>Organisation is a record</b>: id, name, and the spellings it absorbed.</li>
   <li><b>The migration suggests, a person confirms.</b> Every company string becomes a firm; likely duplicates are flagged by name or initials; Josh or CS merges each with one click. Nothing auto-merges.</li>
   <li><b>Merged spellings become aliases</b>, so a later import with "LCM" lands on Larkspur.</li>
   <li><b>A meeting is logged once on the firm, attendees ticked</b>, and shows on the firm and on each person.</li>
-  <li><b>Organisation on a contact is picked, not typed</b> — a searchable picker, "create new" an explicit step.</li>
+  <li><b>Organisation on a contact is picked, not typed</b>: a searchable picker, with "create new" an explicit step.</li>
   <li><b>Role reuses the occupation field</b>, relabelled. The data was already there.</li>
   <li><b>Creating a firm runs straight into adding its people</b>, and warns on a duplicate name.</li>
 </ol>
@@ -184,7 +184,7 @@ slide("light", """
 <div class="cols wide">
   """ + img("r2-01-orgs-collapsed.png", "Organisations list with the review notice collapsed") + """
   <div>
-    <p>New in the nav. Eighteen firms on first load, straight from the company field — and a notice: <b>five likely duplicates</b>. Nothing is merged until someone says so.</p>
+    <p>New in the nav. Eighteen firms on first load, straight from the company field, and a notice: <b>five likely duplicates</b>. Nothing is merged until someone says so.</p>
     <p>Larkspur as three. Corbett, Kestrel, Meridian and Hartley as two each. BHP and "Self-employed" in the list, because the field held employers too.</p>
   </div>
 </div>
@@ -198,7 +198,7 @@ slide("light", """
   <div>
     <p>From the review row or from ticking rows in the list. One dialog either way: <b>which name do we keep?</b></p>
     <p>The other spellings become "also known as", so the next CSV with "LCM" in it lands on Larkspur instead of making a fourth.</p>
-    <p>"Different firms" dismisses a suggestion. Retail employers get "Remove organisation" — the people stay, the label goes.</p>
+    <p>"Different firms" dismisses a suggestion. Retail employers get "Remove organisation": the people stay, the label goes.</p>
   </div>
 </div>
 """, label="Walk 2")
@@ -209,7 +209,7 @@ slide("light", """
 <div class="cols wide">
   """ + img("r3-org-page.png", "Larkspur Capital organisation page") + """
   <div>
-    <p>Priya, David, Tom — and Ella — with the roles Josh's sheet already had. A timeline of meetings, notes and calls with the firm or any of its people. No bulk-email noise.</p>
+    <p>Priya, David, Tom and Ella, with the roles Josh's sheet already had. A timeline of meetings, notes and calls with the firm or any of its people. No bulk-email noise.</p>
     <p><b>Add people</b> opens a searchable picker that stays open until you're done: an existing contact, or someone new with the firm already filled in.</p>
   </div>
 </div>
@@ -221,7 +221,7 @@ slide("light", """
 <div class="cols wide">
   """ + img("05-priya-page.png", "Priya Raman's contact page showing the meeting logged on Larkspur") + """
   <div>
-    <p>Log the August roadshow on Larkspur with Priya, David and Tom ticked. Open Priya: it's on her timeline — <i>With Larkspur Capital: David Okafor, Priya Raman, Tom Avery</i>.</p>
+    <p>Log the August roadshow on Larkspur with Priya, David and Tom ticked. Open Priya: it's on her timeline: <i>With Larkspur Capital: David Okafor, Priya Raman, Tom Avery</i>.</p>
     <p class="big">That's the pitch's test, passing.</p>
   </div>
 </div>
@@ -233,8 +233,8 @@ slide("light", """
 <div class="cols wide">
   """ + img("r3-contacts.png", "Contacts list with Add to organisation on each row") + """
   <div>
-    <p>On a person, and straight from the contacts list: <b>Add to organisation</b> opens the picker. Searching, not scrolling. "Create a new organisation" is its own step — and nothing is created until you save.</p>
-    <p>New organisation checks the name as you type: <i>Larkspur Capital already exists — that's one of its other spellings</i>, or <i>looks like it could be Bluegum Partners</i>.</p>
+    <p>On a person, and straight from the contacts list: <b>Add to organisation</b> opens the picker. Searching, not scrolling. "Create a new organisation" is its own step, and nothing is created until you save.</p>
+    <p>New organisation checks the name as you type: <i>Larkspur Capital already exists (that's one of its other spellings)</i>, or <i>looks like it could be Bluegum Partners</i>.</p>
   </div>
 </div>
 """, label="Walk 5")
@@ -292,15 +292,15 @@ slide("light", """
     <ul>
       <li>Was the string a time call for week 1, or a view that a record wasn't needed? What does a record cost in the real schema?</li>
       <li>Is "logged once, shown on three people" a schema change in production, or a view?</li>
-      <li>Across other clients, how dirty is the company field — hundreds of duplicate groups, or dozens?</li>
+      <li>Across other clients, how dirty is the company field: hundreds of duplicate groups, or dozens?</li>
     </ul>
   </div>
   <div>
     <div class="eyebrow">For customer success, on Josh's behalf</div>
     <ul>
       <li>Does he have an email for everyone in the Funds tab? If not, import can't key on email.</li>
-      <li>What does he do with the Funds tab week to week — roadshows, % held, follow-ups? It decides what the firm page shows first.</li>
-      <li>How often does a meeting have more than one firm in it — the Hartley lunch, the conference?</li>
+      <li>What does he do with the Funds tab week to week: roadshows, % held, follow-ups? It decides what the firm page shows first.</li>
+      <li>How often does a meeting have more than one firm in it, like the Hartley lunch or the conference?</li>
       <li>Who runs the clean-up for clients who won't?</li>
     </ul>
   </div>
@@ -314,13 +314,13 @@ slide("dark", """
   <div class="card glass neon">
     <h3>Do this</h3>
     <p>On the org log form, replace the free-text attendees with checkboxes from the org's members, store their ids on the activity, and make each person's timeline include activities where they're an attendee.</p>
-    <p class="muted">About twenty lines. Turns "logged once, invisible to Priya" into "logged once, on all three" — the done-looks-like failure, fixed live.</p>
+    <p class="muted">About twenty lines. Turns "logged once, invisible to Priya" into "logged once, on all three": the done-looks-like failure, fixed live.</p>
   </div>
   <div class="card glass">
     <h3>Don't do this</h3>
     <p>The record refactor. It's day 1 of the plan, not twenty minutes on someone else's laptop.</p>
     <h3 style="margin-top:20px">Then ask</h3>
-    <p>"What would this cost in the real schema?" — and listen.</p>
+    <p>"What would this cost in the real schema?" Then listen.</p>
   </div>
 </div>
 """, notes="This is for me, not the panel. Have it ready so the live session has a target.", label="Live fix")
@@ -329,7 +329,7 @@ slide("light", """
 <div class="eyebrow">Five minutes · my questions for them</div>
 <h2>Two things I'd want to know.</h2>
 <ul class="big-list">
-  <li>How far is the real schema from one-activity-one-contact — is a firm with several people on a meeting a migration, or a view?</li>
+  <li>How far is the real schema from one-activity-one-contact: is a firm with several people on a meeting a migration, or a view?</li>
   <li>The next bet is linking firms to the ownership report. What does that need from organisations that I should be building towards now?</li>
 </ul>
 """, label="My questions")
@@ -394,8 +394,8 @@ slide("dark", """
 def render():
     sections = []
     for i, s in enumerate(SLIDES):
-        notes = f'<aside class="notes">{s["notes"]}</aside>' if s["notes"] else ""
-        sections.append(f'<section class="slide {s["kind"]}" id="s{i+1}" data-label="{s["label"]}"><div class="inner">{s["body"]}</div>{notes}</section>')
+        notes = f'<div class="notes" role="note" aria-label="Speaker notes">{s["notes"]}</div>' if s["notes"] else ""
+        sections.append(f'<section class="slide {s["kind"]}" id="s{i+1}" data-label="{s["label"]}" aria-label="Slide {i+1}: {s["label"]}"><div class="inner">{s["body"]}</div>{notes}</section>')
     n = len(SLIDES)
     toc = "".join(f'<a href="#s{i+1}"><span class="num">{i+1:02d}</span>{s["label"]}</a>' for i, s in enumerate(SLIDES))
     return f"""<!doctype html>
@@ -413,6 +413,10 @@ def render():
 <style>
 *,*::before,*::after{{box-sizing:border-box;margin:0;padding:0}}
 html{{scroll-snap-type:y mandatory;scroll-behavior:smooth}}
+@media(prefers-reduced-motion:reduce){{html{{scroll-behavior:auto}}}}
+:focus-visible{{outline:3px solid var(--color-forest-light);outline-offset:3px}}
+.dark :focus-visible,.on-dark :focus-visible,.overview :focus-visible{{outline-color:var(--color-neon)}}
+.sr-only{{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}}
 body{{background:var(--color-canvas);color:var(--color-text);font-family:var(--font-body);font-size:var(--text-body);line-height:var(--leading-body);-webkit-font-smoothing:antialiased;font-synthesis:none}}
 a{{color:inherit;text-decoration:none}}
 b,strong,h1,h2,h3{{font-weight:var(--font-weight-medium)}}
@@ -427,10 +431,11 @@ q{{quotes:"\\201C" "\\201D";font-style:italic}}
 .wordmark .mark::after{{content:"";position:absolute;inset:4px;border-top:2px solid var(--color-forest-light);border-right:2px solid var(--color-forest-light);transform:rotate(45deg) translate(-2px,2px)}}
 .on-dark .wordmark .mark,.on-dark .wordmark .mark::after{{border-color:var(--color-neon)}}
 .on-dark .wordmark{{color:#fff}}
-.chrome-right{{display:flex;align-items:center;gap:10px;font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:.08em;text-transform:uppercase;color:var(--color-text-muted)}}
-.on-dark .chrome-right{{color:var(--color-text-on-dark-muted)}}
-.chrome-right a,.chrome-right button{{font:inherit;color:inherit;background:none;border:1px solid currentColor;border-radius:var(--radius-full);padding:6px 12px;cursor:pointer;opacity:.8}}
-.chrome-right a:hover,.chrome-right button:hover{{opacity:1}}
+.chrome-right{{display:flex;align-items:center;gap:10px;font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:.08em;text-transform:uppercase;color:var(--color-slate)}}
+.on-dark .chrome-right{{color:rgb(var(--color-white-rgb)/.85)}}
+.chrome-right a,.chrome-right button{{font:inherit;color:inherit;background:none;border:1px solid currentColor;border-radius:var(--radius-full);padding:6px 12px;cursor:pointer}}
+.chrome-right a:hover,.chrome-right button:hover,.chrome-right button[aria-pressed=true]{{background:rgb(var(--color-forest-rgb)/.08)}}
+.on-dark .chrome-right a:hover,.on-dark .chrome-right button:hover,.on-dark .chrome-right button[aria-pressed=true]{{background:rgb(var(--color-white-rgb)/.14)}}
 .progress{{position:fixed;left:0;bottom:0;height:3px;background:var(--color-neon);z-index:21;width:0;transition:width var(--duration-base) var(--ease-default)}}
 
 /* ---------- slides ---------- */
@@ -448,15 +453,15 @@ q{{quotes:"\\201C" "\\201D";font-style:italic}}
 h1{{font-size:var(--text-display);line-height:var(--leading-display);letter-spacing:var(--tracking-display);max-width:var(--max-width-h1);text-wrap:balance}}
 h2{{font-size:var(--text-h2);line-height:var(--leading-heading);letter-spacing:var(--tracking-display);max-width:900px;text-wrap:balance;margin-bottom:28px}}
 h3{{font-size:var(--text-h3);line-height:var(--leading-tight);letter-spacing:var(--tracking-h3);margin-bottom:8px}}
-.accent{{color:var(--color-neon)}}
-.lead{{font-size:var(--text-lead);line-height:var(--leading-relaxed);max-width:var(--max-width-lead);color:var(--color-text-muted);margin-top:8px}}
+h1 .accent,h2 .accent{{color:var(--color-neon)}}
+.lead{{font-size:var(--text-lead);line-height:var(--leading-relaxed);max-width:var(--max-width-lead);color:var(--color-slate);margin-top:8px}}
 .dark .lead{{color:var(--color-text-on-dark-lead)}}
-.byline{{margin-top:40px;font-family:var(--font-mono);font-size:var(--text-caption);letter-spacing:.06em;color:var(--color-text-on-dark-muted)}}
+.byline{{margin-top:40px;font-family:var(--font-mono);font-size:var(--text-caption);letter-spacing:.06em;color:rgb(var(--color-white-rgb)/.8)}}
 p{{margin-bottom:12px;max-width:62ch}}
 p.big{{font-size:var(--text-body-lg);line-height:var(--leading-relaxed)}}
 p.quote{{font-size:var(--text-quote);line-height:1.5;max-width:900px;padding-left:20px;border-left:3px solid var(--color-neon);margin:16px 0 20px}}
-.muted{{color:var(--color-text-muted);font-size:var(--text-body-sm)}}
-.dark .muted{{color:var(--color-text-on-dark-muted)}}
+.muted{{color:var(--color-slate);font-size:var(--text-body-sm)}}
+.dark .muted{{color:rgb(var(--color-white-rgb)/.78)}}
 .mono{{font-family:var(--font-mono);font-size:var(--text-caption)}}
 ul,ol{{padding-left:22px;margin-bottom:12px}}
 li{{margin-bottom:8px;max-width:62ch}}
@@ -468,7 +473,7 @@ ul.big-list li{{font-size:var(--text-lead);line-height:var(--leading-relaxed);ma
 ol.calls li,ol.days li{{margin-bottom:10px;max-width:none}}
 ol.days{{list-style:none;padding:0}}
 ol.days li{{display:grid;grid-template-columns:90px 1fr;gap:16px;padding:9px 0;margin:0;border-bottom:1px solid var(--color-border-light)}}
-ol.days .d{{font-family:var(--font-mono);font-size:var(--text-caption);color:var(--color-forest-light);padding-top:3px}}
+ol.days .d{{font-family:var(--font-mono);font-size:var(--text-caption);color:var(--color-forest);padding-top:3px}}
 
 .cols{{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start}}
 .cols.wide{{grid-template-columns:1.35fr 1fr;align-items:center}}
@@ -478,19 +483,19 @@ ol.days .d{{font-family:var(--font-mono);font-size:var(--text-caption);color:var
 
 .card{{background:#fff;border-radius:var(--radius-panel);padding:var(--card-padding-sm);box-shadow:var(--ring-light)}}
 .card p:last-child{{margin-bottom:0}}
-.card.accent{{background:var(--parchment-accent);box-shadow:0 0 0 1px var(--color-positive-border)}}
+.card.lift{{background:var(--parchment-accent);box-shadow:0 0 0 1px var(--color-positive-border)}}
 .card.warn{{background:var(--color-warning-bg);box-shadow:0 0 0 1px var(--color-warning-border)}}
-.card.glass{{background:var(--color-glass-card);box-shadow:var(--ring-dark);backdrop-filter:blur(var(--blur-card));color:var(--color-text-on-dark-body)}}
+.card.glass{{background:var(--color-glass-card);box-shadow:var(--ring-dark);backdrop-filter:blur(var(--blur-card));color:rgb(var(--color-white-rgb)/.86)}}
 .card.glass h3{{color:#fff}}
 .card.glass.neon{{box-shadow:0 0 0 1px rgb(var(--color-neon-rgb)/.45),var(--shadow-glow)}}
 
 .stats{{display:grid;gap:14px}}
 .stat{{background:#fff;border-radius:var(--radius-panel);padding:18px 22px;box-shadow:var(--ring-light);display:grid;grid-template-columns:90px 1fr;gap:16px;align-items:center}}
-.stat .n{{font-family:var(--font-mono);font-size:var(--text-stat-sm);letter-spacing:var(--tracking-stat);color:var(--color-forest-light);line-height:1}}
-.stat .l{{font-size:var(--text-body-sm);color:var(--color-text-muted)}}
+.stat .n{{font-family:var(--font-mono);font-size:var(--text-stat-sm);letter-spacing:var(--tracking-stat);color:var(--color-forest);line-height:1}}
+.stat .l{{font-size:var(--text-body-sm);color:var(--color-slate)}}
 
 table.t{{width:100%;border-collapse:collapse;background:#fff;border-radius:var(--radius-panel);overflow:hidden;box-shadow:var(--ring-light);margin-bottom:16px}}
-table.t th{{text-align:left;font-family:var(--font-mono);font-size:var(--text-eyebrow);letter-spacing:.08em;text-transform:uppercase;color:var(--color-text-muted);font-weight:var(--font-weight-medium);padding:12px 16px;background:var(--color-sand);border-bottom:1px solid var(--color-border-light)}}
+table.t th{{text-align:left;font-family:var(--font-mono);font-size:var(--text-eyebrow);letter-spacing:.08em;text-transform:uppercase;color:var(--color-slate);font-weight:var(--font-weight-medium);padding:12px 16px;background:var(--color-sand);border-bottom:1px solid var(--color-border-light)}}
 table.t td{{padding:12px 16px;border-bottom:1px solid var(--color-border-light);vertical-align:top;font-size:var(--text-body-sm);line-height:1.5}}
 table.t tr:last-child td{{border-bottom:0}}
 table.t td:first-child{{width:34%;color:var(--color-text)}}
@@ -501,7 +506,7 @@ table.t.small td:first-child{{width:22%}}
 .shot img{{display:block;width:100%;height:auto;max-height:66svh;object-fit:cover;object-position:top}}
 
 /* ---------- notes ---------- */
-.notes{{display:none;position:absolute;left:0;right:0;bottom:0;padding:14px var(--gutter-desktop);background:var(--color-ink);color:var(--color-text-on-dark-lead);font-size:var(--text-body-sm);border-top:2px solid var(--color-neon)}}
+.notes{{display:none;position:absolute;left:0;right:0;bottom:0;padding:14px var(--gutter-desktop);background:var(--color-ink);color:rgb(var(--color-white-rgb)/.88);font-size:var(--text-body-sm);border-top:2px solid var(--color-neon)}}
 .notes::before{{content:"Notes · ";font-family:var(--font-mono);font-size:var(--text-eyebrow);letter-spacing:.1em;text-transform:uppercase;color:var(--color-neon)}}
 body.show-notes .notes{{display:block}}
 
@@ -513,7 +518,7 @@ body.show-overview .overview{{display:block}}
 .overview a:hover{{background:rgb(255 255 255/.12)}}
 .overview .num{{font-family:var(--font-mono);color:var(--color-neon);font-size:var(--text-xs)}}
 .overview h2{{color:#fff;max-width:var(--max-width-site);margin-inline:auto;margin-bottom:20px;font-size:var(--text-h2-sm)}}
-.overview .hint{{max-width:var(--max-width-site);margin:24px auto 0;color:var(--color-text-on-dark-muted);font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:.06em}}
+.overview .hint{{max-width:var(--max-width-site);margin:24px auto 0;color:rgb(var(--color-white-rgb)/.8);font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:.06em}}
 
 @media print{{
   html{{scroll-snap-type:none}}
@@ -526,24 +531,26 @@ body.show-overview .overview{{display:block}}
 </head>
 <body>
 <div class="nav-wrap" id="chrome">
-  <nav class="nav-pill">
-    <a class="wordmark" href="index.html"><span class="mark"></span>InvestorHub</a>
+  <nav class="nav-pill" aria-label="Deck controls">
+    <a class="wordmark" href="index.html"><span class="mark" aria-hidden="true"></span>InvestorHub</a>
     <div class="chrome-right">
-      <span id="counter">1 / {n}</span>
-      <button type="button" id="btn-notes" title="N">Notes</button>
-      <button type="button" id="btn-overview" title="O">All slides</button>
+      <span id="counter" aria-live="polite">1 / {n}</span>
+      <button type="button" id="btn-notes" aria-pressed="false" title="Toggle speaker notes (N)">Notes</button>
+      <button type="button" id="btn-overview" aria-pressed="false" aria-controls="overview" title="All slides (O)">All slides</button>
       <a href="corella-crm-branch-reviewed.html" target="_blank" rel="noopener">Prototype ↗</a>
     </div>
   </nav>
 </div>
 <div class="progress" id="progress"></div>
 
+<main id="deck">
 {''.join(sections)}
+</main>
 
-<div class="overview" id="overview">
-  <h2>All slides</h2>
+<div class="overview" id="overview" role="dialog" aria-modal="true" aria-labelledby="overview-title">
+  <h2 id="overview-title">All slides</h2>
   <div class="grid">{toc}</div>
-  <div class="hint">→ / space next · ← back · N notes · O this view · Esc close · the URL remembers where you are</div>
+  <div class="hint">Right arrow or space: next. Left arrow: back. N: notes. O: this view. Esc: close. The URL remembers where you are.</div>
 </div>
 
 <script>
@@ -578,19 +585,26 @@ body.show-overview .overview{{display:block}}
   document.addEventListener("keydown", function (e) {{
     if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
     const ov = document.body.classList.contains("show-overview");
-    if (e.key === "Escape") {{ document.body.classList.remove("show-overview"); return; }}
-    if (e.key === "o" || e.key === "O") {{ document.body.classList.toggle("show-overview"); return; }}
-    if (e.key === "n" || e.key === "N") {{ document.body.classList.toggle("show-notes"); return; }}
+    if (e.key === "Escape") {{ if (ov) setOverview(false); return; }}
+    if (e.key === "o" || e.key === "O") {{ setOverview(!ov); return; }}
+    if (e.key === "n" || e.key === "N") {{ setNotes(!document.body.classList.contains("show-notes")); return; }}
     if (ov) return;
     if (e.key === "ArrowRight" || e.key === "ArrowDown" || e.key === "PageDown" || e.key === " ") {{ e.preventDefault(); go(current + 1); }}
     else if (e.key === "ArrowLeft" || e.key === "ArrowUp" || e.key === "PageUp") {{ e.preventDefault(); go(current - 1); }}
     else if (e.key === "Home") {{ go(0); }}
     else if (e.key === "End") {{ go(n - 1); }}
   }});
-  document.getElementById("btn-notes").addEventListener("click", function () {{ document.body.classList.toggle("show-notes"); }});
-  document.getElementById("btn-overview").addEventListener("click", function () {{ document.body.classList.toggle("show-overview"); }});
+  function setNotes(on) {{ document.body.classList.toggle("show-notes", on); document.getElementById("btn-notes").setAttribute("aria-pressed", String(on)); }}
+  function setOverview(on) {{
+    document.body.classList.toggle("show-overview", on);
+    document.getElementById("btn-overview").setAttribute("aria-pressed", String(on));
+    if (on) {{ const first = document.querySelector("#overview a"); if (first) first.focus(); }}
+    else document.getElementById("btn-overview").focus();
+  }}
+  document.getElementById("btn-notes").addEventListener("click", function () {{ setNotes(!document.body.classList.contains("show-notes")); }});
+  document.getElementById("btn-overview").addEventListener("click", function () {{ setOverview(!document.body.classList.contains("show-overview")); }});
   document.getElementById("overview").addEventListener("click", function (e) {{
-    if (e.target.closest("a")) document.body.classList.remove("show-overview");
+    if (e.target.closest("a")) setOverview(false);
   }});
   // Land on the slide in the URL once fonts and images have settled, so nothing shifts under it.
   function landOnHash() {{

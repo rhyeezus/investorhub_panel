@@ -48,7 +48,7 @@ b, strong, h1, h2, h3 {{ font-weight: 500; }}
 .nav {{ display: flex; align-items: center; gap: 24px; max-width: 980px; margin: 0 auto; padding: 14px 24px; }}
 .chip {{ display: flex; align-items: center; gap: 10px; padding: 6px 12px 6px 6px; border: 1px solid var(--border); border-radius: 9999px; background: var(--card); font-size: 13px; font-weight: 500; white-space: nowrap; }}
 .chip .logo {{ width: 24px; height: 24px; border-radius: 9999px; background: var(--accent); color: var(--accent-foreground); display: grid; place-items: center; font-size: 11px; }}
-.badge {{ display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 500; padding: 1px 9px; border-radius: 9999px; white-space: nowrap; line-height: 1.6; --h: var(--hue-green); background: color-mix(in oklab, var(--h) 12%, var(--card)); border: 1px solid color-mix(in oklab, var(--h) 30%, var(--card)); color: var(--h); }}
+.badge {{ display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 500; padding: 1px 9px; border-radius: 9999px; white-space: nowrap; line-height: 1.6; --h: var(--hue-green); background: color-mix(in oklab, var(--h) 10%, var(--card)); border: 1px solid color-mix(in oklab, var(--h) 30%, var(--card)); color: color-mix(in oklab, var(--h) 78%, var(--foreground)); }}
 .badge .dot {{ width: 7px; height: 7px; border-radius: 9999px; background: var(--h); display: inline-block; }}
 .nav .grow {{ flex: 1; }}
 .btn {{ font: inherit; font-size: 13.5px; font-weight: 500; border-radius: var(--radius); padding: 7px 14px; border: 1px solid var(--primary); background: var(--primary); color: var(--primary-foreground); white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; }}
@@ -60,6 +60,7 @@ b, strong, h1, h2, h3 {{ font-weight: 500; }}
 .eyebrow {{ font-family: var(--font-mono); font-size: 11.5px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--muted-foreground); }}
 .card-head h1 {{ font-size: 28px; line-height: 1.2; margin: 6px 0 4px; letter-spacing: -.01em; }}
 .card-head .sub {{ color: var(--muted-foreground); font-size: 13.5px; }}
+:focus-visible {{ outline: 2px solid var(--ring); outline-offset: 2px; }}
 
 .body {{ padding: 8px 36px 28px; columns: 2; column-gap: 40px; column-rule: 1px solid var(--border); }}
 .body h2 {{ font-size: 12px; font-family: var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted-foreground); margin: 26px 0 8px; break-after: avoid; }}
@@ -95,8 +96,8 @@ b, strong, h1, h2, h3 {{ font-weight: 500; }}
 </style>
 </head>
 <body data-dl-theme="parchment">
-<nav class="nav">
-  <div class="chip"><span class="logo">CF</span>Corella Finance</div>
+<nav class="nav" aria-label="Page">
+  <div class="chip"><span class="logo" aria-hidden="true">CF</span>Corella Finance</div>
   <span class="badge"><span class="dot"></span>Review and plan</span>
   <span class="grow"></span>
   <a class="btn" href="{PROTOTYPE}">Open the prototype</a>
