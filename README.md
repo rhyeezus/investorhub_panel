@@ -23,9 +23,16 @@ tools/
 
 DESIGNSYSTEM.md, src/styles/tokens.css,         InvestorHub's marketing-site design system, extracted from
 tailwind.config.snippet.js, design-reference/   investorhub.com before the pack arrived. Not used by the
-preview/index.html                              prototype in the end: the CRM files carry their own tokens.
-preview/corella-crm-branch-reviewed.html        an earlier copy of crm/4, kept for the preview page's link
+preview/index.html                              landing page: links to the prototype and the presentation
+preview/presentation.html                       the panel talk-through as a slide deck (built by tools/build_deck.py)
+preview/design-system.html                      the extracted style guide, rendered
+preview/corella-crm-branch-reviewed.html        a copy of crm/4 for the preview links
+  build_deck.py                                 slides (in the script) → preview/presentation.html
 ```
+
+## The presentation
+
+Open `preview/presentation.html`. → / space next, ← back, **N** toggles speaker notes, **O** shows all slides, and the URL remembers where you are. Dark slides open each section; the eight prototype slides have screenshots as a fallback, but the plan is to switch to the live prototype for those.
 
 Double-click any file in `crm/` to open it in Chrome. Each keeps its own demo data in the browser; "Reset demo data" at the bottom of any page starts again.
 

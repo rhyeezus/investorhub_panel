@@ -75,17 +75,22 @@ b, strong, h1, h2, h3 {{ font-weight: 500; }}
 @media (max-width: 820px) {{ .body {{ columns: 1; }} }}
 
 @media print {{
-  @page {{ size: A4; margin: 10mm 11mm; }}
-  body {{ background: #fff; font-size: 10.4px; line-height: 1.4; }}
+  @page {{ size: A4; margin: 9mm 10mm; }}
+  body {{ background: #fff; font-size: 10.2px; line-height: 1.38; }}
   .nav, .foot, .btn {{ display: none; }}
   .page {{ padding: 0; max-width: none; }}
   .card {{ border: 0; box-shadow: none; border-radius: 0; }}
   .card-head {{ padding: 0 0 8px; }}
   .card-head h1 {{ font-size: 20px; }}
-  .body {{ padding: 4px 0 0; column-gap: 28px; }}
-  .body h2 {{ margin: 14px 0 5px; font-size: 10px; }}
-  .body p, .body ul, .body ol {{ margin-bottom: 7px; }}
-  .body li {{ margin-bottom: 3px; }}
+  .body {{ padding: 4px 0 0; columns: 2; column-gap: 26px; column-fill: auto; height: 258mm; }}
+  .body > * {{ break-inside: auto; }}
+  .body h2 {{ break-after: avoid; }}
+  .body li {{ break-inside: avoid; }}
+  .body h2 {{ margin: 10px 0 4px; font-size: 9.5px; }}
+  .body p, .body ul, .body ol {{ margin-bottom: 5px; }}
+  .body li {{ margin-bottom: 2px; }}
+  .card-head h1 {{ font-size: 18px; }}
+  .card-head {{ padding-bottom: 6px; }}
 }}
 </style>
 </head>

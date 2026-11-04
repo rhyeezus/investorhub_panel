@@ -82,17 +82,22 @@ b, strong, h1, h2, h3 { font-weight: 500; }
 @media (max-width: 820px) { .body { columns: 1; } }
 
 @media print {
-  @page { size: A4; margin: 10mm 11mm; }
-  body { background: #fff; font-size: 10.4px; line-height: 1.4; }
+  @page { size: A4; margin: 9mm 10mm; }
+  body { background: #fff; font-size: 10.2px; line-height: 1.38; }
   .nav, .foot, .btn { display: none; }
   .page { padding: 0; max-width: none; }
   .card { border: 0; box-shadow: none; border-radius: 0; }
   .card-head { padding: 0 0 8px; }
   .card-head h1 { font-size: 20px; }
-  .body { padding: 4px 0 0; column-gap: 28px; }
-  .body h2 { margin: 14px 0 5px; font-size: 10px; }
-  .body p, .body ul, .body ol { margin-bottom: 7px; }
-  .body li { margin-bottom: 3px; }
+  .body { padding: 4px 0 0; columns: 2; column-gap: 26px; column-fill: auto; height: 258mm; }
+  .body > * { break-inside: auto; }
+  .body h2 { break-after: avoid; }
+  .body li { break-inside: avoid; }
+  .body h2 { margin: 10px 0 4px; font-size: 9.5px; }
+  .body p, .body ul, .body ol { margin-bottom: 5px; }
+  .body li { margin-bottom: 2px; }
+  .card-head h1 { font-size: 18px; }
+  .card-head { padding-bottom: 6px; }
 }
 </style>
 </head>
@@ -111,68 +116,67 @@ b, strong, h1, h2, h3 { font-weight: 500; }
   </div>
   <div class="body">
 <h2>The problem</h2>
-<p>The CRM stores every investor as one person, but Josh works by firm: a fund manager is a team — a portfolio manager and a couple of analysts — and he meets, plans and reports by the team. So Corella&rsquo;s institutional investors live in a spreadsheet the CRM can&rsquo;t load, and what he actually asked for — &ldquo;load it so we can run everything from there&rdquo; — isn&rsquo;t possible.</p>
+<p>The CRM stores every investor as one person, but Josh works by firm: a fund manager is a team, and he meets, plans and reports by the team. So Corella&rsquo;s institutional investors live in a spreadsheet the CRM can&rsquo;t load, and what he asked for — &ldquo;load it so we can run everything from there&rdquo; — isn&rsquo;t possible.</p>
 <p>It isn&rsquo;t only Corella. The deal waited on &ldquo;can&rsquo;t group people by firm&rdquo;, two lost deals cite the same gap, and 38 clients carry an &ldquo;institution&rdquo; tag spelled 11 ways. This is the pattern, not one customer.</p>
-<p><strong>Who&rsquo;s who.</strong> Corella Finance is the customer. Josh (IR manager) and Hannah are the users. InvestorHub&rsquo;s customer success team sits between — they already write notes in Corella&rsquo;s CRM, and they&rsquo;ll be the ones running the clean-up for clients who won&rsquo;t. The firms themselves (Larkspur, Hartley) are the subject of the data, not users of it.</p>
-<p><strong>Two problems, not one.</strong> The pitch is right: the CRM needs a place for a firm. But Josh&rsquo;s spreadsheet is a second, bigger problem — the importer keys on email and his sheet has names; notes can&rsquo;t import; people and roles sit in one cell. Organisations has to exist first; the importer is next. This note is about the first.</p>
+<p><strong>Who&rsquo;s who.</strong> Corella is the customer; Josh and Hannah the users; customer success sits between, already writing notes in Corella&rsquo;s CRM. The firms are the subject of the data, not users of it.</p>
+<p><strong>Two problems, not one.</strong> The pitch is right: the CRM needs a place for a firm. Josh&rsquo;s spreadsheet is a second, bigger problem — the importer keys on email and his sheet has names; notes can&rsquo;t import. Organisations first; the importer next. This note is about the first.</p>
 <h2>What&rsquo;s wrong with the week-1 build</h2>
-<p>One cause, several symptoms. Organisation was built as a label — the old company field, renamed — rather than a record people belong to. Because the firm doesn&rsquo;t exist as a thing, there&rsquo;s nothing to open, nothing to rename, and nothing for a meeting to attach to. So:</p>
+<p>One cause, several symptoms. Organisation was built as a label — the old company field, renamed — not a record people belong to. The firm doesn&rsquo;t exist as a thing, so there&rsquo;s nothing to open, rename, or attach a meeting to:</p>
 <ul>
-<li>18 &ldquo;organisations&rdquo; for 9 firms, because every spelling is a separate label (Larkspur is three; Corbett, Kestrel, Meridian and Hartley are two each). BHP and &ldquo;Self-employed&rdquo; are organisations too.</li>
-<li>No organisations list and no organisation page. Clicking a firm filters the contacts table and leaves the company-wide stats on top.</li>
-<li>Roles aren&rsquo;t shown anywhere a team is shown.</li>
-<li>A meeting logged on a firm takes attendees as free text and never reaches the people. Logging the August roadshow doesn&rsquo;t show on Priya, David or Tom. If &ldquo;LCM&rdquo; is later corrected to &ldquo;Larkspur Capital&rdquo;, anything logged under &ldquo;LCM&rdquo; is stranded.</li>
-<li>Assigning someone to a firm means opening the person, editing, and typing — which is how the duplicates got there.</li>
-<li>The clean-up is left to Josh, one person at a time (the branch&rsquo;s own banner says so).</li>
+<li>18 &ldquo;organisations&rdquo; for 9 firms: every spelling is its own label (Larkspur is three). BHP and &ldquo;Self-employed&rdquo; are organisations too.</li>
+<li>No organisations list or page — a firm is a filtered contacts table with the company-wide stats still on top. Roles aren&rsquo;t shown anywhere a team is.</li>
+<li>A meeting logged on a firm takes attendees as free text and never reaches the people: the August roadshow doesn&rsquo;t show on Priya, David or Tom. Correct &ldquo;LCM&rdquo; later and anything logged under it is stranded.</li>
+<li>Assigning someone to a firm means opening the person and typing — which is how the duplicates got there. The clean-up is left to Josh, one person at a time.</li>
 </ul>
-<p>Against the pitch&rsquo;s &ldquo;done looks like&rdquo;, none of the three steps works yet.</p>
+<p>Against the pitch&rsquo;s &ldquo;done looks like&rdquo;, none of the three steps works yet. Kept from week 1: the audit line when a person&rsquo;s firm changes, and the import mapping the company column.</p>
 <h2>The bet, and what&rsquo;s most likely wrong</h2>
-<p>If a firm is a record, and the one-off clean-up suggests merges for a person to confirm, Josh will trust the CRM over his sheet. The thing most likely to be wrong looks cheap in the prototype and may not be in production: Exhibit L says an activity belongs to one contact, and &ldquo;logged once, shown on three people&rdquo; needs it to belong to a firm and several people. That&rsquo;s the first question for Jimmy, and it decides whether day 2–3 below is a day or a week.</p>
+<p>If a firm is a record, and the clean-up suggests merges for a person to confirm, Josh will trust the CRM over his sheet. The likeliest thing to be wrong looks cheap here and may not be in production: Exhibit L says an activity belongs to one contact; &ldquo;logged once, shown on three people&rdquo; needs it on a firm and several people. First question for Jimmy; it decides whether day 2–3 is a day or a week.</p>
 <h2>The calls I made</h2>
 <ol>
-<li><strong>Organisation is a record</strong> — an id, a name, and the old spellings it absorbed. Everything else follows from this.</li>
-<li><strong>The one-off migration suggests, a person confirms.</strong> Every company string becomes a firm; likely duplicates are flagged (same name once filler words are ignored, or initials); someone with context — Josh, or CS on his behalf — merges each group with one click. Nothing auto-merges. Retail employers get &ldquo;not a firm&rdquo;.</li>
-<li><strong>Merged spellings are kept as aliases</strong>, so a later import with &ldquo;LCM&rdquo; lands on Larkspur instead of making a fourth one.</li>
-<li><strong>A meeting is logged once on the firm with attendees ticked</strong>, and shows on the firm and on each person.</li>
-<li><strong>Organisation on a contact is picked, not typed</strong> — a searchable picker from the contact&rsquo;s page or straight from the contacts list, with &ldquo;create new&rdquo; as a separate, explicit step. The free-text box goes.</li>
-<li><strong>Role reuses the occupation field</strong>, relabelled. The data was already there.</li>
-<li><strong>Creating a firm runs straight into adding its people</strong>, and warns if the name already exists or looks like one that does.</li>
+<li><strong>Organisation is a record</strong> — an id, a name, and the spellings it absorbed. Everything follows from this.</li>
+<li><strong>The migration suggests, a person confirms.</strong> Every company string becomes a firm; likely duplicates are flagged (same name once filler words are ignored, or initials); Josh or CS merges each with one click. Nothing auto-merges.</li>
+<li><strong>Merged spellings become aliases</strong>, so a later import with &ldquo;LCM&rdquo; lands on Larkspur, not a fourth copy.</li>
+<li><strong>A meeting is logged once on the firm with attendees ticked</strong>, and shows on the firm and each person.</li>
+<li><strong>Organisation on a contact is picked, not typed</strong> — a searchable picker from the contact&rsquo;s page or the list; &ldquo;create new&rdquo; is an explicit step.</li>
+<li><strong>Role reuses the occupation field</strong>, relabelled.</li>
+<li><strong>Creating a firm runs straight into adding its people</strong>, and warns if the name exists or looks like one that does.</li>
 </ol>
-<h2>What I&rsquo;d fix in the five days, in order</h2>
+<h2>The five days, in order</h2>
 <ol>
-<li>Make organisation a record and point contacts at it. Day 1 — everything depends on it.</li>
-<li>The migration with the review screen, so the data is right before CS or Josh see it. Day 1–2.</li>
-<li>The organisation page: people with roles, log a meeting with attendees, timeline. Day 2–3. This is the &ldquo;done looks like&rdquo; test.</li>
+<li>Organisation as a record; contacts point at it. Day 1 — everything depends on it.</li>
+<li>Migration with the review screen, so the data is right before CS or Josh see it. Day 1–2.</li>
+<li>The organisation page: people with roles, log a meeting with attendees, timeline. Day 2–3. The &ldquo;done looks like&rdquo; test.</li>
 <li>Organisations list in the nav, with merge. Day 3.</li>
-<li>Contact page: dropdown, role label, list links. Day 4.</li>
+<li>Contact page: picker, role label, list links. Day 4.</li>
 <li>Walk CS through it Thursday; fix what they find. Day 5.</li>
 </ol>
 <h2>How we&rsquo;d know it worked</h2>
-<p>Josh logs the February roadshow on firms instead of in the sheet; the Funds tab stops being updated; CS stop hearing &ldquo;can&rsquo;t group by firm&rdquo;. Later, and countable: meetings logged on firms per client, and how many clients have run the review screen.</p>
+<p>Josh logs the February roadshow on firms, not in the sheet; the Funds tab stops being updated; CS stop hearing &ldquo;can&rsquo;t group by firm&rdquo;. Countable later: meetings logged on firms per client. Rollout: Corella first, CS running the review; wrong merges stop it before the next client.</p>
 <h2>What I left out, and why</h2>
 <ul>
-<li>Importing Josh&rsquo;s spreadsheet — the second problem above. The prototype leaves the failing import visible on purpose. A per-firm import template (company column pre-filled) is a small, useful piece of that, and waits for it.</li>
-<li>Organisation type (fund manager / broker / super), owner per firm, follow-ups with a done status, email audiences by firm, any permissions model, linking firms to the ownership report (the pitch&rsquo;s next bet).</li>
-<li>A written summary of everything with a firm. Worth doing once there&rsquo;s enough logged to summarise; a canned one in a prototype would be a fake.</li>
-<li>General UX of the CRM — filters, tag creation and taxonomy, table sorting, pagination, phone formats. Real, not this cycle.</li>
+<li>Josh&rsquo;s spreadsheet — the second problem. The failing import is left visible on purpose. A per-firm import template waits for it.</li>
+<li>Organisation type, owner per firm, follow-ups, email audiences by firm, permissions, linking firms to the ownership report (the next bet).</li>
+<li>A written summary per firm: a canned one in a prototype would be a fake.</li>
+<li>General CRM UX — filters, tags, sorting, pagination. Real, not this cycle.</li>
 </ul>
 <h2>Questions for Jimmy</h2>
 <ul>
-<li>Was the string a time call for week 1, or a view that a record wasn&rsquo;t needed? What does a record cost in the real schema?</li>
+<li>Was the string a time call, or a view that a record wasn&rsquo;t needed? What does a record cost in the real schema?</li>
 <li>Is &ldquo;logged once, shown on three people&rdquo; a schema change in production, or a view?</li>
-<li>Across other clients, how dirty is the company field — does the review screen need to handle hundreds of groups or dozens?</li>
-<li>What happens to Today data on migration? The branch currently discards saved state.</li>
+<li>Across other clients, how dirty is the company field — hundreds of duplicate groups, or dozens?</li>
 </ul>
 <h2>What I&rsquo;d want to learn from Josh</h2>
 <ul>
-<li>Does he have an email for everyone in the Funds tab? If not, import can&rsquo;t key on email and we need another way in.</li>
-<li>What he actually does with the Funds tab week to week — plan the roadshow, report to the board on % held, chase follow-ups. That decides what the firm page shows first.</li>
-<li>How often a meeting has more than one firm in it (the Hartley lunch, the conference). One firm per meeting may not be enough.</li>
-<li>Who else uses the sheet (Hannah), and whether &ldquo;Ours&rdquo; needs to be a field.</li>
-<li>Whether he needs the Old tab, or it&rsquo;s history he can leave behind.</li>
+<li>Does he have an email for everyone in the Funds tab? If not, import can&rsquo;t key on email.</li>
+<li>What he does with the Funds tab week to week — roadshows, % held, follow-ups. It decides what the firm page shows first.</li>
+<li>How often a meeting has more than one firm in it (the Hartley lunch, the conference).</li>
 </ul>
-<h2>An assumption to flag</h2>
-<p>The pack asked for a one-page plan with no build; the email asked for a prototype and a note. I followed the email and folded the plan&rsquo;s three items into this note.</p>
+<h2>Assumptions</h2>
+<ul>
+<li>The pack asked for a one-page plan, no build; the email for a prototype and a note. I followed the email and folded the plan in.</li>
+<li>CS will run the clean-up for clients who won&rsquo;t.</li>
+<li>A firm is the right unit this cycle; funds within a firm are the next bet, as the pitch says.</li>
+</ul>
   </div>
 </div></main>
 <footer class="foot"><span>All people, firms and figures are fictional, as in the pack.</span><span>Print this page for the PDF.</span></footer>
