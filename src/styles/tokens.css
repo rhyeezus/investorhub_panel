@@ -1,0 +1,256 @@
+/* ==========================================================================
+   InvestorHub design tokens — extracted from https://investorhub.com
+   (computed styles + the site's Tailwind v4 @theme block, 4 Nov 2026).
+   Names mirror the site's own custom properties where they exist.
+   See /DESIGNSYSTEM.md for sources and usage. "-rgb" triplets exist so
+   Tailwind opacity modifiers (bg-neon/90) can be driven from one source.
+   ========================================================================== */
+
+:root {
+  /* ---------- Colour: brand (theme) ---------- */
+  --color-neon: #00ffb4;            --color-neon-rgb: 0 255 180;
+  --color-neon-soft: #7affd4;       /* defined on site; no usage observed */
+  --color-navy: #005246;            --color-navy-rgb: 0 82 70;
+  --color-ink: #0b131c;             --color-ink-rgb: 11 19 28;
+  --color-forest: #163b31;          --color-forest-rgb: 22 59 49;
+  --color-forest-light: #0a7d6a;    --color-forest-light-rgb: 10 125 106;
+  --color-forest-deep: #075a4c;     /* hover of forest-light / parchment --ring */
+  --color-mint: #c8e8d8;            --color-mint-rgb: 200 232 216;
+  --color-offwhite: #eef0f8;        /* defined on site; no usage observed */
+  --color-sky-wash: #f0f4fe;        /* defined on site; no usage observed */
+  --color-slate: #374151;
+  --color-ash: #696a72;
+  --color-fog: #95959b;
+  --color-steel: #6b7280;
+  --color-white: #ffffff;           --color-white-rgb: 255 255 255;
+  --color-black: #000000;           --color-black-rgb: 0 0 0;
+
+  /* ---------- Colour: surfaces ---------- */
+  --color-canvas: #fcfcfc;          /* body background */
+  --color-sand: #f3f1ea;            /* light footer, testimonial band, carousel cards */
+  --color-card-soft: #fafafa;       /* booking form card */
+  --color-hero-wash-top: #f3fbf7;   /* .hero-wash linear start */
+  --color-dark-band-from: #0a2a20;  /* CTA band gradient start (to --color-navy) */
+  --color-hero-deep: #07150f;       /* home hero gradient start */
+  --color-glass-dark: rgb(var(--color-forest-rgb) / 0.75);
+  --color-glass-dark-opaque: rgb(var(--color-forest-rgb) / 0.95);
+  --color-glass-card: rgb(var(--color-white-rgb) / 0.04);
+  --color-scrim: rgb(var(--color-ink-rgb) / 0.2);
+
+  /* ---------- Colour: text ---------- */
+  --color-text: var(--color-ink);
+  --color-text-muted: var(--color-ash);
+  --color-text-faint: var(--color-fog);
+  --color-text-on-dark: var(--color-white);
+  --color-text-on-dark-lead: rgb(var(--color-white-rgb) / 0.70);
+  --color-text-on-dark-body: rgb(var(--color-white-rgb) / 0.65);
+  --color-text-on-dark-muted: rgb(var(--color-white-rgb) / 0.55);
+  --color-text-on-dark-faint: rgb(var(--color-white-rgb) / 0.45);
+  --color-text-excerpt: #45556c;    /* tailwind slate-600 (blog excerpts) */
+  --color-text-meta: #90a1b9;       /* tailwind slate-400 (blog meta) */
+
+  /* ---------- Colour: borders / rings ---------- */
+  --color-border-dark: rgb(var(--color-white-rgb) / 0.10);
+  --color-border-dark-soft: rgb(var(--color-white-rgb) / 0.07);
+  --color-border-ghost: rgb(var(--color-white-rgb) / 0.25);
+  --color-border-light: rgb(var(--color-black-rgb) / 0.06);
+  --color-border-light-strong: rgb(var(--color-black-rgb) / 0.10);
+  --color-border-ink: rgb(var(--color-ink-rgb) / 0.10);
+  --color-border-focus: rgb(var(--color-forest-rgb) / 0.40);
+
+  /* ---------- Colour: semantic (from product mocks) ---------- */
+  --color-positive: #0a7d6a;  --color-positive-bg: #e4ede8;  --color-positive-border: #bdd6cd;
+  --color-negative: #b31e57;  --color-negative-bg: #f9e4e5;  --color-negative-border: #eebfc6;
+  --color-negative-strong: #e70044;   /* tailwind rose-600, used in mocks */
+  --color-warning: #8a6800;   --color-warning-bg: #f0eadf;   --color-warning-border: #dacfb6;
+  --color-info: #1f52d0;      --color-info-bg: #e2e9f7;      --color-info-border: #b8ccf2;
+  --color-ai: #6b30cf;        --color-ai-bg: #f3ecff;        --color-ai-border: #cdc4f2;
+  --color-chart-2: #3fbf9c;
+  --color-chart-cyan: #0092b5;        /* tailwind cyan-600 */
+
+  /* ---------- Colour: parchment UI theme (Solution / About, product mocks) ---------- */
+  --parchment-background: #f9f6f0;
+  --parchment-card: #fefdfa;
+  --parchment-foreground: #2c281f;
+  --parchment-muted: #f2ede2;
+  --parchment-muted-foreground: #575143;
+  --parchment-secondary: #f2ede2;
+  --parchment-accent: #e9f3ec;
+  --parchment-accent-foreground: #075a4c;
+  --parchment-accent-hover: #d5e7de;
+  --parchment-primary: #0a7d6a;
+  --parchment-primary-hover: #075a4c;
+  --parchment-primary-foreground: #f7f4ec;
+  --parchment-ring: #075a4c;
+  --parchment-border: #ebe6db;
+  --parchment-input: #ddd7c9;
+  --parchment-outline-bg: #fffefd;
+
+  /* ---------- Colour: forest UI theme (dark product mocks) ---------- */
+  --forest-background: #143629;
+  --forest-card: #0f271f;
+  --forest-foreground: #f2fef8;
+  --forest-muted-foreground: #9bc0b1;
+  --forest-secondary: #1b4132;
+  --forest-accent: #164e3a;
+  --forest-accent-foreground: #85ffe2;
+  --forest-primary: #20ffc4;
+  --forest-primary-foreground: #0f271f;
+  --forest-ring: #2effd5;
+  --forest-border: #255341;
+
+  /* ---------- Gradients ---------- */
+  --gradient-dark-band: linear-gradient(to bottom right, #0a2a20 0%, #005246 100%);
+  --gradient-blog-thumb: linear-gradient(to bottom right, #163b31 0%, #005246 100%);
+  --gradient-hero-home:
+    radial-gradient(58% 48% at 50% 18%, rgb(0 255 180 / 0.14), transparent 68%),
+    linear-gradient(#07150f 0%, #0a1f17 32%, #02493e 70%, #005246 88%, #005246 100%);
+  --gradient-hero-wash:
+    radial-gradient(60% 55% at 50% 0, rgb(0 255 180 / 0.14), transparent 70%),
+    radial-gradient(70% 60% at 50% 38%, rgb(200 232 216 / 0.55), transparent 72%),
+    linear-gradient(#f3fbf7 0%, #fcfcfc 70%);
+  --gradient-accent-rule: linear-gradient(to right, rgb(0 255 180 / 0.70), transparent);
+  --gradient-fade-forest: linear-gradient(#163b31, transparent);
+
+  /* ---------- Typography ---------- */
+  --font-body: "Momo Trust Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-mono-accent: "DM Mono", "DM Mono Fallback", ui-monospace, "SF Mono", Menlo, monospace;
+  --font-sans: var(--font-body);
+  --font-serif: var(--font-body);   /* the site maps "serif" to the same sans */
+  --font-mono: var(--font-mono-accent);
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;        /* all headings */
+  --font-weight-semibold: 600;      /* buttons, labels */
+
+  /* fluid heading sizes (desktop 1440 / mobile 390 values in comments) */
+  --text-display: clamp(32px, 4.4vw, 52px);     /* 52 / 32 */
+  --text-display-lg: clamp(34px, 4.2vw, 54px);  /* 54 / 34 */
+  --text-h1: clamp(30px, 4vw, 44px);            /* 44 / 30 (form page) */
+  --text-h2-lg: clamp(30px, 4.4vw, 48px);       /* 48 / 30 */
+  --text-h2: clamp(28px, 3vw, 40px);            /* 40 / 28 */
+  --text-h2-sm: clamp(24px, 2.6vw, 34px);       /* 34 / 24 */
+  --text-h3: 22px;
+  --text-h3-sm: 20px;
+  --text-h4: 14px;
+  --text-lead: 18px;
+  --text-body-lg: 17px;
+  --text-body: 16px;
+  --text-body-sm: 14px;
+  --text-caption: 13.5px;
+  --text-caption-sm: 12.5px;
+  --text-xs: 12px;
+  --text-eyebrow: 11.5px;
+  --text-button: 15px;
+  --text-button-sm: 14px;
+  --text-button-lg: 16px;
+  --text-nav: 14px;
+  --text-stat: 42px;
+  --text-stat-sm: 38px;
+  --text-quote: clamp(18px, 1.7vw, 23px);
+
+  --leading-display: 1.06;
+  --leading-heading: 1.1;
+  --leading-h3: 1.5;
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-body: 1.6;
+  --leading-relaxed: 1.625;
+  --leading-loose: 1.7;
+  --leading-none: 1;
+
+  --tracking-display: -0.02em;
+  --tracking-tight: -0.025em;
+  --tracking-h3: -0.015em;
+  --tracking-stat: -0.04em;
+  --tracking-eyebrow: 0.14em;
+  --tracking-eyebrow-wide: 0.16em;
+  --tracking-eyebrow-tight: 0.12em;
+
+  /* ---------- Spacing & layout ---------- */
+  --spacing: 0.25rem;               /* 4px base unit */
+  --max-width-site: 1200px;
+  --max-width-prose: 672px;         /* max-w-2xl centred intros */
+  --max-width-prose-wide: 768px;
+  --max-width-lead: 620px;
+  --max-width-column: 540px;
+  --max-width-h1: 760px;
+  --gutter-mobile: 24px;
+  --gutter-desktop: 32px;
+  --gutter-header-mobile: 16px;
+  --section-y-sm: 80px;             /* py-20 */
+  --section-y: 96px;                /* py-24 */
+  --section-y-lg: 128px;            /* lg:py-32 */
+  --section-y-hero: 160px;          /* pt-40 */
+  --section-y-mobile: 56px;         /* py-14 */
+  --header-top: 16px;
+  --header-height: 60px;
+  --menu-width: 640px;
+  --card-padding: 32px;             /* p-8 */
+  --card-padding-sm: 28px;          /* p-7 */
+  --grid-gap: 20px;
+  --footer-gap: 64px;
+
+  /* ---------- Shape ---------- */
+  --radius-sm: 6px;
+  --radius-card: 8px;               /* buttons + dark cards (site token) */
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-panel: 14px;             /* parchment cards, figures */
+  --radius-xl: 16px;                /* product frames, menu items */
+  --radius-menu-row: 18px;
+  --radius-2xl: 24px;               /* mobile menu */
+  --radius-menu: 26px;              /* mega-menu panel */
+  --radius-carousel: 28px;
+  --radius-form-card: 32px;
+  --radius-feature: 40px;           /* site token; no usage observed */
+  --radius-pill: 100px;
+  --radius-full: 9999px;
+  --border-width: 1px;
+
+  /* ---------- Depth ---------- */
+  --shadow-feather: 0 0 4px -2px rgb(0 0 0 / 0.10);
+  --shadow-feather-strong: 0 0 4px -2px rgb(0 0 0 / 0.25);
+  --shadow-feature:
+    0 0.36px 1.81px -1.42px rgb(0 0 0 / 0.08),
+    0 1.37px 6.87px -2.83px rgb(0 0 0 / 0.07),
+    0 6px 30px -4.25px rgb(0 0 0 / 0.016);
+  --shadow-glow: 0 0 100px -28px rgb(0 255 180 / 0.22);
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.10), 0 1px 2px -1px rgb(0 0 0 / 0.10);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.10), 0 2px 4px -2px rgb(0 0 0 / 0.10);
+  --shadow-glass:
+    inset 0 1px 0 rgb(255 255 255 / 0.14),
+    0 28px 60px -20px rgb(11 19 28 / 0.60),
+    0 4px 14px -6px rgb(11 19 28 / 0.30);
+  --shadow-nav-scrolled:
+    inset 0 1px 0 rgb(255 255 255 / 0.12),
+    0 12px 34px -12px rgb(11 19 28 / 0.50);
+  --shadow-neon-hover: 0 8px 32px -6px rgb(0 255 180 / 0.55), 0 0 0 1px rgb(0 255 180 / 0.35);
+  --ring-light: 0 0 0 1px rgb(0 0 0 / 0.06);
+  --ring-light-strong: 0 0 0 1px rgb(0 0 0 / 0.08);
+  --ring-dark: 0 0 0 1px rgb(255 255 255 / 0.08);
+
+  --blur-card: 8px;
+  --blur-nav: 24px;
+  --blur-menu: 64px;
+  --blur-blob: 100px;
+  --saturate-nav: 1.5;
+  --saturate-menu: 1.6;
+
+  /* ---------- Motion ---------- */
+  --duration-fast: 150ms;
+  --duration-base: 200ms;
+  --duration-button: 220ms;
+  --duration-menu: 300ms;
+  --duration-header: 500ms;
+  --duration-reveal: 750ms;
+  --duration-hero: 850ms;
+  --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-reveal: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-overshoot: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --reveal-offset: 24px;
+  --reveal-stagger: 100ms;
+  --ticker-duration: 36s;
+  --marquee-duration: 46s;
+}
