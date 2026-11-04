@@ -27,368 +27,262 @@ SLIDES = []
 def slide(kind, body, notes="", label=""):
     SLIDES.append(dict(kind=kind, body=body, notes=notes, label=label))
 
+# 1
 slide("dark", """
 <div class="eyebrow">Product Builder panel · 5 November 2026</div>
 <h1>Organisations in the CRM<span class="accent">.</span></h1>
-<p class="lead">A review of the week-1 build, what I'd fix in the five days left, and a working prototype of where it should land.</p>
+<p class="lead">How I understood the problem, what I found in the week-1 build, what I built instead, and what I'd fix in the five days left.</p>
 <p class="byline">Rhys Gourley</p>
-""", notes="Fifteen minutes. The shape: what the problem actually is, what Jimmy built against it, one diagnosis, the calls I made, the prototype, the fix order, what I left out, and the questions I need answered before Monday.", label="Title")
+""", notes="Fifteen minutes. I'll show the thinking, not just the result. Problem first, then what I found, then what I built and how it changed as I tested it.", label="Title")
 
+# 2
 slide("light", """
-<div class="eyebrow">The ask</div>
-<h2>One week left in a two-week cycle.</h2>
+<div class="eyebrow">How I worked</div>
+<h2>Problem first. Then the files. Then build, test, change.</h2>
+<ol class="steps">
+  <li><b>Read the brief before the solution.</b> I deliberately didn't look at the pitch's answer until I'd written down the problem in my own words.</li>
+  <li><b>Used both CRMs like Josh would.</b> Today, then the branch. Wrote down everything I couldn't do.</li>
+  <li><b>Built in their file.</b> Plain JavaScript, their design system, double-click to open.</li>
+  <li><b>Audited my own build four times</b> and changed it each time. That's most of what I'll show you.</li>
+</ol>
+<p class="muted">Two briefs arrived: the pack asked for a plan, the email for a prototype and a note. I followed the email and folded the plan in.</p>
+""", notes="The brief discrepancy, once, lightly. Then move on.", label="How I worked")
+
+# 3
+slide("light", """
+<div class="eyebrow">The problem, in my words</div>
+<h2>Josh doesn't want to work out of the spreadsheet. The CRM should be the source of truth.</h2>
 <div class="cols">
   <div>
-    <p>Rhys shaped the pitch. Jimmy picked it up and built week one. Before customer success sees it on Thursday, it's mine to review and fix.</p>
-    <p>Two briefs arrived: the pack asked for a one-page plan and no build; the email asked for a working prototype and a note. I followed the email and folded the plan into the note.</p>
+    <p>A fund manager is a team, and Josh meets, plans and reports by the team. The CRM only knows people. So the institutional side lives in a sheet, and when Corella asked us to load it, we couldn't.</p>
+    <p>Manual entry in a free-text field is how this happens. It's inevitable that's going to be wrong.</p>
   </div>
-  <div class="card">
-    <div class="eyebrow">Today, in the room</div>
-    <ul class="plain">
-      <li><b>15 min</b> this review, with Jimmy and Rhys</li>
-      <li><b>20 min</b> fix the branch with Jimmy</li>
-      <li><b>20 min</b> walk customer success through it</li>
-      <li><b>5 min</b> my questions</li>
-    </ul>
+  <div class="who">
+    <div><span class="k">Customer</span>Corella Finance. The deal waited on this.</div>
+    <div><span class="k">Users</span>Josh and Hannah, investor relations.</div>
+    <div><span class="k">In between</span>Customer success. They're close to clients and will run the clean-up for the ones who won't.</div>
+    <div><span class="k">Pattern, not one client</span>38 clients, an "institution" tag spelled 11 ways, two lost deals.</div>
   </div>
 </div>
-""", notes="Name the brief discrepancy once, lightly, and move on. It shows I read both and made a call.", label="The ask")
+""", notes="Say the source-of-truth line. That's the frame for everything else. Josh's own email: 'load it so we can run everything from there'.", label="Problem")
 
+# 4
 slide("light", """
-<div class="eyebrow">The problem</div>
-<h2>Josh works by firm. The CRM only knows people.</h2>
+<div class="eyebrow">What I found in the branch</div>
+<h2>I couldn't find the feature. Then I found three Larkspurs.</h2>
 <div class="cols">
+  <div class="quotes">
+    <blockquote>"I'm not seeing any way to add an individual to an organisation."</blockquote>
+    <blockquote>"There's currently no way to edit the organisation."</blockquote>
+    <blockquote>"You're editing the user, not the organisation. That's a disconnect."</blockquote>
+  </div>
   <div>
-    <p class="big">A fund manager is a team (a portfolio manager and a couple of analysts) and Josh meets, plans and reports by the team. So Corella's institutional investors live in a spreadsheet, and the CRM can't load it.</p>
-    <p>What he actually asked for: <q>Here's our investor CRM. Can you load it into InvestorHub so we can run everything from there?</q></p>
-  </div>
-  <div class="stats">
-    <div class="stat"><div class="n">27</div><div class="l">fund managers in Josh's sheet, each with its people and meetings</div></div>
-    <div class="stat"><div class="n">11</div><div class="l">spellings of the "institution" tag across 38 clients</div></div>
-    <div class="stat"><div class="n">2</div><div class="l">lost deals citing "can't hold a fund and its people"</div></div>
+    <p>Organisations was a checkbox inside Contacts. Grouping by it gave 18 "firms" for 9: Larkspur Capital, Larkspur Capital Mgmt and LCM, each with its own people.</p>
+    <p>A meeting logged on a firm took attendees as free text and never reached the people.</p>
+    <p class="test"><b>The pitch's test:</b> Josh opens Larkspur, sees Priya, David and Tom with their roles, logs the August roadshow once. <b>None of the three steps worked.</b></p>
   </div>
 </div>
-""", notes="This is the pattern, not one customer. The deal waited on it; lost deals cite it; 38 clients have hacked around it with tags.", label="Problem")
+""", notes="These are my notes from the walkthrough, verbatim. The point isn't that Jimmy got it wrong; it's that I only understood why once I asked what an organisation actually was in the data.", label="What I found")
 
-slide("light", """
-<div class="eyebrow">Who's who</div>
-<h2>Customer, users, and the people in between.</h2>
-<div class="grid3">
-  <div class="card"><div class="eyebrow">Customer</div><h3>Corella Finance</h3><p>Pays for the CRM. The sales deal was waiting on this.</p></div>
-  <div class="card"><div class="eyebrow">Users</div><h3>Josh and Hannah</h3><p>Investor relations. They feel the pain every roadshow, and they're the ones who'll stop using the spreadsheet, or won't.</p></div>
-  <div class="card"><div class="eyebrow">In between</div><h3>Customer success</h3><p>Already writing notes in Corella's CRM. They'll run the clean-up for clients who won't do it themselves.</p></div>
-</div>
-<p class="muted">The firms, Larkspur and Hartley, are the subject of the data, not users of it.</p>
-""", notes="Two-sided business: the panel will listen for whether I collapse customer and user into one. I don't.", label="Who's who")
-
-slide("light", """
-<div class="eyebrow">Framing</div>
-<h2>Two problems, not one.</h2>
-<div class="cols">
-  <div class="card lift">
-    <div class="eyebrow">This cycle</div>
-    <h3>The CRM needs a place for a firm.</h3>
-    <p>The pitch is right. A record for a firm that people belong to, with its meetings in one place. This is what the five days are for.</p>
-  </div>
-  <div class="card">
-    <div class="eyebrow">Next</div>
-    <h3>Josh's spreadsheet still can't be loaded.</h3>
-    <p>The importer keys on email and his sheet has names. Notes can't import. People and roles sit in one cell. Bigger than organisations, and it needs organisations to exist first.</p>
-  </div>
-</div>
-""", notes="Separating these is the most important framing move. Jimmy's branch leaves the Corella sample import dropping every row, and so does my prototype, on purpose.", label="Two problems")
-
-slide("light", """
-<div class="eyebrow">The pitch's own test</div>
-<h2>"Done looks like"</h2>
-<p class="big quote">Josh at Corella opens Larkspur Capital, sees Priya, David and Tom with their roles, and logs the August roadshow meeting once.</p>
-<p>Three steps. Everything that follows is measured against them.</p>
-""", notes="Read it out. Everything in the review is 'does this step work yet'.", label="Done looks like")
-
-slide("light", """
-<div class="eyebrow">The week-1 build</div>
-<h2>Against the pitch's five parts</h2>
-<table class="t">
-  <tr><th>Pitch</th><th>Branch</th></tr>
-  <tr><td>Organisations list: every firm with its people</td><td>Not built. A "group by organisation" checkbox on Contacts. <b>18 groups for 9 firms.</b></td></tr>
-  <tr><td>Organisation page: people, roles, everything that's happened</td><td>Not a page. The contacts table filtered to one string, company-wide stats still on top, no roles.</td></tr>
-  <tr><td>Log a meeting once</td><td>Partly. Attendees as free text, stored against the name string. <b>Never reaches Priya, David or Tom.</b></td></tr>
-  <tr><td>Organisation on a contact, changeable</td><td>A renamed free-text box with suggestions. New spellings still get typed.</td></tr>
-  <tr><td>Start with what's there</td><td>Company field copied verbatim. No review, no merge. "Seeing a firm twice? Open each person."</td></tr>
-</table>
-<p class="muted">Kept from week 1: the audit line when a person's firm changes, and the import mapping the company column.</p>
-""", notes="Facts only here; the diagnosis is the next slide. Credit what Jimmy did well: the org_change audit trail is a good instinct and it survives into my version.", label="Week-1 build")
-
+# 5
 slide("dark", """
-<div class="eyebrow">Diagnosis</div>
-<h2>One cause, several symptoms.</h2>
+<div class="eyebrow">The diagnosis</div>
+<h2>It was built as a label. The pitch needs a record.</h2>
 <div class="cols">
   <div class="card glass">
-    <div class="eyebrow">What was built</div>
-    <h3>A label</h3>
-    <p>The firm is words typed on each person. "Larkspur Capital" on Priya, "Larkspur Capital Mgmt" on David, "LCM" on Tom. Nothing to open, nothing to rename, nothing for a meeting to attach to.</p>
+    <div class="eyebrow">A label</div>
+    <p>Words typed on each person. Nothing to open, nothing to rename, nothing for a meeting to attach to. Every spelling is a new firm.</p>
   </div>
   <div class="card glass neon">
-    <div class="eyebrow">What the pitch asked for</div>
-    <h3>A record</h3>
+    <div class="eyebrow">A record</div>
     <p>The firm exists once, like a contact does. People point at it. Rename it and everyone follows. Log a meeting on it and it stays with it.</p>
   </div>
 </div>
-<p class="lead">Every visible problem traces back to this one choice. Fix it and the rest is assembly.</p>
-""", notes="Sticky note on each person versus a folder you put people in. This is the sentence for Jimmy: not 'the UI is wrong', but 'the model is a label and the pitch needs a record'.", label="Diagnosis")
+<p class="lead">Every problem I'd listed traced back to this one thing. Fix it and the rest is assembly.</p>
+<p class="muted">Kept from week 1: the audit line when a person's firm changes, and the import mapping the company column. Good instincts, both.</p>
+""", notes="One cause, several symptoms. This is the sentence for Jimmy: not 'the UI is wrong' but 'the model is a label and we need a record'. Then credit what he did well.", label="Diagnosis")
 
+# 6
+slide("light", """
+<div class="eyebrow">The idea</div>
+<h2>Separate the two. Merge the duplicates. Never type a firm again.</h2>
+<ul class="idea">
+  <li><b>Contacts and Organisations are two lists.</b> Each links to the other.</li>
+  <li><b>Select the duplicates, merge them, pick which name is the master.</b> Everyone and everything moves across. The old names are kept, for data integrity and so the next import lands in the right place.</li>
+  <li><b>A human confirms every merge.</b> The account owner or customer success. They have the context to know LCM is Larkspur. The system doesn't.</li>
+  <li><b>Pick a firm from a list, never type one.</b> Creating a new one is a deliberate step.</li>
+  <li><b>Log a meeting once on the firm, tick who was there.</b> It shows on each of them.</li>
+</ul>
+""", notes="This is the design, in the order I arrived at it. The merge flow I described before I'd seen a single screen of it.", label="The idea")
+
+# 7
 slide("light", """
 <div class="eyebrow">The bet</div>
-<h2>If a firm is a record, and the clean-up suggests merges for a person to confirm, Josh will trust the CRM over his sheet.</h2>
+<h2>If a firm is a record and the clean-up is suggest-then-confirm, Josh will trust the CRM over his sheet.</h2>
 <div class="cols">
   <div class="card warn">
-    <div class="eyebrow">Most likely to be wrong</div>
-    <p>It looks cheap in the prototype and may not be in production. Exhibit L says an activity belongs to <b>one</b> contact. "Logged once, shown on three people" needs it to belong to a firm and several people.</p>
-    <p><b>First question for Jimmy.</b> It decides whether days 2–3 are a day or a week.</p>
+    <div class="eyebrow">What's most likely to be wrong</div>
+    <p>It looks cheap in a prototype. Exhibit L says an activity belongs to <b>one</b> contact. "Logged once, shown on three people" needs it on a firm and several people.</p>
+    <p><b>That's my first question for Jimmy.</b> It decides whether days 2 to 3 are a day or a week.</p>
   </div>
   <div>
-    <div class="eyebrow">Assumptions I'm carrying</div>
+    <div class="eyebrow">What I'm assuming</div>
     <ul>
       <li>CS will run the clean-up for clients who won't.</li>
-      <li>A firm is the right unit this cycle; funds within a firm are the next bet, as the pitch says.</li>
-      <li>Suggesting duplicates by name is enough; the pitch rules out guessing from email domains, and I didn't.</li>
+      <li>A firm is the right unit this cycle. Funds within a firm are the next bet, as the pitch says.</li>
+      <li>Suggesting duplicates by name is enough. The pitch rules out guessing from email domains, so I didn't.</li>
     </ul>
   </div>
 </div>
-""", notes="Say the riskiest assumption out loud before anyone asks. It's the thing I can't verify from a mock.", label="The bet")
+""", notes="Say the riskiest assumption before anyone asks it. It's the one thing I can't verify from a mock.", label="The bet")
 
-slide("light", """
-<div class="eyebrow">The calls I made</div>
-<h2>Seven decisions, one of them doing most of the work.</h2>
-<ol class="calls">
-  <li><b>Organisation is a record</b>: id, name, and the spellings it absorbed.</li>
-  <li><b>The migration suggests, a person confirms.</b> Every company string becomes a firm; likely duplicates are flagged by name or initials; Josh or CS merges each with one click. Nothing auto-merges.</li>
-  <li><b>Merged spellings become aliases</b>, so a later import with "LCM" lands on Larkspur.</li>
-  <li><b>A meeting is logged once on the firm, attendees ticked</b>, and shows on the firm and on each person.</li>
-  <li><b>Organisation on a contact is picked, not typed</b>: a searchable picker, with "create new" an explicit step.</li>
-  <li><b>Role reuses the occupation field</b>, relabelled. The data was already there.</li>
-  <li><b>Creating a firm runs straight into adding its people</b>, and warns on a duplicate name.</li>
-</ol>
-""", notes="One and two are the product calls. Three to seven follow from them.", label="The calls")
-
+# 8
 slide("dark", """
-<div class="eyebrow">The prototype</div>
-<h2>Built in the branch file, on their design system.</h2>
-<p class="lead">Plain JavaScript, one file, double-click to open. The same tokens and fonts as the product. Everything that follows is clickable.</p>
+<div class="eyebrow">What I built</div>
+<h2>In their file, on their design system, clickable.</h2>
+<p class="lead">Four screens, then the four rounds of changes that got it here.</p>
 <p class="muted">crm / 4 - Corella CRM - Branch (reviewed).html</p>
-""", notes="Switch to the prototype tab now and walk the next eight slides live. The screenshots are the fallback.", label="Prototype")
+""", notes="Switch to the prototype tab and do the next two slides live. The screenshots are the fallback.", label="Built")
 
+# 9
 slide("light", """
-<div class="eyebrow">1 · Organisations</div>
-<h2>A list of firms, and a review of what the old field left behind.</h2>
+<div class="eyebrow">Organisations, and the clean-up</div>
+<h2>Eighteen firms. Five likely duplicates. Nothing merges until someone says so.</h2>
 <div class="cols wide">
-  """ + img("r2-01-orgs-collapsed.png", "Organisations list with the review notice collapsed") + """
+  """ + img("r2-01-orgs-top.png", "Organisations list with a notice of five likely duplicates") + """
   <div>
-    <p>New in the nav. Eighteen firms on first load, straight from the company field, and a notice: <b>five likely duplicates</b>. Nothing is merged until someone says so.</p>
-    <p>Larkspur as three. Corbett, Kestrel, Meridian and Hartley as two each. BHP and "Self-employed" in the list, because the field held employers too.</p>
+    <p>A real list, in the nav. The notice is a soft prompt, not an error. Open it, hit Merge on the Larkspur row, choose the name to keep.</p>
+    """ + img("r4-merge-dialog-crop.png", "Merge dialog: which name do we keep?") + """
   </div>
 </div>
-""", label="Walk 1")
+""", label="Screens 1")
 
+# 10
 slide("light", """
-<div class="eyebrow">2 · Merge</div>
-<h2>Pick the name to keep. Everyone and everything moves across.</h2>
+<div class="eyebrow">The firm, and the test</div>
+<h2>Open Larkspur. Tick who was there. It's on Priya's timeline.</h2>
 <div class="cols wide">
-  """ + img("r4-merge-dialog.png", "Merge dialog: which name do we keep?") + """
+  """ + img("r3-org-page.png", "Larkspur Capital: people with roles and the timeline") + """
   <div>
-    <p>From the review row or from ticking rows in the list. One dialog either way: <b>which name do we keep?</b></p>
-    <p>The other spellings become "also known as", so the next CSV with "LCM" in it lands on Larkspur instead of making a fourth.</p>
-    <p>"Different firms" dismisses a suggestion. Retail employers get "Remove organisation": the people stay, the label goes.</p>
+    <p>Priya, David, Tom and Ella with the roles Josh's sheet already had. Log the roadshow once with the three of them ticked, open Priya: <i>With Larkspur Capital: David Okafor, Priya Raman, Tom Avery</i>.</p>
+    <p class="big"><b>The pitch's test, passing.</b></p>
   </div>
 </div>
-""", label="Walk 2")
+""", notes="Pause here. This is what the whole review builds to.", label="Screens 2")
 
+# 11
 slide("light", """
-<div class="eyebrow">3 · The firm</div>
-<h2>Larkspur Capital: the team, with roles, and everything that's happened.</h2>
-<div class="cols wide">
-  """ + img("r3-org-page.png", "Larkspur Capital organisation page") + """
-  <div>
-    <p>Priya, David, Tom and Ella, with the roles Josh's sheet already had. A timeline of meetings, notes and calls with the firm or any of its people. No bulk-email noise.</p>
-    <p><b>Add people</b> opens a searchable picker that stays open until you're done: an existing contact, or someone new with the firm already filled in.</p>
-  </div>
-</div>
-""", label="Walk 3")
+<div class="eyebrow">Four rounds</div>
+<h2>What I noticed, and what changed.</h2>
+<table class="t rounds">
+  <tr><th>I wrote down</th><th>So I changed</th></tr>
+  <tr><td>"The dropdown's going to get blown out. There's no search."</td><td>One searchable picker for choosing a firm and for adding people. Nothing is created until you save.</td></tr>
+  <tr><td>"Merge selected is all the way at the top. It's disconnected."</td><td>An action bar on the table that appears when rows are ticked.</td></tr>
+  <tr><td>"Log meeting twice is gratuitous."</td><td>One Log meeting, collapsed until you need it.</td></tr>
+  <tr><td>"Set, that's bad. Make it an action: add to organisation."</td><td>A proper button, on the person and on every row of the contacts list.</td></tr>
+  <tr><td>"Back to contacts is a button. I'd use breadcrumbs."</td><td>Breadcrumbs. The three header buttons went.</td></tr>
+  <tr><td>"Not the Chrome thing. An inline message."</td><td>Inline confirmations that say what's kept and what's lost.</td></tr>
+  <tr><td>"If I create a duplicate it should tell me in the flow."</td><td>New organisation checks the name as you type, then goes straight to adding people.</td></tr>
+  <tr><td>"I think we hallucinated that one."</td><td>Pulled the per-firm import template. It belongs with the importer.</td></tr>
+</table>
+""", notes="Every row is a line from my own audit notes. Four passes, each one through the whole flow as Josh. The last one was an accessibility pass: eleven violation types down to zero.", label="Four rounds")
 
+# 12
 slide("light", """
-<div class="eyebrow">4 · Log it once</div>
-<h2>Tick who was there. It shows on the firm and on each of them.</h2>
-<div class="cols wide">
-  """ + img("05-priya-page.png", "Priya Raman's contact page showing the meeting logged on Larkspur") + """
-  <div>
-    <p>Log the August roadshow on Larkspur with Priya, David and Tom ticked. Open Priya: it's on her timeline: <i>With Larkspur Capital: David Okafor, Priya Raman, Tom Avery</i>.</p>
-    <p class="big">That's the pitch's test, passing.</p>
-  </div>
+<div class="eyebrow">What I didn't build, and why</div>
+<h2>Thin on purpose.</h2>
+<div class="grid2">
+  <div class="card"><h3>Josh's spreadsheet</h3><p>The second problem, bigger than this one. The importer keys on email and his sheet has names. The failing import is left visible on purpose.</p></div>
+  <div class="card"><h3>The pitch's own "not this cycle"</h3><p>Linking firms to the ownership report, reporting per firm, firms shared across clients.</p></div>
+  <div class="card"><h3>Nice, not now</h3><p>Organisation type, owner per firm, follow-ups, permissions, a per-firm import template.</p></div>
+  <div class="card"><h3>A written summary per firm</h3><p>I wanted it. A canned one in a prototype would be a fake, so it waits for real data.</p></div>
 </div>
-""", notes="This is the slide the whole review has been building to. Pause on it.", label="Walk 4")
+""", notes="Being explicit about what's not built is discipline, not gaps. The summary one: I argued for it and then talked myself out of it.", label="Left out")
 
-slide("light", """
-<div class="eyebrow">5 · Picked, not typed</div>
-<h2>No more new spellings by accident.</h2>
-<div class="cols wide">
-  """ + img("r3-contacts.png", "Contacts list with Add to organisation on each row") + """
-  <div>
-    <p>On a person, and straight from the contacts list: <b>Add to organisation</b> opens the picker. Searching, not scrolling. "Create a new organisation" is its own step, and nothing is created until you save.</p>
-    <p>New organisation checks the name as you type: <i>Larkspur Capital already exists (that's one of its other spellings)</i>, or <i>looks like it could be Bluegum Partners</i>.</p>
-  </div>
-</div>
-""", label="Walk 5")
-
+# 13
 slide("light", """
 <div class="eyebrow">The five days</div>
 <h2>In order, because each one needs the last.</h2>
 <ol class="days">
-  <li><span class="d">Day 1</span><span><b>Organisation as a record; contacts point at it.</b> Everything depends on it.</span></li>
-  <li><span class="d">Day 1–2</span><span><b>The migration with the review screen</b>, so the data is right before CS or Josh see it.</span></li>
-  <li><span class="d">Day 2–3</span><span><b>The organisation page</b>: people with roles, log a meeting with attendees, timeline. The "done looks like" test.</span></li>
-  <li><span class="d">Day 3</span><span><b>Organisations list in the nav, with merge.</b></span></li>
-  <li><span class="d">Day 4</span><span><b>Contact page</b>: picker, role label, list links.</span></li>
-  <li><span class="d">Day 5</span><span><b>Walk CS through it; fix what they find.</b></span></li>
+  <li><span class="d">Day 1</span><span><b>Organisation as a record.</b> Contacts point at it. Everything depends on this.</span></li>
+  <li><span class="d">Day 1 to 2</span><span><b>The migration with the review screen</b>, so the data is right before CS or Josh see it.</span></li>
+  <li><span class="d">Day 2 to 3</span><span><b>The firm's page.</b> People with roles, log a meeting with attendees. The "done looks like" test.</span></li>
+  <li><span class="d">Day 3</span><span><b>Organisations list with merge.</b></span></li>
+  <li><span class="d">Day 4</span><span><b>The contact side.</b> Picker, role, links.</span></li>
+  <li><span class="d">Day 5</span><span><b>Walk CS through it. Fix what they find.</b></span></li>
 </ol>
-""", notes="If the schema answer from Jimmy is bad, day 2–3 stretches and days 4–5 compress. Say that.", label="Five days")
+<p class="muted">How we'd know: Josh logs the February roadshow on firms, not in the sheet. The Funds tab stops being updated. CS stop hearing "can't group by firm". Corella first; wrong merges stop the rollout.</p>
+""", notes="If Jimmy's schema answer is bad, days 2 to 3 stretch and 4 to 5 compress. Say that.", label="Five days")
 
+# 14
 slide("light", """
-<div class="eyebrow">What I left out, and why</div>
-<h2>Thinness is a feature.</h2>
-<div class="grid2">
-  <div class="card"><h3>Josh's spreadsheet</h3><p>The second problem. The failing import is left visible on purpose. A per-firm import template waits for it.</p></div>
-  <div class="card"><h3>The pitch's own "not this cycle"</h3><p>Linking firms to the ownership report, reporting per firm, firms shared across clients.</p></div>
-  <div class="card"><h3>Nice, not now</h3><p>Organisation type, owner per firm, follow-ups with a done status, email audiences by firm, permissions.</p></div>
-  <div class="card"><h3>A written summary per firm</h3><p>Worth doing once there's enough logged to summarise. A canned one in a prototype would be a fake.</p></div>
-  <div class="card"><h3>General CRM UX</h3><p>Filters, tag creation and taxonomy, sorting, pagination. Real, not this cycle.</p></div>
-</div>
-""", notes="Being explicit about what's not built reads as discipline, not as gaps.", label="Left out")
-
-slide("light", """
-<div class="eyebrow">How we'd know</div>
-<h2>Signals first, numbers later.</h2>
+<div class="eyebrow">What I need to know</div>
+<h2>Three for Jimmy. Three for Josh, via customer success.</h2>
 <div class="cols">
   <div>
+    <div class="eyebrow">Jimmy</div>
     <ul>
-      <li>Josh logs the February roadshow on firms, not in the sheet.</li>
-      <li>The Funds tab stops being updated.</li>
-      <li>CS stop hearing "can't group by firm".</li>
-    </ul>
-    <p class="muted">Countable later: meetings logged on firms per client; clients who've run the review screen.</p>
-  </div>
-  <div class="card">
-    <div class="eyebrow">Rollout</div>
-    <p>Corella first, with CS running the review screen. If it produces wrong merges, stop before the next client.</p>
-  </div>
-</div>
-""", label="How we'd know")
-
-slide("light", """
-<div class="eyebrow">Questions</div>
-<h2>What I need answered before Monday.</h2>
-<div class="cols">
-  <div>
-    <div class="eyebrow">For Jimmy</div>
-    <ul>
-      <li>Was the string a time call for week 1, or a view that a record wasn't needed? What does a record cost in the real schema?</li>
-      <li>Is "logged once, shown on three people" a schema change in production, or a view?</li>
+      <li>Was the string a time call, or a view that a record wasn't needed? What does a record cost in the real schema?</li>
+      <li>Is "logged once, shown on three people" a schema change, or a view?</li>
       <li>Across other clients, how dirty is the company field: hundreds of duplicate groups, or dozens?</li>
     </ul>
   </div>
   <div>
-    <div class="eyebrow">For customer success, on Josh's behalf</div>
+    <div class="eyebrow">Josh</div>
     <ul>
       <li>Does he have an email for everyone in the Funds tab? If not, import can't key on email.</li>
-      <li>What does he do with the Funds tab week to week: roadshows, % held, follow-ups? It decides what the firm page shows first.</li>
-      <li>How often does a meeting have more than one firm in it, like the Hartley lunch or the conference?</li>
-      <li>Who runs the clean-up for clients who won't?</li>
+      <li>What does he do with that tab week to week? That decides what the firm page shows first.</li>
+      <li>How often is a meeting with more than one firm, like the Hartley lunch?</li>
     </ul>
   </div>
 </div>
 """, label="Questions")
 
+# 15
 slide("dark", """
-<div class="eyebrow">The 20 minutes with Jimmy</div>
+<div class="eyebrow">Thanks</div>
+<h2>Let's fix it<span class="accent">.</span></h2>
+<p class="lead">Prototype: <span class="mono">crm / 4 - Corella CRM - Branch (reviewed).html</span><br>Note: <span class="mono">crm / 5 - Review and plan.html</span></p>
+""", label="End")
+
+# Appendix
+slide("light", """
+<div class="eyebrow">Appendix · for the 20 minutes with Jimmy</div>
 <h2>One fix that proves the point, in his branch.</h2>
 <div class="cols">
-  <div class="card glass neon">
+  <div class="card lift">
     <h3>Do this</h3>
     <p>On the org log form, replace the free-text attendees with checkboxes from the org's members, store their ids on the activity, and make each person's timeline include activities where they're an attendee.</p>
-    <p class="muted">About twenty lines. Turns "logged once, invisible to Priya" into "logged once, on all three": the done-looks-like failure, fixed live.</p>
+    <p class="muted">About twenty lines. "Logged once, invisible to Priya" becomes "logged once, on all three".</p>
   </div>
-  <div class="card glass">
+  <div class="card">
     <h3>Don't do this</h3>
     <p>The record refactor. It's day 1 of the plan, not twenty minutes on someone else's laptop.</p>
     <h3 style="margin-top:20px">Then ask</h3>
     <p>"What would this cost in the real schema?" Then listen.</p>
   </div>
 </div>
-""", notes="This is for me, not the panel. Have it ready so the live session has a target.", label="Live fix")
+""", notes="For me, not the panel.", label="Live fix")
 
 slide("light", """
-<div class="eyebrow">Five minutes · my questions for them</div>
-<h2>Two things I'd want to know.</h2>
-<ul class="big-list">
-  <li>How far is the real schema from one-activity-one-contact: is a firm with several people on a meeting a migration, or a view?</li>
-  <li>The next bet is linking firms to the ownership report. What does that need from organisations that I should be building towards now?</li>
-</ul>
-""", label="My questions")
-
-slide("light", """
-<div class="eyebrow">Appendix</div>
-<h2>Decisions log</h2>
+<div class="eyebrow">Appendix · decisions</div>
+<h2>Every fork, and why.</h2>
 <table class="t small">
   <tr><th>Fork</th><th>Chose</th><th>Why</th></tr>
   <tr><td>Email vs pack</td><td>Email; plan folded in</td><td>Most recent instruction; covering both costs little</td></tr>
-  <tr><td>New repo vs their file</td><td>Their file</td><td>No build step, their tokens embedded, "zip the folder"</td></tr>
-  <tr><td>Review scope</td><td>Jimmy's work against the pitch</td><td>That's the brief; general UX to left-out</td></tr>
+  <tr><td>New repo vs their file</td><td>Their file</td><td>No build step, their tokens, "zip the folder"</td></tr>
   <tr><td>Label vs record</td><td>Record</td><td>Every failure traces to the label</td></tr>
-  <tr><td>Group-by vs list</td><td>Separate list; drop the checkbox; no tabs</td><td>A sub-tab is how Jimmy's feature got missed</td></tr>
-  <tr><td>Duplicates</td><td>Suggest all, auto-merge none, human confirms</td><td>Pitch says don't guess; LCM is only Larkspur if someone knows</td></tr>
-  <tr><td>Old spellings</td><td>Aliases on the master</td><td>Audit trail without clutter; future imports land right</td></tr>
-  <tr><td>Attendees</td><td>Picked from the firm's people</td><td>"Done looks like" needs it on each person</td></tr>
-  <tr><td>Org timeline</td><td>No bulk-email rows</td><td>Three campaigns × members swamps it</td></tr>
-  <tr><td>Role</td><td>Reuse occupation</td><td>Data already there</td></tr>
-  <tr><td>Choosing a firm</td><td>One searchable picker, both jobs</td><td>Dropdowns blow out; typing made duplicates</td></tr>
-  <tr><td>Merge UI</td><td>Dialog with radios</td><td>One pattern for both paths</td></tr>
-  <tr><td>Confirmations</td><td>Inline, spelling out what's kept and lost</td><td>Browser dialogs can't</td></tr>
-  <tr><td>Per-firm template</td><td>Built, then pulled</td><td>Belongs with the importer; hard to explain in a sentence</td></tr>
+  <tr><td>Group-by vs list</td><td>Separate list, no tabs</td><td>A sub-tab is how the feature got missed</td></tr>
+  <tr><td>Duplicates</td><td>Suggest all, auto-merge none</td><td>The pitch says don't guess</td></tr>
+  <tr><td>Old spellings</td><td>Kept on the master</td><td>Data integrity; future imports land right</td></tr>
+  <tr><td>Attendees</td><td>Picked from the firm's people</td><td>The test needs it on each person</td></tr>
+  <tr><td>Choosing a firm</td><td>Searchable picker</td><td>Dropdowns blow out; typing made duplicates</td></tr>
+  <tr><td>Confirmations</td><td>Inline</td><td>Browser dialogs can't say what's kept</td></tr>
   <tr><td>Summary per firm</td><td>Out</td><td>A canned one would be a fake</td></tr>
+  <tr><td>Per-firm template</td><td>Built, then pulled</td><td>Belongs with the importer</td></tr>
   <tr><td>Permissions, importer</td><td>Out</td><td>Not in the pitch; next problem</td></tr>
 </table>
 """, label="Decisions")
-
-slide("light", """
-<div class="eyebrow">Appendix</div>
-<h2>Given · assumed · unknown</h2>
-<div class="grid3">
-  <div class="card"><div class="eyebrow">Given</div><ul class="plain small">
-    <li>The pitch, its evidence, rabbit holes and not-this-cycle list</li>
-    <li>Exhibit L: one activity, one contact; email is the key</li>
-    <li>Josh's sheet: 27 firms, people and roles in one cell, meetings per tab</li>
-    <li>The branch diff: ~180 lines, organisation as a string</li>
-  </ul></div>
-  <div class="card"><div class="eyebrow">Assumed</div><ul class="plain small">
-    <li>Email supersedes the pack</li>
-    <li>CS will run the clean-up</li>
-    <li>Firm is the unit; funds next</li>
-    <li>Name-based duplicate suggestions are enough</li>
-  </ul></div>
-  <div class="card"><div class="eyebrow">Unknown</div><ul class="plain small">
-    <li>Cost of a record and of multi-person activities in the real schema</li>
-    <li>How dirty the company field is across clients</li>
-    <li>Whether Josh has emails for everyone</li>
-    <li>What Josh does with the sheet week to week</li>
-    <li>Whether Jimmy's week-1 call was discussed with Rhys</li>
-  </ul></div>
-</div>
-""", label="Assumptions")
-
-slide("dark", """
-<div class="eyebrow">Thanks</div>
-<h2>Let's fix it<span class="accent">.</span></h2>
-<p class="lead">Prototype: <span class="mono">crm / 4 - Corella CRM - Branch (reviewed).html</span><br>Note: <span class="mono">crm / 5 - Review and plan.html</span></p>
-""", label="End")
 
 # --------------------------------------------------------------------------
 def render():
@@ -502,8 +396,23 @@ table.t td:first-child{{width:34%;color:var(--color-text)}}
 table.t.small td{{padding:7px 12px;font-size:var(--text-caption)}}
 table.t.small td:first-child{{width:22%}}
 
-.shot{{border-radius:var(--radius-xl);overflow:hidden;box-shadow:var(--shadow-feature),var(--ring-light);background:#fff;max-height:66svh}}
-.shot img{{display:block;width:100%;height:auto;max-height:66svh;object-fit:cover;object-position:top}}
+.shot{{border-radius:var(--radius-xl);overflow:hidden;box-shadow:var(--shadow-feature),var(--ring-light);background:#fff;max-height:62svh}}
+.shot img{{display:block;width:100%;height:auto;max-height:62svh;object-fit:cover;object-position:top}}
+.cols.wide .shot + p, .cols.wide p + .shot{{margin-top:14px}}
+.cols.wide > div > .shot{{max-height:34svh}}
+.cols.wide > div > .shot img{{max-height:34svh;object-fit:contain;object-position:top left}}
+
+/* ---------- voice ---------- */
+.quotes blockquote{{margin:0 0 14px;padding:12px 18px;border-left:3px solid var(--color-neon);background:#fff;border-radius:0 var(--radius-card) var(--radius-card) 0;box-shadow:var(--ring-light);font-size:var(--text-body-lg);line-height:1.5;font-style:italic;max-width:60ch}}
+.who{{display:grid;gap:10px}}
+.who > div{{background:#fff;border-radius:var(--radius-panel);padding:12px 16px;box-shadow:var(--ring-light);font-size:var(--text-body-sm);line-height:1.5}}
+.who .k{{display:block;font-family:var(--font-mono);font-size:var(--text-eyebrow);letter-spacing:.1em;text-transform:uppercase;color:var(--color-forest);margin-bottom:3px}}
+.test{{margin-top:14px;padding:12px 16px;background:var(--parchment-accent);border-radius:var(--radius-card);box-shadow:0 0 0 1px var(--color-positive-border);max-width:none}}
+ol.steps,ul.idea{{list-style:none;padding:0;counter-reset:n}}
+ol.steps li,ul.idea li{{position:relative;padding:12px 0 12px 46px;border-bottom:1px solid var(--color-border-light);max-width:none;font-size:var(--text-body-lg);line-height:1.5}}
+ol.steps li::before,ul.idea li::before{{counter-increment:n;content:counter(n);position:absolute;left:0;top:12px;width:30px;height:30px;border-radius:50%;background:var(--color-forest);color:#fff;font-family:var(--font-mono);font-size:13px;display:grid;place-items:center}}
+table.t.rounds td{{font-size:var(--text-body-sm);line-height:1.5;padding:10px 16px}}
+table.t.rounds td:first-child{{width:42%;font-style:italic;color:var(--color-forest)}}
 
 /* ---------- notes ---------- */
 .notes{{display:none;position:absolute;left:0;right:0;bottom:0;padding:14px var(--gutter-desktop);background:var(--color-ink);color:rgb(var(--color-white-rgb)/.88);font-size:var(--text-body-sm);border-top:2px solid var(--color-neon)}}

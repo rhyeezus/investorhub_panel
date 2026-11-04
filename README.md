@@ -33,7 +33,7 @@ preview/corella-crm-branch-reviewed.html        a copy of crm/4 for the preview 
 
 ## The presentation
 
-Open `preview/presentation.html`. → / space next, ← back, **N** toggles speaker notes, **O** shows all slides, and the URL remembers where you are. Dark slides open each section; the eight prototype slides have screenshots as a fallback, but the plan is to switch to the live prototype for those.
+Open `preview/presentation.html`. Right arrow or space: next. Left arrow: back. **N** toggles speaker notes, **O** shows all slides, and the URL remembers where you are. Fifteen slides plus two appendix slides; the two prototype slides have screenshots as a fallback, but the plan is to switch to the live prototype for those.
 
 Double-click any file in `crm/` to open it in Chrome. Each keeps its own demo data in the browser; "Reset demo data" at the bottom of any page starts again.
 
