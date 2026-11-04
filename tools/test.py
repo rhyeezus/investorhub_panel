@@ -27,10 +27,9 @@ async def main():
 
         # Merge the Larkspur group: pick 'Larkspur Capital' as master
         row = review.filter(has_text="Larkspur").first
-        sel = row.locator("select[name=masterId]")
-        opts = await sel.locator("option").all_inner_texts()
-        print("larkspur options:", opts)
-        await sel.select_option(label=[o for o in opts if o.startswith("Larkspur Capital (")][0])
+        opts = await row.locator(".radios label").all_inner_texts()
+        print("larkspur options:", [o.replace("\n", " ") for o in opts])
+        await row.locator(".radios label", has_text="Larkspur Capital").first.locator("input").check()
         await row.locator("button:has-text('Merge')").click(); await pg.wait_for_timeout(300)
         print("after merge, review groups:", await pg.locator(".review-row").count())
         await shot("02-organisations-after-merge")
@@ -42,7 +41,7 @@ async def main():
         await shot("03-larkspur-page")
 
         # Log the August roadshow once with Priya, David, Tom
-        await pg.click(".card-head button[data-action=focus-log]"); await pg.wait_for_timeout(200)
+        await pg.click("button[data-action=focus-log]"); await pg.wait_for_timeout(200)
         for name in ["Priya Raman", "David Okafor", "Tom Avery"]:
             await pg.locator("form[data-form=log-meeting] label.check", has_text=name).locator("input").check()
         await pg.fill("form[data-form=log-meeting] input[name=date]", "2026-08-18")
@@ -62,9 +61,10 @@ async def main():
         # Contact page: change Ella's organisation via the dropdown to Kestrel Point
         await pg.goto(URL + "#/contacts/c04"); await pg.wait_for_timeout(200)
         await pg.click("button[data-action=edit-details]"); await pg.wait_for_timeout(100)
-        opts = await pg.locator("select[name=organisationId] option").all_inner_texts()
-        print("org dropdown options:", opts)
-        await pg.locator("select[name=organisationId]").select_option(label=[o for o in opts if o.startswith("Kestrel")][0])
+        await pg.click("form[data-form=edit-details] button[data-action=pick-org]"); await pg.wait_for_timeout(200)
+        await pg.fill("#picker-search", "kestrel"); await pg.wait_for_timeout(100)
+        print("picker items for 'kestrel':", await pg.locator(".picker-item").count())
+        await pg.click(".picker-item"); await pg.wait_for_timeout(100)
         await pg.click("form[data-form=edit-details] button[type=submit]"); await pg.wait_for_timeout(200)
         print("Ella now:", await text(".rail .kv"))
         print("Ella timeline top:", (await pg.locator(".main ul.rows li").first.inner_text()).replace("\n", " | "))
@@ -77,8 +77,9 @@ async def main():
         # Not a firm: remove BHP
         await pg.goto(URL + "#/organisations"); await pg.wait_for_timeout(200)
         await pg.locator("tr.click", has_text="BHP").first.locator("td.name-cell").click(); await pg.wait_for_timeout(200)
-        pg.once("dialog", lambda d: asyncio.ensure_future(d.accept()))
-        await pg.click("button[data-action=not-a-firm]"); await pg.wait_for_timeout(300)
+        await pg.click("button[data-action=confirm][data-key=remove-org]"); await pg.wait_for_timeout(100)
+        print("inline confirm:", (await text(".confirm")).replace("\n", " ")[:90])
+        await pg.click(".confirm button[data-action=not-a-firm]"); await pg.wait_for_timeout(300)
         print("orgs after removing BHP:", await text(".stats"))
 
         # Import the Corella sample still drops rows (expected, documented)

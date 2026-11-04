@@ -20,8 +20,7 @@ async def main():
         print("review rows open:", await pg.locator(".review-row").count())
         await shot("r2-02-orgs-review-open")
         lark = pg.locator(".review-row").filter(has_text="Larkspur").first
-        opts = await lark.locator("select[name=masterId] option").all_inner_texts()
-        await lark.locator("select[name=masterId]").select_option(label=[o for o in opts if o.startswith("Larkspur Capital (")][0])
+        await lark.locator(".radios label", has_text="Larkspur Capital").first.locator("input").check()
         await lark.locator("button:has-text('Merge')").click(); await pg.wait_for_timeout(300)
         print("after Larkspur merge, review rows:", await pg.locator(".review-row").count())
 
@@ -32,7 +31,7 @@ async def main():
         print("bulk bar:", (await text("#bulk-bar")).replace("\n", " | "), "| visible:", await pg.locator("#bulk-bar.on").count())
         await shot("r2-03-bulk-bar")
         await pg.click("#bulk-bar button[data-action=merge-selected]"); await pg.wait_for_timeout(200)
-        await pg.locator("form[data-form=merge-dialog] select").select_option(label="Meridian Lane AM (2 people)")
+        await pg.locator("form[data-form=merge-dialog] label", has_text="Meridian Lane AM").locator("input").check()
         await pg.click("form[data-form=merge-dialog] button[type=submit]"); await pg.wait_for_timeout(300)
         print("after bulk merge, orgs stat:", (await text(".stat")).replace("\n", " "))
 
@@ -40,7 +39,7 @@ async def main():
         await pg.locator("tr.click", has_text="Larkspur Capital").first.locator("td.name-cell").click(); await pg.wait_for_timeout(300)
         print("meeting form present while collapsed:", await pg.locator("form[data-form=log-meeting]").count())
         await shot("r2-04-larkspur-collapsed")
-        await pg.click(".card-head button[data-action=focus-log]"); await pg.wait_for_timeout(200)
+        await pg.click("button[data-action=focus-log]"); await pg.wait_for_timeout(200)
         print("meeting form after click:", await pg.locator("form[data-form=log-meeting]").count())
         for name in ["Priya Raman", "Tom Avery"]:
             await pg.locator("form[data-form=log-meeting] label.check", has_text=name).locator("input").check()
@@ -49,7 +48,7 @@ async def main():
         print("form collapsed again:", await pg.locator("form[data-form=log-meeting]").count() == 0)
 
         # Add a person via picker: search + pick existing
-        await pg.click(".card-head button[data-action=add-person]"); await pg.wait_for_timeout(200)
+        await pg.click("button[data-action=add-person]"); await pg.wait_for_timeout(200)
         print("picker title:", await text(".picker h2"), "| items:", await pg.locator(".picker-item").count())
         await pg.fill("#picker-search", "grace"); await pg.wait_for_timeout(100)
         print("after search 'grace':", await pg.locator(".picker-item").count(), "|", (await text(".picker-item")).replace("\n", " · "))
@@ -58,7 +57,7 @@ async def main():
         print("people now:", (await text("aside .section")).replace("\n", " | ")[:160])
 
         # Add someone new from the picker
-        await pg.click(".card-head button[data-action=add-person]"); await pg.wait_for_timeout(200)
+        await pg.click("button[data-action=add-person]"); await pg.wait_for_timeout(200)
         await pg.fill("form[data-form=picker-create] input[name=name]", "Hannah Blake")
         await pg.click("form[data-form=picker-create] button[type=submit]"); await pg.wait_for_timeout(200)
         print("add-contact dialog open:", await pg.locator("form[data-form=add-contact]").count(), "| title:", await text("form[data-form=add-contact] h2"),
@@ -93,14 +92,31 @@ async def main():
         await pg.goto(URL + "#/organisations"); await pg.wait_for_timeout(200)
         for name in ["BHP", "Self-employed"]:
             await pg.locator("tr.click", has_text=name).first.locator("input.org-check").check()
-        pg.once("dialog", lambda d: asyncio.ensure_future(d.accept()))
+        await pg.click("#bulk-bar button[data-action=confirm]"); await pg.wait_for_timeout(100)
+        print("bulk confirm:", (await text("#bulk-bar .confirm")).replace("\n", " ")[:100])
+        await shot("r3-bulk-confirm")
         await pg.click("#bulk-bar button[data-action=not-a-firm-selected]"); await pg.wait_for_timeout(300)
         print("orgs after bulk not-a-firm:", (await text(".stat")).replace("\n", " "))
 
         # Rename caution text present
         await pg.locator("tr.click", has_text="Larkspur Capital").first.locator("td.name-cell").click(); await pg.wait_for_timeout(200)
         await pg.click("button[data-action=edit-org]"); await pg.wait_for_timeout(100)
-        print("rename help:", await text("form[data-form=edit-org] .help"))
+        print("rename help:", (await text("form[data-form=edit-org] .help"))[:60])
+        await pg.click("button[data-action=cancel-edit-org]"); await pg.wait_for_timeout(100)
+        # remove a member with inline confirm
+        await pg.click("aside button[data-action=confirm][data-key^='remove-member']"); await pg.wait_for_timeout(100)
+        print("member confirm:", (await text("aside .confirm")).replace("\n", " ")[:80])
+        await pg.click("aside .confirm button[data-action=cancel-confirm]"); await pg.wait_for_timeout(100)
+        print("cancelled, confirms left:", await pg.locator(".confirm").count())
+        # breadcrumb + no header buttons
+        print("crumbs:", (await text(".crumbs")).replace("\n", " "), "| header buttons:", await pg.locator(".card-head .actions button, .card-head .actions a").count())
+        await shot("r3-org-page")
+        await pg.goto(URL + "#/contacts/c01"); await pg.wait_for_timeout(200)
+        print("contact crumbs:", (await text(".crumbs")).replace("\n", " "), "| sub:", (await text(".card-head .sub")).replace("\n", " "), "| header buttons:", await pg.locator(".card-head .actions button, .card-head .actions a").count())
+        await shot("r3-contact-page")
+        await pg.goto(URL + "#/contacts"); await pg.wait_for_timeout(200)
+        print("row buttons:", await pg.locator("button[data-action=pick-org-row]:has-text('Add to organisation')").count(), "add /", await pg.locator("button[data-action=pick-org-row]:has-text('Change')").count(), "change")
+        await shot("r3-contacts")
         print("template link:", await pg.locator("button[data-action=download-org-template]").count())
 
         print("ERRORS:", errors if errors else "none")

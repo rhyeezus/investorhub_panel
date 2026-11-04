@@ -88,7 +88,7 @@ a:hover { text-decoration: underline; }
 .nav-links { display: flex; gap: 22px; flex: 1; justify-content: center; }
 .nav-links a { color: var(--muted-foreground); font-size: 13.5px; font-weight: 500; }
 .nav-links a:hover { color: var(--foreground); text-decoration: none; }
-.nav-links a.active { color: var(--foreground); }
+.nav-links a.active { color: var(--foreground); box-shadow: inset 0 -2px 0 var(--primary); padding-bottom: 3px; }
 .nav-right { display: flex; align-items: center; gap: 10px; }
 .nav-search { width: 220px; }
 .avatar {
@@ -239,13 +239,32 @@ pre.csv { font-family: var(--font-mono); font-size: 12px; background: var(--mute
 .status-bad { color: var(--hue-red); }
 .status-warn { color: var(--hue-amber); }
 
-/* Soft notice: a prompt, not an error */
+/* Soft notice: something to action, not an error */
 .notice {
-  display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 12px 28px; border-bottom: 1px solid var(--border);
-  background: color-mix(in oklab, var(--hue-amber) 7%, var(--card)); font-size: 13.5px;
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 12px 28px 12px 25px; border-bottom: 1px solid var(--border);
+  border-left: 3px solid var(--hue-amber);
+  background: color-mix(in oklab, var(--hue-amber) 13%, var(--card)); font-size: 13.5px;
 }
 .notice .grow { flex: 1; min-width: 200px; }
-.notice .badge { --h: var(--hue-amber); }
+.notice .badge { --h: var(--hue-amber); background: color-mix(in oklab, var(--h) 22%, var(--card)); border-color: color-mix(in oklab, var(--h) 45%, var(--card)); }
+
+/* Inline confirmation, in place of a browser dialog */
+.confirm { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 10px 14px; border-radius: var(--radius); background: color-mix(in oklab, var(--hue-amber) 10%, var(--card)); border: 1px solid color-mix(in oklab, var(--hue-amber) 35%, var(--card)); font-size: 13.5px; }
+.confirm .grow { flex: 1; min-width: 160px; }
+.btn.danger { background: var(--destructive); border-color: var(--destructive); color: #fff; }
+.btn.danger:hover { background: color-mix(in oklab, var(--destructive) 88%, black); }
+
+/* Radio list: the choices side by side, each with its count */
+.radios { display: flex; flex-wrap: wrap; gap: 6px 16px; }
+.radios label { display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; cursor: pointer; }
+.radios input { accent-color: var(--primary); }
+.radios .count { color: var(--muted-foreground); font-family: var(--font-mono); font-size: 12px; }
+
+/* Breadcrumb in the eyebrow position */
+.crumbs a { color: var(--muted-foreground); }
+.crumbs a:hover { color: var(--foreground); text-decoration: none; }
+.crumbs .sep { margin: 0 6px; opacity: .6; }
+.crumbs .here { color: var(--foreground); }
 
 /* Review: likely duplicate organisations, one row per group */
 .review { padding: 4px 28px 16px; background: color-mix(in oklab, var(--hue-amber) 4%, var(--card)); border-bottom: 1px solid var(--border); }
@@ -721,13 +740,38 @@ window.CRM_SEED = (function () {
   function head(eyebrow, title, sub, actions) {
     return (
       '<div class="card-head"><div>' +
-        '<div class="eyebrow">' + esc(eyebrow) + "</div>" +
+        '<div class="eyebrow">' + (eyebrow.indexOf("<") === 0 ? eyebrow : esc(eyebrow)) + "</div>" +
         "<h1>" + esc(title) + "</h1>" +
         (sub ? '<div class="sub">' + sub + "</div>" : "") +
       "</div>" +
       (actions ? '<div class="actions">' + actions + "</div>" : "") +
       "</div>"
     );
+  }
+
+  // Breadcrumb for a record's page: where it lives, then the record. Goes in the eyebrow slot.
+  function crumbs(parentLabel, parentHref, here) {
+    return '<span class="crumbs"><a href="' + parentHref + '">' + esc(parentLabel) + '</a><span class="sep">/</span><span class="here">' + esc(here) + "</span></span>";
+  }
+
+  // Inline confirmation in place of a browser dialog. `confirming` names the one that's open.
+  let confirming = null;
+  function confirmBox(key, message, confirmLabel, confirmAction, confirmId) {
+    return (
+      '<div class="confirm"><span class="grow">' + message + "</span>" +
+        '<button class="btn danger sm" data-action="' + confirmAction + '"' + (confirmId ? ' data-id="' + confirmId + '"' : "") + ">" + esc(confirmLabel) + "</button>" +
+        '<button class="btn sm" data-action="cancel-confirm">Cancel</button>' +
+      "</div>"
+    );
+  }
+
+  // Radio buttons for "which name do we keep?", each with its people count.
+  function keepNameRadios(orgs, name) {
+    return '<div class="radios">' + orgs.map(function (o, i) {
+      const n = membersOf(o.id).length;
+      return '<label><input type="radio" name="' + name + '" value="' + o.id + '"' + (i === 0 ? " checked" : "") + "> " + esc(o.name) +
+        ' <span class="count">' + n + "</span></label>";
+    }).join("") + "</div>";
   }
 
   function stats(items) {
@@ -789,7 +833,7 @@ window.CRM_SEED = (function () {
       '<tr class="click" data-href="#/contacts/' + c.id + '">' +
         '<td class="name-cell"><div class="n">' + esc(fullName(c)) + '</div><div class="e">' + esc(c.email || "No email") + "</div></td>" +
         '<td class="name-cell">' + orgLink(c) + (c.organisationId && c.occupation ? '<div class="e">' + esc(c.occupation) + "</div>" : "") + "</td>" +
-        '<td><button class="link-btn small" data-action="pick-org-row" data-id="' + c.id + '">' + (c.organisationId ? "Change" : "Set") + "</button></td>" +
+        '<td><button class="btn sm' + (c.organisationId ? " ghost" : "") + '" data-action="pick-org-row" data-id="' + c.id + '">' + (c.organisationId ? "Change" : "Add to organisation") + "</button></td>" +
         "<td>" + tagBadges(c.tags) + "</td>" +
         '<td class="num">' + (shares ? fmtNum(shares) : '<span class="muted">–</span>') + "</td>" +
         '<td class="num">' + fmtDate(lastActivity(c)) + "</td>" +
@@ -1081,7 +1125,7 @@ window.CRM_SEED = (function () {
     if (editingDetails) {
       return (
         '<form class="section" data-form="edit-details" data-id="' + c.id + '">' +
-          '<div class="eyebrow">Details</div>' +
+          '<div class="eyebrow" style="margin-bottom:12px">Contact details</div>' +
           '<div class="row"><div class="field"><label>First name</label><input class="input" name="firstName" value="' + esc(c.firstName) + '"></div>' +
           '<div class="field"><label>Last name</label><input class="input" name="lastName" value="' + esc(c.lastName) + '"></div></div>' +
           '<div class="field"><label>Email</label><input class="input" name="email" value="' + esc(c.email) + '"></div>' +
@@ -1093,10 +1137,14 @@ window.CRM_SEED = (function () {
       );
     }
     return (
-      '<div class="section"><div class="eyebrow">Details</div><div class="kv">' +
+      '<div class="section">' +
+        '<div class="collapsed-form" style="margin-bottom:12px"><div class="eyebrow">Contact details</div><button class="btn sm" data-action="edit-details">Edit</button></div>' +
+        '<div class="kv">' +
         '<div class="k">Email</div><div class="v">' + (c.email ? esc(c.email) : '<span class="muted">None</span>') + "</div>" +
         '<div class="k">Phone</div><div class="v mono">' + (c.phone ? esc(c.phone) : '<span class="muted">–</span>') + "</div>" +
-        '<div class="k">Organisation</div><div class="v">' + orgLink(c) + ' <button class="link-btn small muted" data-action="pick-org-row" data-id="' + c.id + '">' + (c.organisationId ? "Change" : "Set") + "</button></div>" +
+        '<div class="k">Organisation</div><div class="v">' +
+          (c.organisationId ? orgLink(c) + ' <button class="btn ghost sm" data-action="pick-org-row" data-id="' + c.id + '">Change</button>'
+            : '<button class="btn sm" data-action="pick-org-row" data-id="' + c.id + '">Add to organisation</button>') + "</div>" +
         '<div class="k">Role</div><div class="v">' + (c.occupation ? esc(c.occupation) : '<span class="muted">–</span>') + "</div>" +
         '<div class="k">Investor website</div><div class="v">' + (c.hub ? "Signed up " + fmtDate(c.hub) : '<span class="muted">Not signed up</span>') + "</div>" +
       "</div></div>"
@@ -1137,10 +1185,9 @@ window.CRM_SEED = (function () {
     const last = lastActivity(c);
     const shares = sharesHeld(c);
     return layout("contacts",
-      head(isShareholder(c) ? "Shareholder" : "Contact", fullName(c), esc(c.email || "No email address"),
-        '<a class="btn" href="#/contacts">Back to contacts</a>' +
-        '<button class="btn" data-action="edit-details">Edit details</button>' +
-        '<button class="btn primary" data-action="focus-log">Log activity</button>') +
+      head(crumbs("Contacts", "#/contacts", fullName(c)), fullName(c),
+        badge(isShareholder(c) ? "Shareholder" : "Contact", isShareholder(c) ? "green" : "") + " " + esc(c.email || "No email address") +
+        (orgOf(c) ? ' · ' + orgLink(c) + (c.occupation ? ", " + esc(c.occupation) : "") : ""), "") +
       stats([
         ["Shares held", shares ? fmtNum(shares) : "–"],
         ["% of company", shares ? pct(shares, state.company.totalShares) : "–"],
@@ -1204,16 +1251,10 @@ window.CRM_SEED = (function () {
       "</div>";
     if (!reviewOpen) return notice;
     const rows = groups.map(function (g) {
-      const opts = g.orgs.map(function (o, i) {
-        return '<option value="' + o.id + '"' + (i === 0 ? " selected" : "") + ">" + esc(o.name) + " (" + membersOf(o.id).length + ")</option>";
-      }).join("");
-      const names = g.orgs.map(function (o) { return "<b>" + esc(o.name) + "</b> <span class=\"muted mono small\">" + membersOf(o.id).length + "</span>"; }).join(" · ");
       return (
         '<form data-form="merge-group" data-key="' + esc(g.key) + '" class="review-row">' +
-          '<div class="review-names">' + names + "</div>" +
+          '<div class="review-names"><span class="small muted" style="margin-right:10px">Keep</span>' + keepNameRadios(g.orgs, "masterId") + "</div>" +
           '<div class="review-actions">' +
-            '<span class="small muted">Keep the name</span>' +
-            '<select class="input" name="masterId">' + opts + "</select>" +
             '<input type="hidden" name="ids" value="' + g.orgs.map(function (o) { return o.id; }).join(",") + '">' +
             '<button class="btn primary sm" type="submit">Merge</button>' +
             '<button class="btn ghost sm" type="button" data-action="dismiss-group" data-key="' + esc(g.key) + '">Different firms</button>' +
@@ -1230,26 +1271,33 @@ window.CRM_SEED = (function () {
     );
   }
 
-  function bulkBar() {
+  function bulkBarInner() {
     const n = orgSelection.length;
+    if (confirming === "remove-orgs") {
+      const names = orgSelection.map(function (x) { return orgById(x) ? orgById(x).name : null; }).filter(Boolean);
+      return confirmBox("remove-orgs",
+        "Remove <b>" + esc(names.join(", ")) + "</b> as " + (names.length === 1 ? "an organisation" : "organisations") + "? " +
+        "The people stay in the CRM with no organisation; anything logged on the firm itself is lost.",
+        "Remove", "not-a-firm-selected");
+    }
     return (
-      '<div class="bulk-bar' + (n ? " on" : "") + '" id="bulk-bar">' +
-        '<span id="bulk-count">' + n + " selected</span>" +
-        '<span class="grow"></span>' +
-        '<button class="btn sm" data-action="merge-selected"' + (n < 2 ? " disabled" : "") + ">Merge</button>" +
-        '<button class="btn sm" data-action="not-a-firm-selected">Not a firm</button>' +
-        '<button class="btn ghost sm" data-action="clear-selection">Clear</button>' +
-      "</div>"
+      '<span>' + n + " selected</span>" +
+      '<span class="grow"></span>' +
+      '<button class="btn sm" data-action="merge-selected"' + (n < 2 ? " disabled" : "") + ">Merge</button>" +
+      '<button class="btn sm" data-action="confirm" data-key="remove-orgs">Remove</button>' +
+      '<button class="btn ghost sm" data-action="clear-selection">Clear</button>'
     );
+  }
+
+  function bulkBar() {
+    return '<div class="bulk-bar' + (orgSelection.length ? " on" : "") + '" id="bulk-bar">' + bulkBarInner() + "</div>";
   }
 
   function updateBulkBar() {
     const bar = document.getElementById("bulk-bar");
     if (!bar) return;
-    const n = orgSelection.length;
-    bar.classList.toggle("on", n > 0);
-    document.getElementById("bulk-count").textContent = n + " selected";
-    bar.querySelector('[data-action="merge-selected"]').disabled = n < 2;
+    bar.classList.toggle("on", orgSelection.length > 0);
+    bar.innerHTML = bulkBarInner();
   }
 
   function orgRow(o) {
@@ -1336,12 +1384,15 @@ window.CRM_SEED = (function () {
     el.className = "overlay";
     el.innerHTML =
       '<form class="dialog" data-form="merge-dialog">' +
-        '<div class="dh"><h2>Merge ' + orgs.length + " organisations</h2></div>" +
+        '<div class="dh"><h2>Merge ' + orgs.length + " organisations into one</h2></div>" +
         '<div class="db">' +
-          '<div class="small muted" style="margin-bottom:12px">' + esc(orgs.map(function (o) { return o.name; }).join(", ")) + "</div>" +
-          '<div class="field"><label>Keep the name</label><select class="input" name="masterId">' +
-            orgs.map(function (o) { return '<option value="' + o.id + '">' + esc(o.name) + " (" + membersOf(o.id).length + " people)</option>"; }).join("") +
-          "</select><div class=\"help\">Everyone and everything moves to this one. The other names are kept as “also known as”.</div></div>" +
+          '<div class="field"><label>Which name do we keep?</label>' +
+            '<div class="radios" style="flex-direction:column;gap:8px">' + orgs.map(function (o, i) {
+              const n = membersOf(o.id).length;
+              return '<label><input type="radio" name="masterId" value="' + o.id + '"' + (i === 0 ? " checked" : "") + "> " + esc(o.name) +
+                ' <span class="count">' + n + (n === 1 ? " person" : " people") + "</span></label>";
+            }).join("") + "</div>" +
+          '<div class="help" style="margin-top:8px">Everyone and everything moves to the one you keep. The other names are kept as “also known as”, so a later import with that spelling lands here.</div></div>' +
           '<input type="hidden" name="ids" value="' + orgs.map(function (o) { return o.id; }).join(",") + '">' +
         "</div>" +
         '<div class="df"><button class="btn" type="button" data-action="close-dialog">Cancel</button><button class="btn primary" type="submit">Merge</button></div>' +
@@ -1362,7 +1413,7 @@ window.CRM_SEED = (function () {
       return (
         '<div class="section collapsed-form">' +
           '<div><div class="eyebrow">Log a meeting once</div><div class="small muted">Tick who was there; it shows on each of them and here.</div></div>' +
-          '<button class="btn sm" data-action="focus-log">Log meeting</button>' +
+          '<button class="btn primary sm" data-action="focus-log">Log meeting</button>' +
         "</div>"
       );
     }
@@ -1396,10 +1447,15 @@ window.CRM_SEED = (function () {
       '<div class="section"><div class="collapsed-form" style="margin-bottom:10px"><div class="eyebrow">People · ' + members.length + "</div>" +
         '<button class="btn sm" data-action="add-person" data-id="' + o.id + '">Add a person</button></div>' +
         (members.length ? members.map(function (c) {
+          if (confirming === "remove-member:" + c.id) {
+            return '<div style="margin-bottom:9px">' + confirmBox(confirming,
+              "Remove <b>" + esc(fullName(c)) + "</b> from " + esc(o.name) + "? Their notes and meetings stay on their record.",
+              "Remove", "remove-member", c.id) + "</div>";
+          }
           return '<div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline;margin-bottom:9px">' +
             '<div><a href="#/contacts/' + c.id + '">' + esc(fullName(c)) + "</a>" +
               '<div class="small muted">' + (c.occupation ? esc(c.occupation) : "Role not set") + "</div></div>" +
-            '<button class="link-btn small muted" data-action="remove-member" data-id="' + c.id + '" title="Remove from ' + esc(o.name) + '">Remove</button>' +
+            '<button class="link-btn small muted" data-action="confirm" data-key="remove-member:' + c.id + '">Remove</button>' +
           "</div>";
         }).join("") : '<div class="muted small">Nobody yet. Add an existing contact, or someone new.</div>') +
       "</div>"
@@ -1418,14 +1474,19 @@ window.CRM_SEED = (function () {
       );
     }
     return (
-      '<div class="section"><div class="eyebrow">Details</div><div class="kv">' +
+      '<div class="section">' +
+        '<div class="collapsed-form" style="margin-bottom:12px"><div class="eyebrow">Organisation details</div><button class="btn sm" data-action="edit-org">Rename</button></div>' +
+        '<div class="kv">' +
         '<div class="k">Name</div><div class="v">' + esc(o.name) + "</div>" +
         '<div class="k">Also known as</div><div class="v">' + ((o.aliases || []).length ? esc(o.aliases.join(", ")) : '<span class="muted">–</span>') + "</div>" +
       "</div>" +
-      '<div style="margin-top:12px;display:flex;flex-direction:column;gap:8px;align-items:flex-start">' +
-        '<button class="link-btn small" data-action="edit-org">Rename</button>' +
+      '<div style="margin-top:14px;display:flex;flex-direction:column;gap:10px;align-items:flex-start">' +
         '<button class="link-btn small" data-action="download-org-template" data-id="' + o.id + '">Download an import template for ' + esc(o.name) + "</button>" +
-        '<button class="link-btn small muted" data-action="not-a-firm" data-id="' + o.id + '">Not a firm: remove it, keep the people</button>' +
+        (confirming === "remove-org" ?
+          '<div style="align-self:stretch">' + confirmBox("remove-org",
+            "Remove <b>" + esc(o.name) + "</b> as an organisation? " + (membersOf(o.id).length === 1 ? "Its one person stays" : "Its " + membersOf(o.id).length + " people stay") + " in the CRM with no organisation; anything logged on the firm itself is lost.",
+            "Remove", "not-a-firm", o.id) + "</div>" :
+          '<button class="link-btn small muted" data-action="confirm" data-key="remove-org">Remove this organisation (keeps the people)</button>') +
       "</div></div>"
     );
   }
@@ -1450,11 +1511,8 @@ window.CRM_SEED = (function () {
     const members = membersOf(o.id);
     const meetings = activitiesForOrg(o.id).filter(function (a) { return a.type === "meeting"; });
     return layout("organisations",
-      head("Organisation", o.name,
-        ((o.aliases || []).length ? "Also known as " + esc(o.aliases.join(", ")) + " · " : "") + members.length + (members.length === 1 ? " person" : " people"),
-        '<a class="btn" href="#/organisations">Back to organisations</a>' +
-        '<button class="btn" data-action="add-person" data-id="' + o.id + '">Add a person</button>' +
-        '<button class="btn primary" data-action="focus-log">Log meeting</button>') +
+      head(crumbs("Organisations", "#/organisations", o.name), o.name,
+        ((o.aliases || []).length ? "Also known as " + esc(o.aliases.join(", ")) + " · " : "") + members.length + (members.length === 1 ? " person" : " people"), "") +
       stats([
         ["People", fmtNum(members.length)],
         ["Meetings", fmtNum(meetings.length)],
@@ -1784,18 +1842,21 @@ window.CRM_SEED = (function () {
       state.dismissedMerges = (state.dismissedMerges || []).concat([btn.getAttribute("data-key")]);
       save(); render();
     }
+    else if (action === "confirm") {
+      // Opens an inline confirmation where the button was. The bulk bar redraws itself; pages re-render.
+      confirming = btn.getAttribute("data-key");
+      if (confirming === "remove-orgs") updateBulkBar(); else render();
+    }
+    else if (action === "cancel-confirm") { confirming = null; if (document.getElementById("bulk-bar")) updateBulkBar(); else render(); }
     else if (action === "remove-member") {
       const c = contactById(id);
-      const o = orgOf(c);
-      if (c && confirm("Remove " + fullName(c) + " from " + (o ? o.name : "this organisation") + "? Their notes and meetings stay on their record.")) {
-        setOrganisation(c, null); save(); render();
-      }
+      confirming = null;
+      if (c) { setOrganisation(c, null); save(); render(); toast(fullName(c) + " removed"); }
     }
     else if (action === "not-a-firm") {
       const o = orgById(id);
-      if (o && confirm("Remove " + o.name + " as an organisation? Its people stay in the CRM with no organisation.")) {
-        removeOrg(id); save(); location.hash = "#/organisations"; toast(o.name + " removed");
-      }
+      confirming = null;
+      if (o) { removeOrg(id); save(); location.hash = "#/organisations"; toast(o.name + " removed"); }
     }
     else if (action === "focus-log") {
       // On a firm's page the form is collapsed until asked for.
@@ -1804,12 +1865,11 @@ window.CRM_SEED = (function () {
     }
     else if (action === "close-log") { meetingOpen = false; render(); }
     else if (action === "toggle-review") { reviewOpen = !reviewOpen; render(); }
-    else if (action === "clear-selection") { orgSelection.length = 0; render(); }
+    else if (action === "clear-selection") { orgSelection.length = 0; confirming = null; render(); }
     else if (action === "not-a-firm-selected") {
       const names = orgSelection.map(function (x) { return orgById(x) ? orgById(x).name : null; }).filter(Boolean);
-      if (names.length && confirm("Remove " + names.join(", ") + " as organisations? Their people stay in the CRM with no organisation.")) {
-        orgSelection.slice().forEach(removeOrg); orgSelection.length = 0; save(); render(); toast(names.length + " removed");
-      }
+      confirming = null;
+      if (names.length) { orgSelection.slice().forEach(removeOrg); orgSelection.length = 0; save(); render(); toast(names.length + " removed"); }
     }
     else if (action === "pick") { const p = picker; closePicker(); if (p) p.onPick(id); }
     else if (action === "close-picker") closePicker();
@@ -1849,6 +1909,7 @@ window.CRM_SEED = (function () {
     else if (kind === "org-check") {
       const i = orgSelection.indexOf(t.value);
       if (t.checked && i === -1) orgSelection.push(t.value); else if (!t.checked && i > -1) orgSelection.splice(i, 1);
+      confirming = null;
       updateBulkBar();
     }
     else if (kind === "draft-kind") { keepDraftText(); draft.kind = t.value; render(); }
@@ -1950,7 +2011,7 @@ window.CRM_SEED = (function () {
     }
   });
 
-  window.addEventListener("hashchange", function () { editingDetails = false; editingOrg = false; meetingOpen = false; closePicker(); render(); });
+  window.addEventListener("hashchange", function () { editingDetails = false; editingOrg = false; meetingOpen = false; confirming = null; closePicker(); render(); });
 
   render();
 })();

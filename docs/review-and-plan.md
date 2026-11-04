@@ -55,7 +55,7 @@ Josh logs the February roadshow on firms instead of in the sheet; the Funds tab 
 - Importing Josh's spreadsheet — the second problem above. The prototype leaves the failing import visible on purpose.
 - Organisation type (fund manager / broker / super), owner per firm, follow-ups with a done status, email audiences by firm, any permissions model, linking firms to the ownership report (the pitch's next bet).
 - A written summary of everything with a firm. Worth doing once there's enough logged to summarise; a canned one in a prototype would be a fake.
-- General UX of the CRM — filters, tags, sorting, pagination, phone formats. Real, not this cycle.
+- General UX of the CRM — filters, tag creation and taxonomy, table sorting, pagination, phone formats. Real, not this cycle.
 
 ## Questions for Jimmy
 
