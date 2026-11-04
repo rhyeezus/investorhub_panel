@@ -145,7 +145,7 @@ a:hover { text-decoration: underline; }
 .btn.ghost:hover { color: var(--foreground); background: var(--muted); }
 .btn.sm { padding: 4px 10px; font-size: 12.5px; }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.link-btn { background: none; border: 0; padding: 0; font: inherit; color: var(--accent-foreground); cursor: pointer; }
+.link-btn { background: none; border: 0; padding: 0; font: inherit; color: var(--accent-foreground); cursor: pointer; text-align: left; }
 .link-btn:hover { text-decoration: underline; }
 
 /* Fields */
@@ -239,12 +239,42 @@ pre.csv { font-family: var(--font-mono); font-size: 12px; background: var(--mute
 .status-bad { color: var(--hue-red); }
 .status-warn { color: var(--hue-amber); }
 
+/* Soft notice: a prompt, not an error */
+.notice {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 12px 28px; border-bottom: 1px solid var(--border);
+  background: color-mix(in oklab, var(--hue-amber) 7%, var(--card)); font-size: 13.5px;
+}
+.notice .grow { flex: 1; min-width: 200px; }
+.notice .badge { --h: var(--hue-amber); }
+
 /* Review: likely duplicate organisations, one row per group */
+.review { padding: 4px 28px 16px; background: color-mix(in oklab, var(--hue-amber) 4%, var(--card)); border-bottom: 1px solid var(--border); }
 .review-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; padding: 10px 0; border-top: 1px solid var(--border); }
-.review-row:last-child { padding-bottom: 0; }
 .review-names { flex: 1; min-width: 240px; font-size: 13.5px; }
 .review-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .review-actions .input { width: auto; padding: 5px 9px; font-size: 13px; }
+
+/* Bulk actions: appears when rows are ticked, right above the table */
+.bulk-bar { display: none; align-items: center; gap: 10px; padding: 10px 28px; border-bottom: 1px solid var(--border); background: var(--accent); color: var(--accent-foreground); font-size: 13.5px; font-weight: 500; }
+.bulk-bar.on { display: flex; }
+.bulk-bar .grow { flex: 1; }
+
+/* Picker: search a long list, or create something new */
+.picker .dialog { width: 480px; }
+.picker-list { max-height: 300px; overflow: auto; margin-top: 10px; border: 1px solid var(--border); border-radius: var(--radius); }
+.picker-item { display: block; width: 100%; text-align: left; font: inherit; background: var(--card); border: 0; border-bottom: 1px solid var(--border); padding: 9px 12px; cursor: pointer; }
+.picker-item:last-child { border-bottom: 0; }
+.picker-item:hover { background: color-mix(in oklab, var(--muted) 50%, var(--card)); }
+.picker-item .n { font-weight: 500; }
+.picker-item .e { display: block; color: var(--muted-foreground); font-size: 12.5px; }
+.picker-create { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+
+/* Organisation field on a contact: the current firm plus a button to change it */
+.org-field { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.org-field .org-field-name { font-size: 14px; }
+
+/* Collapsed form: just a heading until you need it */
+.collapsed-form { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 
 </style>
 </head>
@@ -758,7 +788,8 @@ window.CRM_SEED = (function () {
     return (
       '<tr class="click" data-href="#/contacts/' + c.id + '">' +
         '<td class="name-cell"><div class="n">' + esc(fullName(c)) + '</div><div class="e">' + esc(c.email || "No email") + "</div></td>" +
-        "<td>" + orgLink(c) + (c.organisationId && c.occupation ? '<div class="e">' + esc(c.occupation) + "</div>" : "") + "</td>" +
+        '<td class="name-cell">' + orgLink(c) + (c.organisationId && c.occupation ? '<div class="e">' + esc(c.occupation) + "</div>" : "") + "</td>" +
+        '<td><button class="link-btn small" data-action="pick-org-row" data-id="' + c.id + '">' + (c.organisationId ? "Change" : "Set") + "</button></td>" +
         "<td>" + tagBadges(c.tags) + "</td>" +
         '<td class="num">' + (shares ? fmtNum(shares) : '<span class="muted">–</span>') + "</td>" +
         '<td class="num">' + fmtDate(lastActivity(c)) + "</td>" +
@@ -770,7 +801,7 @@ window.CRM_SEED = (function () {
     if (!list.length) return '<div class="empty">No contacts match.</div>';
     return (
       '<div class="table-wrap"><table class="t"><thead><tr>' +
-        "<th>Name</th><th>Organisation</th><th>Tags</th><th class=\"num\">Shares</th><th class=\"num\">Last activity</th>" +
+        "<th>Name</th><th>Organisation</th><th></th><th>Tags</th><th class=\"num\">Shares</th><th class=\"num\">Last activity</th>" +
       "</tr></thead><tbody>" + list.map(contactRow).join("") + "</tbody></table></div>"
     );
   }
@@ -885,27 +916,151 @@ window.CRM_SEED = (function () {
     return '<ul class="rows">' + list.map(function (a) { return activityRow(a, "contact"); }).join("") + "</ul>";
   }
 
-  // The organisation dropdown used on the contact page and the add-contact dialog.
-  function orgSelect(name, selectedId) {
-    const opts = sortedOrgs().map(function (o) {
-      return '<option value="' + o.id + '"' + (o.id === selectedId ? " selected" : "") + ">" + esc(o.name) + "</option>";
-    }).join("");
+  // ---------------------------------------------------------------------------
+  // Picker: search a long list and choose one, or create something new.
+  // Used to choose a person's organisation and to add people to a firm.
+  // ---------------------------------------------------------------------------
+
+  let picker = null;
+
+  function openPicker(opts) {
+    closePicker();
+    const el = document.createElement("div");
+    el.className = "overlay picker";
+    el.innerHTML =
+      '<div class="dialog">' +
+        '<div class="dh"><h2>' + esc(opts.title) + "</h2></div>" +
+        '<div class="db">' +
+          '<input class="input" id="picker-search" placeholder="' + esc(opts.placeholder || "Search") + '" autocomplete="off">' +
+          '<div class="picker-list" id="picker-list"></div>' +
+          (opts.create ?
+            '<form data-form="picker-create" class="picker-create">' +
+              '<div class="eyebrow" style="margin-bottom:6px">' + esc(opts.create.label) + "</div>" +
+              '<div class="row" style="gap:8px"><input class="input" name="name" placeholder="' + esc(opts.create.placeholder || "") + '" required>' +
+              '<button class="btn primary" type="submit" style="flex:0">' + esc(opts.create.button) + "</button></div>" +
+              (opts.create.help ? '<div class="help" style="margin-top:6px">' + esc(opts.create.help) + "</div>" : "") +
+            "</form>" : "") +
+        "</div>" +
+        '<div class="df"><button class="btn" type="button" data-action="close-picker">Cancel</button></div>' +
+      "</div>";
+    document.body.appendChild(el);
+    picker = opts;
+    renderPickerList("");
+    el.querySelector("#picker-search").focus();
+  }
+
+  function renderPickerList(q) {
+    const list = document.getElementById("picker-list");
+    if (!list || !picker) return;
+    q = q.trim().toLowerCase();
+    const items = picker.items.filter(function (i) { return !q || (i.label + " " + (i.sub || "")).toLowerCase().indexOf(q) > -1; });
+    const shown = items.slice(0, 50);
+    list.innerHTML = shown.length ? shown.map(function (i) {
+      return '<button type="button" class="picker-item" data-action="pick" data-id="' + i.id + '"><span class="n">' + esc(i.label) + "</span>" +
+        (i.sub ? '<span class="e">' + esc(i.sub) + "</span>" : "") + "</button>";
+    }).join("") + (items.length > shown.length ? '<div class="muted small" style="padding:8px 12px">' + (items.length - shown.length) + " more. Keep typing to narrow it down.</div>" : "")
+      : '<div class="muted small" style="padding:10px 12px">Nothing matches.</div>';
+  }
+
+  function closePicker() {
+    const el = document.querySelector(".overlay.picker");
+    if (el) el.remove();
+    picker = null;
+  }
+
+  function orgPickerItems(excludeId) {
+    return sortedOrgs().filter(function (o) { return o.id !== excludeId; }).map(function (o) {
+      const n = membersOf(o.id).length;
+      return { id: o.id, label: o.name, sub: (n ? n + (n === 1 ? " person" : " people") : "Nobody yet") + ((o.aliases || []).length ? " · also " + o.aliases.join(", ") : "") };
+    });
+  }
+
+  // Choose an organisation for a form (contact edit, add contact). The choice lands in
+  // hidden inputs; a brand-new firm is only created when the form is saved.
+  function pickOrgForField(field) {
+    const current = field.querySelector('input[name="organisationId"]').value;
+    openPicker({
+      title: "Choose an organisation",
+      placeholder: "Search organisations",
+      items: orgPickerItems(),
+      onPick: function (id) { setOrgField(field, id, orgById(id).name, false); },
+      create: {
+        label: "Not there yet?", placeholder: "Name of the new organisation", button: "Create",
+        help: "A name is enough. It's created when you save.",
+        onSubmit: function (name) {
+          const existing = findOrgByName(state, name);
+          if (existing) setOrgField(field, existing.id, existing.name, false);
+          else setOrgField(field, "__new", name, true);
+        }
+      }
+    });
+  }
+
+  function setOrgField(field, id, name, isNew) {
+    field.querySelector('input[name="organisationId"]').value = id || "";
+    field.querySelector('input[name="newOrganisation"]').value = isNew ? name : "";
+    field.querySelector(".org-field-name").innerHTML = id ? esc(name) + (isNew ? ' <span class="badge green">new</span>' : "") : '<span class="muted">None</span>';
+    field.querySelector('[data-action="pick-org"]').textContent = id ? "Change" : "Choose";
+    field.querySelector('[data-action="clear-org"]').style.display = id ? "" : "none";
+  }
+
+  function orgField(selectedId) {
+    const o = selectedId ? orgById(selectedId) : null;
     return (
-      '<select class="input" name="' + name + '" data-change="org-select">' +
-        '<option value=""' + (!selectedId ? " selected" : "") + ">No organisation</option>" + opts +
-        '<option value="__new">Create a new organisation…</option>' +
-      "</select>" +
-      '<input class="input" name="newOrganisation" placeholder="Name of the new organisation" style="display:none;margin-top:6px">'
+      '<div class="org-field">' +
+        '<input type="hidden" name="organisationId" value="' + (o ? o.id : "") + '"><input type="hidden" name="newOrganisation" value="">' +
+        '<span class="org-field-name">' + (o ? esc(o.name) : '<span class="muted">None</span>') + "</span>" +
+        '<button type="button" class="btn sm" data-action="pick-org">' + (o ? "Change" : "Choose") + "</button>" +
+        '<button type="button" class="btn ghost sm" data-action="clear-org"' + (o ? "" : ' style="display:none"') + ">Remove</button>" +
+      "</div>"
     );
   }
 
-  // Read the dropdown (plus the new-name box) back into an organisation id.
+  // Read the field back into an organisation id, creating a new firm if one was named.
   function orgIdFromForm(data) {
     if (data.organisationId === "__new") {
       const name = (data.newOrganisation || "").trim();
       return name ? findOrCreateOrg(state, name).id : null;
     }
     return data.organisationId || null;
+  }
+
+  // Set a person's organisation straight from a list row or a firm's page.
+  function pickOrgForContact(c, after) {
+    openPicker({
+      title: "Organisation for " + fullName(c),
+      placeholder: "Search organisations",
+      items: orgPickerItems(c.organisationId),
+      onPick: function (id) { setOrganisation(c, id); save(); after(); toast(fullName(c) + " added to " + orgById(id).name); },
+      create: {
+        label: "Not there yet?", placeholder: "Name of the new organisation", button: "Create and add",
+        onSubmit: function (name) { const o = findOrCreateOrg(state, name); setOrganisation(c, o.id); save(); after(); toast(fullName(c) + " added to " + o.name); }
+      }
+    });
+  }
+
+  // Add a person to a firm: an existing contact, or someone new.
+  function pickPersonForOrg(o) {
+    const items = state.contacts.filter(function (c) { return c.organisationId !== o.id && c.lastName !== ""; })
+      .sort(function (a, b) { return fullName(a).localeCompare(fullName(b)); })
+      .map(function (c) { return { id: c.id, label: fullName(c), sub: [c.occupation, orgName(c), c.email].filter(Boolean).join(" · ") }; });
+    openPicker({
+      title: "Add a person to " + o.name,
+      placeholder: "Search contacts",
+      items: items,
+      onPick: function (id) { const c = contactById(id); setOrganisation(c, o.id); save(); render(); toast(fullName(c) + " added"); },
+      create: {
+        label: "Someone new?", placeholder: "Their name", button: "Add new",
+        help: "Opens the add-contact form with " + o.name + " already filled in.",
+        onSubmit: function (name) {
+          closePicker();
+          openAddContact(o.id);
+          const parts = name.trim().split(/\s+/);
+          const f = document.querySelector('form[data-form="add-contact"]');
+          if (f) { f.querySelector('[name="firstName"]').value = parts[0] || ""; f.querySelector('[name="lastName"]').value = parts.slice(1).join(" "); f.querySelector('[name="email"]').focus(); }
+        }
+      }
+    });
   }
 
   function logForm() {
@@ -931,7 +1086,7 @@ window.CRM_SEED = (function () {
           '<div class="field"><label>Last name</label><input class="input" name="lastName" value="' + esc(c.lastName) + '"></div></div>' +
           '<div class="field"><label>Email</label><input class="input" name="email" value="' + esc(c.email) + '"></div>' +
           '<div class="field"><label>Phone</label><input class="input" name="phone" value="' + esc(c.phone) + '"></div>' +
-          '<div class="field"><label>Organisation</label>' + orgSelect("organisationId", c.organisationId) + "</div>" +
+          '<div class="field"><label>Organisation</label>' + orgField(c.organisationId) + "</div>" +
           '<div class="field"><label>Role</label><input class="input" name="occupation" value="' + esc(c.occupation) + '" placeholder="Portfolio manager, analyst, broker…"></div>' +
           '<div class="actions" style="justify-content:flex-end"><button class="btn" type="button" data-action="cancel-edit">Cancel</button><button class="btn primary" type="submit">Save</button></div>' +
         "</form>"
@@ -941,7 +1096,7 @@ window.CRM_SEED = (function () {
       '<div class="section"><div class="eyebrow">Details</div><div class="kv">' +
         '<div class="k">Email</div><div class="v">' + (c.email ? esc(c.email) : '<span class="muted">None</span>') + "</div>" +
         '<div class="k">Phone</div><div class="v mono">' + (c.phone ? esc(c.phone) : '<span class="muted">–</span>') + "</div>" +
-        '<div class="k">Organisation</div><div class="v">' + orgLink(c) + "</div>" +
+        '<div class="k">Organisation</div><div class="v">' + orgLink(c) + ' <button class="link-btn small muted" data-action="pick-org-row" data-id="' + c.id + '">' + (c.organisationId ? "Change" : "Set") + "</button></div>" +
         '<div class="k">Role</div><div class="v">' + (c.occupation ? esc(c.occupation) : '<span class="muted">–</span>') + "</div>" +
         '<div class="k">Investor website</div><div class="v">' + (c.hub ? "Signed up " + fmtDate(c.hub) : '<span class="muted">Not signed up</span>') + "</div>" +
       "</div></div>"
@@ -1018,7 +1173,7 @@ window.CRM_SEED = (function () {
           '<div class="field"><label>Last name</label><input class="input" name="lastName"></div></div>' +
           '<div class="field"><label>Email</label><input class="input" name="email" type="email"><div class="help">Email links notes, emails and holdings to this contact.</div></div>' +
           '<div class="field"><label>Phone</label><input class="input" name="phone"></div>' +
-          '<div class="field"><label>Organisation</label>' + orgSelect("organisationId", orgId || null) + "</div>" +
+          '<div class="field"><label>Organisation</label>' + orgField(orgId || null) + "</div>" +
           '<div class="field"><label>Role</label><input class="input" name="occupation" placeholder="Portfolio manager, analyst, broker…"></div>' +
           '<div class="field"><label>Tags</label><input class="input" name="tags" placeholder="Separate tags with commas"></div>' +
         "</div>" +
@@ -1034,10 +1189,20 @@ window.CRM_SEED = (function () {
 
   const orgListFilter = { text: "" };
   const orgSelection = [];
+  let reviewOpen = false;
 
   function reviewSection() {
     const groups = suggestedMerges();
     if (!groups.length) return "";
+    const n = groups.length;
+    const notice =
+      '<div class="notice">' +
+        '<span class="badge"><span class="dot"></span>' + n + (n === 1 ? " likely duplicate" : " likely duplicates") + "</span>" +
+        '<span class="grow">' + (reviewOpen ? "Pick the name to keep for each group. Nothing is merged until you click Merge." :
+          "Created from the old company field; they look like the same firm. Nothing is merged until you say so.") + "</span>" +
+        '<button class="btn sm" data-action="toggle-review">' + (reviewOpen ? "Hide" : "Review") + "</button>" +
+      "</div>";
+    if (!reviewOpen) return notice;
     const rows = groups.map(function (g) {
       const opts = g.orgs.map(function (o, i) {
         return '<option value="' + o.id + '"' + (i === 0 ? " selected" : "") + ">" + esc(o.name) + " (" + membersOf(o.id).length + ")</option>";
@@ -1057,12 +1222,34 @@ window.CRM_SEED = (function () {
       );
     }).join("");
     return (
-      '<div class="section" style="background:var(--muted)">' +
-        '<div class="eyebrow">Review · ' + groups.length + (groups.length === 1 ? " likely duplicate" : " likely duplicates") + "</div>" +
-        '<div class="small muted" style="margin-bottom:10px">These were created from the old company field and look like the same firm. Nothing is merged until you say so. Merging moves everyone and everything across, and keeps the other spellings so later imports land in the right place.</div>' +
+      notice +
+      '<div class="review">' +
         rows +
+        '<div class="small muted" style="margin-top:10px">Merging moves everyone and everything across, and keeps the other spellings as "also known as" so later imports land in the right place.</div>' +
       "</div>"
     );
+  }
+
+  function bulkBar() {
+    const n = orgSelection.length;
+    return (
+      '<div class="bulk-bar' + (n ? " on" : "") + '" id="bulk-bar">' +
+        '<span id="bulk-count">' + n + " selected</span>" +
+        '<span class="grow"></span>' +
+        '<button class="btn sm" data-action="merge-selected"' + (n < 2 ? " disabled" : "") + ">Merge</button>" +
+        '<button class="btn sm" data-action="not-a-firm-selected">Not a firm</button>' +
+        '<button class="btn ghost sm" data-action="clear-selection">Clear</button>' +
+      "</div>"
+    );
+  }
+
+  function updateBulkBar() {
+    const bar = document.getElementById("bulk-bar");
+    if (!bar) return;
+    const n = orgSelection.length;
+    bar.classList.toggle("on", n > 0);
+    document.getElementById("bulk-count").textContent = n + " selected";
+    bar.querySelector('[data-action="merge-selected"]').disabled = n < 2;
   }
 
   function orgRow(o) {
@@ -1090,8 +1277,7 @@ window.CRM_SEED = (function () {
     setTimeout(function () {
       const el = document.getElementById("org-count");
       if (el) el.textContent = list.length + " shown";
-      const btn = document.getElementById("merge-selected");
-      if (btn) btn.disabled = orgSelection.length < 2;
+      updateBulkBar();
     });
     if (!list.length) return '<div class="empty">No organisations match.</div>';
     return (
@@ -1111,7 +1297,6 @@ window.CRM_SEED = (function () {
     };
     return layout("organisations",
       head("CRM", "Organisations", "The firms " + esc(state.company.name) + " deals with: fund managers, brokers and super funds, each with its people",
-        '<button class="btn" id="merge-selected" data-action="merge-selected" disabled>Merge selected</button>' +
         '<button class="btn primary" data-action="add-org">New organisation</button>') +
       stats([
         ["Organisations", fmtNum(orgs.length)],
@@ -1121,9 +1306,10 @@ window.CRM_SEED = (function () {
       ]) +
       reviewSection() +
       '<div class="toolbar">' +
-        '<input id="org-filter" class="input grow" placeholder="Filter by organisation or person" value="' + esc(orgListFilter.text) + '">' +
+        '<input id="org-filter" class="input grow" placeholder="Filter by organisation, or by a person to find their firm" value="' + esc(orgListFilter.text) + '">' +
         '<span class="muted small" id="org-count"></span>' +
       "</div>" +
+      bulkBar() +
       '<div id="org-rows">' + orgRowsHtml() + "</div>"
     );
   }
@@ -1168,16 +1354,25 @@ window.CRM_SEED = (function () {
   // ---------------------------------------------------------------------------
 
   let editingOrg = false;
+  let meetingOpen = false;
 
   function orgMeetingForm(o) {
     const members = membersOf(o.id);
+    if (!meetingOpen) {
+      return (
+        '<div class="section collapsed-form">' +
+          '<div><div class="eyebrow">Log a meeting once</div><div class="small muted">Tick who was there; it shows on each of them and here.</div></div>' +
+          '<button class="btn sm" data-action="focus-log">Log meeting</button>' +
+        "</div>"
+      );
+    }
     const checks = members.length ? members.map(function (c) {
       return '<label class="check"><input type="checkbox" name="attendee" value="' + c.id + '"> ' + esc(fullName(c)) +
         (c.occupation ? ' <span class="muted small">' + esc(c.occupation) + "</span>" : "") + "</label>";
     }).join("") : '<div class="muted small">Add people to ' + esc(o.name) + " first, then tick who came.</div>";
     return (
       '<form data-form="log-meeting" data-org="' + o.id + '" class="section">' +
-        '<div class="eyebrow">Log a meeting once</div>' +
+        '<div class="collapsed-form" style="margin-bottom:10px"><div class="eyebrow">Log a meeting once</div><button class="btn ghost sm" type="button" data-action="close-log">Cancel</button></div>' +
         '<div class="row">' +
           '<div class="field"><label>Type</label><select class="input" name="type"><option value="meeting">Meeting</option><option value="call">Call</option><option value="note">Note</option></select></div>' +
           '<div class="field"><label>Date</label><input class="input mono" type="date" name="date" value="' + todayIso() + '"></div>' +
@@ -1197,24 +1392,16 @@ window.CRM_SEED = (function () {
 
   function orgPeopleSection(o) {
     const members = membersOf(o.id);
-    const free = state.contacts.filter(function (c) { return c.organisationId !== o.id && c.firstName && c.lastName !== ""; })
-      .sort(function (a, b) { return fullName(a).localeCompare(fullName(b)); });
     return (
-      '<div class="section"><div class="eyebrow">People · ' + members.length + "</div>" +
+      '<div class="section"><div class="collapsed-form" style="margin-bottom:10px"><div class="eyebrow">People · ' + members.length + "</div>" +
+        '<button class="btn sm" data-action="add-person" data-id="' + o.id + '">Add a person</button></div>' +
         (members.length ? members.map(function (c) {
           return '<div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline;margin-bottom:9px">' +
             '<div><a href="#/contacts/' + c.id + '">' + esc(fullName(c)) + "</a>" +
               '<div class="small muted">' + (c.occupation ? esc(c.occupation) : "Role not set") + "</div></div>" +
             '<button class="link-btn small muted" data-action="remove-member" data-id="' + c.id + '" title="Remove from ' + esc(o.name) + '">Remove</button>' +
           "</div>";
-        }).join("") : '<div class="muted small" style="margin-bottom:10px">Nobody yet.</div>') +
-        '<form data-form="add-member" data-org="' + o.id + '" class="row" style="gap:8px;margin-top:6px">' +
-          '<select class="input" name="contactId"><option value="">Add an existing contact…</option>' +
-            free.map(function (c) { return '<option value="' + c.id + '">' + esc(fullName(c)) + (orgName(c) ? " · " + esc(orgName(c)) : "") + "</option>"; }).join("") +
-          "</select>" +
-          '<button class="btn" type="submit" style="flex:0">Add</button>' +
-        "</form>" +
-        '<div style="margin-top:8px"><button class="link-btn small" data-action="add-contact" data-org="' + o.id + '">or add someone new</button></div>' +
+        }).join("") : '<div class="muted small">Nobody yet. Add an existing contact, or someone new.</div>') +
       "</div>"
     );
   }
@@ -1224,7 +1411,8 @@ window.CRM_SEED = (function () {
       return (
         '<form class="section" data-form="edit-org" data-id="' + o.id + '">' +
           '<div class="eyebrow">Details</div>' +
-          '<div class="field"><label>Name</label><input class="input" name="name" value="' + esc(o.name) + '" required></div>' +
+          '<div class="field"><label>Name</label><input class="input" name="name" value="' + esc(o.name) + '" required>' +
+            '<div class="help">This becomes the name everyone sees. The old name is kept under "also known as", and every person, meeting and note stays attached.</div></div>' +
           '<div class="actions" style="justify-content:flex-end"><button class="btn" type="button" data-action="cancel-edit-org">Cancel</button><button class="btn primary" type="submit">Save</button></div>' +
         "</form>"
       );
@@ -1234,11 +1422,26 @@ window.CRM_SEED = (function () {
         '<div class="k">Name</div><div class="v">' + esc(o.name) + "</div>" +
         '<div class="k">Also known as</div><div class="v">' + ((o.aliases || []).length ? esc(o.aliases.join(", ")) : '<span class="muted">–</span>') + "</div>" +
       "</div>" +
-      '<div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap">' +
+      '<div style="margin-top:12px;display:flex;flex-direction:column;gap:8px;align-items:flex-start">' +
         '<button class="link-btn small" data-action="edit-org">Rename</button>' +
+        '<button class="link-btn small" data-action="download-org-template" data-id="' + o.id + '">Download an import template for ' + esc(o.name) + "</button>" +
         '<button class="link-btn small muted" data-action="not-a-firm" data-id="' + o.id + '">Not a firm: remove it, keep the people</button>' +
       "</div></div>"
     );
+  }
+
+  // A CSV template with the firm's name already in the company column, so a file
+  // Josh fills in for Larkspur comes back to Larkspur.
+  function downloadOrgTemplate(o) {
+    const q = function (v) { return '"' + String(v).replace(/"/g, '""') + '"'; };
+    const rows = [TEMPLATE_COLUMNS.join(",")];
+    for (let i = 0; i < 5; i++) rows.push(["", "", "", "", q(o.name), "", ""].join(","));
+    const blob = new Blob([rows.join("\n") + "\n"], { type: "text/csv" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "contacts-" + o.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") + ".csv";
+    a.click();
+    toast("Template for " + o.name + " downloaded");
   }
 
   function organisationPage(id) {
@@ -1250,7 +1453,7 @@ window.CRM_SEED = (function () {
       head("Organisation", o.name,
         ((o.aliases || []).length ? "Also known as " + esc(o.aliases.join(", ")) + " · " : "") + members.length + (members.length === 1 ? " person" : " people"),
         '<a class="btn" href="#/organisations">Back to organisations</a>' +
-        '<button class="btn" data-action="add-contact" data-org="' + o.id + '">Add a person</button>' +
+        '<button class="btn" data-action="add-person" data-id="' + o.id + '">Add a person</button>' +
         '<button class="btn primary" data-action="focus-log">Log meeting</button>') +
       stats([
         ["People", fmtNum(members.length)],
@@ -1594,7 +1797,30 @@ window.CRM_SEED = (function () {
         removeOrg(id); save(); location.hash = "#/organisations"; toast(o.name + " removed");
       }
     }
-    else if (action === "focus-log") { const el = document.getElementById("log-text"); if (el) { el.focus(); el.scrollIntoView({ block: "center" }); } }
+    else if (action === "focus-log") {
+      // On a firm's page the form is collapsed until asked for.
+      if (!meetingOpen && document.querySelector(".collapsed-form")) { meetingOpen = true; render(); }
+      const el = document.getElementById("log-text"); if (el) { el.focus(); el.scrollIntoView({ block: "center" }); }
+    }
+    else if (action === "close-log") { meetingOpen = false; render(); }
+    else if (action === "toggle-review") { reviewOpen = !reviewOpen; render(); }
+    else if (action === "clear-selection") { orgSelection.length = 0; render(); }
+    else if (action === "not-a-firm-selected") {
+      const names = orgSelection.map(function (x) { return orgById(x) ? orgById(x).name : null; }).filter(Boolean);
+      if (names.length && confirm("Remove " + names.join(", ") + " as organisations? Their people stay in the CRM with no organisation.")) {
+        orgSelection.slice().forEach(removeOrg); orgSelection.length = 0; save(); render(); toast(names.length + " removed");
+      }
+    }
+    else if (action === "pick") { const p = picker; closePicker(); if (p) p.onPick(id); }
+    else if (action === "close-picker") closePicker();
+    else if (action === "pick-org") pickOrgForField(btn.closest(".org-field"));
+    else if (action === "clear-org") setOrgField(btn.closest(".org-field"), "", "", false);
+    else if (action === "pick-org-row") {
+      const c = contactById(id);
+      if (c) pickOrgForContact(c, function () { if (document.getElementById("contact-rows")) refreshContactRows(); else render(); });
+    }
+    else if (action === "add-person") { const o = orgById(id); if (o) pickPersonForOrg(o); }
+    else if (action === "download-org-template") { const o = orgById(id); if (o) downloadOrgTemplate(o); }
     else if (action === "remove-tag") {
       const c = contactById(id);
       c.tags = c.tags.filter(function (x) { return x !== btn.getAttribute("data-tag"); });
@@ -1623,13 +1849,7 @@ window.CRM_SEED = (function () {
     else if (kind === "org-check") {
       const i = orgSelection.indexOf(t.value);
       if (t.checked && i === -1) orgSelection.push(t.value); else if (!t.checked && i > -1) orgSelection.splice(i, 1);
-      const btn = document.getElementById("merge-selected");
-      if (btn) btn.disabled = orgSelection.length < 2;
-    }
-    else if (kind === "org-select") {
-      // "Create a new organisation…" reveals the name box next to the dropdown.
-      const box = t.parentNode.querySelector('input[name="newOrganisation"]');
-      if (box) { box.style.display = t.value === "__new" ? "" : "none"; if (t.value === "__new") box.focus(); }
+      updateBulkBar();
     }
     else if (kind === "draft-kind") { keepDraftText(); draft.kind = t.value; render(); }
     else if (kind === "draft-tag") {
@@ -1644,6 +1864,7 @@ window.CRM_SEED = (function () {
   });
 
   document.addEventListener("input", function (ev) {
+    if (ev.target.id === "picker-search") { renderPickerList(ev.target.value); return; }
     if (ev.target.id === "people-filter") {
       const q = ev.target.value.toLowerCase();
       document.querySelectorAll("[data-person]").forEach(function (el) {
@@ -1698,12 +1919,13 @@ window.CRM_SEED = (function () {
       if (!data.text.trim()) { toast("Write what happened first"); return; }
       const attendees = Array.from(f.querySelectorAll('input[name="attendee"]:checked')).map(function (el) { return el.value; });
       state.activities.push({ id: uid("a"), orgId: f.getAttribute("data-org"), attendeeIds: attendees, type: data.type, date: data.date || todayIso(), author: state.currentUser, text: data.text.trim() });
+      meetingOpen = false;
       save(); render();
       toast(attendees.length ? "Logged once, shown on " + attendees.length + (attendees.length === 1 ? " person" : " people") : "Logged on the organisation");
-    } else if (kind === "add-member") {
-      const c = contactById(data.contactId);
-      if (!c) { toast("Choose a person first"); return; }
-      setOrganisation(c, f.getAttribute("data-org")); save(); render(); toast(fullName(c) + " added");
+    } else if (kind === "picker-create") {
+      const p = picker; const name = (data.name || "").trim();
+      if (!p || !name) return;
+      if (p.create.onSubmit !== undefined) { if (picker) closePicker(); p.create.onSubmit(name); }
     } else if (kind === "add-org") {
       const name = (data.name || "").trim();
       if (!name) return;
@@ -1728,7 +1950,7 @@ window.CRM_SEED = (function () {
     }
   });
 
-  window.addEventListener("hashchange", function () { editingDetails = false; editingOrg = false; render(); });
+  window.addEventListener("hashchange", function () { editingDetails = false; editingOrg = false; meetingOpen = false; closePicker(); render(); });
 
   render();
 })();

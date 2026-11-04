@@ -1,0 +1,1960 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Corella Finance CRM · Branch: organisations (reviewed)</title>
+  <style>
+/* Embedded fonts: Momo Trust Sans and DM Mono. Generated file, no need to edit. */
+@font-face{font-family:"Momo Trust Sans";font-weight:400;font-style:normal;font-display:block;src:url(FONTDATA) format("woff2");}
+@font-face{font-family:"Momo Trust Sans";font-weight:500;font-style:normal;font-display:block;src:url(FONTDATA) format("woff2");}
+@font-face{font-family:"DM Mono";font-weight:400;font-style:normal;font-display:block;src:url(FONTDATA) format("woff2");}
+@font-face{font-family:"DM Mono";font-weight:500;font-style:normal;font-display:block;src:url(FONTDATA) format("woff2");}
+
+</style>
+  <style>
+/* Ivy design tokens (Parchment) and the components this mock uses. */
+
+:root {
+  --font-sans: "Momo Trust Sans", "Inter", "Segoe UI Variable Text", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "DM Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --radius: 0.625rem;
+  --background: #F9F6F0;
+  --card: #FEFDFA;
+  --foreground: #2C281F;
+  --muted: #F2EDE2;
+  --muted-foreground: #575143;
+  --secondary: #F2EDE2;
+  --accent: #E9F3EC;
+  --accent-foreground: #075A4C;
+  --primary: #0A7D6A;
+  --primary-foreground: #F7F4EC;
+  --destructive: #B52A1E;
+  --ring: #075A4C;
+  --border: #EBE6DB;
+  --input: #DDD7C9;
+
+  --hue-green: #0A7D6A;
+  --hue-blue: #1F52D0;
+  --hue-violet: #6B30CF;
+  --hue-amber: #8A6800;
+  --hue-orange: #B8460A;
+  --hue-rose: #B31E57;
+  --hue-red: #B52A1E;
+  --hue-gray: #6D6759;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.45;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+}
+b, strong, th, h1, h2, h3, h4 { font-weight: 500; }
+a { color: var(--accent-foreground); text-decoration: none; }
+a:hover { text-decoration: underline; }
+:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+.muted { color: var(--muted-foreground); }
+.small { font-size: 13px; }
+.caption { font-size: 12px; }
+.eyebrow {
+  font-family: var(--font-mono); font-size: 11.5px; font-weight: 500; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--muted-foreground);
+}
+
+/* Top navigation: no fill, melts into the ground */
+.nav {
+  display: flex; align-items: center; gap: 24px;
+  max-width: 1240px; margin: 0 auto; padding: 14px 24px;
+}
+.chip-company {
+  display: flex; align-items: center; gap: 10px; padding: 6px 12px 6px 6px;
+  border: 1px solid var(--border); border-radius: 9999px; background: var(--card);
+  font-size: 13px; font-weight: 500; white-space: nowrap;
+}
+.chip-company .logo {
+  width: 24px; height: 24px; border-radius: 9999px; background: var(--accent);
+  color: var(--accent-foreground); display: grid; place-items: center; font-size: 11px;
+}
+.nav-links { display: flex; gap: 22px; flex: 1; justify-content: center; }
+.nav-links a { color: var(--muted-foreground); font-size: 13.5px; font-weight: 500; }
+.nav-links a:hover { color: var(--foreground); text-decoration: none; }
+.nav-links a.active { color: var(--foreground); }
+.nav-right { display: flex; align-items: center; gap: 10px; }
+.nav-search { width: 220px; }
+.avatar {
+  width: 30px; height: 30px; border-radius: 9999px; background: var(--secondary);
+  color: var(--muted-foreground); display: grid; place-items: center; font-size: 12px; font-weight: 500;
+}
+
+/* The one page card */
+.page { max-width: 1240px; margin: 0 auto; padding: 0 24px 40px; }
+.card {
+  background: var(--card); border: 1px solid var(--border); border-radius: calc(var(--radius) + 4px);
+  box-shadow: 0 1px 2px rgba(44, 40, 31, 0.04), 0 8px 24px rgba(44, 40, 31, 0.04);
+  overflow: hidden;
+}
+.card-head {
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 16px;
+  padding: 22px 28px 18px; border-bottom: 1px solid var(--border);
+}
+.card-head h1 { font-size: 26px; line-height: 1.2; margin: 4px 0 2px; letter-spacing: -0.01em; }
+.card-head .sub { color: var(--muted-foreground); font-size: 13.5px; }
+.actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+.section { padding: 20px 28px; border-bottom: 1px solid var(--border); }
+.section:last-child { border-bottom: 0; }
+.section > .eyebrow { margin-bottom: 12px; }
+.section h3 { font-size: 17px; margin: 0 0 4px; }
+
+/* Stat strip: figures divided by vertical hairlines */
+.stats { display: flex; border-bottom: 1px solid var(--border); }
+.stat { flex: 1; padding: 16px 28px; border-right: 1px solid var(--border); }
+.stat:last-child { border-right: 0; }
+.stat .value { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 24px; font-weight: 500; margin-top: 4px; letter-spacing: -0.02em; }
+
+/* Split: main column and a ruled context rail */
+.split { display: grid; grid-template-columns: minmax(0, 1fr) 340px; }
+.split > .main { border-right: 1px solid var(--border); min-width: 0; }
+.rail .section { padding: 18px 22px; }
+.kv { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 8px 12px; align-items: baseline; }
+.kv .k { color: var(--muted-foreground); font-size: 13px; }
+.kv .v { overflow-wrap: anywhere; }
+
+/* Buttons */
+.btn {
+  font: inherit; font-size: 13.5px; font-weight: 500; border-radius: var(--radius);
+  padding: 7px 14px; border: 1px solid var(--border); background: var(--card); color: var(--foreground);
+  cursor: pointer; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;
+}
+.btn:hover { border-color: var(--input); background: color-mix(in oklab, var(--muted) 50%, var(--card)); }
+.btn:active { transform: translateY(1px); }
+.btn.primary { background: var(--primary); color: var(--primary-foreground); border-color: var(--primary); }
+.btn.primary:hover { background: color-mix(in oklab, var(--primary) 88%, black); }
+.btn.neon { background: var(--accent); color: var(--accent-foreground); border-color: var(--accent); }
+.btn.ghost { background: transparent; border-color: transparent; color: var(--muted-foreground); }
+.btn.ghost:hover { color: var(--foreground); background: var(--muted); }
+.btn.sm { padding: 4px 10px; font-size: 12.5px; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.link-btn { background: none; border: 0; padding: 0; font: inherit; color: var(--accent-foreground); cursor: pointer; text-align: left; }
+.link-btn:hover { text-decoration: underline; }
+
+/* Fields */
+.field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.field label { font-size: 13px; font-weight: 500; }
+.field .help { font-size: 12px; color: var(--muted-foreground); }
+.input, select.input, textarea.input {
+  font: inherit; font-size: 14px; color: var(--foreground); background: var(--card);
+  border: 1px solid var(--input); border-radius: var(--radius); padding: 8px 11px; width: 100%;
+}
+textarea.input { min-height: 90px; resize: vertical; }
+.input::placeholder { color: var(--muted-foreground); }
+.input:focus { outline: 2px solid var(--ring); outline-offset: 0; border-color: var(--ring); }
+.row { display: flex; gap: 12px; }
+.row > * { flex: 1; }
+.check { display: flex; align-items: center; gap: 8px; font-size: 14px; margin: 6px 0; cursor: pointer; }
+.check input { accent-color: var(--primary); width: 16px; height: 16px; }
+
+/* Tables */
+.table-wrap { overflow-x: auto; }
+table.t { width: 100%; border-collapse: collapse; }
+table.t th {
+  background: var(--muted); font-family: var(--font-mono); font-size: 11px; font-weight: 500;
+  letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted-foreground);
+  text-align: left; padding: 9px 14px; border-bottom: 1px solid var(--border); white-space: nowrap;
+}
+table.t th.num { text-align: right; }
+table.t td { padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+table.t tr:last-child td { border-bottom: 0; }
+table.t tr.click { cursor: pointer; }
+table.t tr.click:hover td { background: color-mix(in oklab, var(--muted) 45%, var(--card)); }
+table.t td:first-child, table.t th:first-child { padding-left: 28px; }
+table.t td:last-child, table.t th:last-child { padding-right: 28px; }
+.name-cell .n { font-weight: 500; }
+.name-cell .e { color: var(--muted-foreground); font-size: 12.5px; }
+
+/* Full-bleed rows (activity) */
+.rows { list-style: none; margin: 0; padding: 0; }
+.rows li { padding: 14px 28px; border-bottom: 1px solid var(--border); display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 14px; }
+.rows li:last-child { border-bottom: 0; }
+.rows .when { font-family: var(--font-mono); font-size: 12px; color: var(--muted-foreground); padding-top: 2px; }
+.rows .what { font-size: 14px; }
+.rows .meta { font-size: 12.5px; color: var(--muted-foreground); margin-top: 3px; }
+.rows .title { font-weight: 500; }
+.empty { padding: 28px; color: var(--muted-foreground); }
+
+/* Badges: tone recipe against a hue */
+.badge {
+  display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 500;
+  padding: 1px 9px; border-radius: 9999px; white-space: nowrap; line-height: 1.6;
+  --h: var(--hue-gray);
+  background: color-mix(in oklab, var(--h) 12%, var(--card));
+  border: 1px solid color-mix(in oklab, var(--h) 30%, var(--card));
+  color: var(--h);
+}
+.badge.green { --h: var(--hue-green); }
+.badge.blue { --h: var(--hue-blue); }
+.badge.violet { --h: var(--hue-violet); }
+.badge.amber { --h: var(--hue-amber); }
+.badge.orange { --h: var(--hue-orange); }
+.badge.rose { --h: var(--hue-rose); }
+.badge .x { cursor: pointer; opacity: 0.7; margin-left: 2px; }
+.badge .x:hover { opacity: 1; }
+.tags { display: flex; flex-wrap: wrap; gap: 4px; }
+.dot { width: 7px; height: 7px; border-radius: 9999px; background: var(--h); display: inline-block; }
+
+/* Well: recessed panel */
+.well { background: var(--muted); border-radius: var(--radius); padding: 14px 16px; font-size: 13.5px; }
+.well.accent { background: var(--accent); color: var(--accent-foreground); }
+
+/* Toolbar above a table */
+.toolbar { display: flex; gap: 10px; align-items: center; padding: 14px 28px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+.toolbar .input { width: auto; }
+.toolbar .grow { flex: 1; min-width: 200px; }
+
+/* Dialog */
+.overlay { position: fixed; inset: 0; background: rgba(44, 40, 31, 0.28); display: grid; place-items: center; z-index: 50; padding: 20px; }
+.dialog { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); width: 520px; max-width: 100%; max-height: 90vh; overflow: auto; box-shadow: 0 16px 48px rgba(44, 40, 31, 0.18); }
+.dialog .dh { padding: 18px 22px 0; }
+.dialog .dh h2 { font-size: 17px; margin: 0; }
+.dialog .db { padding: 16px 22px 4px; }
+.dialog .df { padding: 12px 22px 18px; display: flex; justify-content: flex-end; gap: 8px; }
+
+/* Version badge and footer */
+.version { font-size: 12px; }
+.foot { max-width: 1240px; margin: 0 auto; padding: 0 24px 30px; display: flex; justify-content: space-between; color: var(--muted-foreground); font-size: 12px; }
+.toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--foreground); color: var(--card); padding: 9px 16px; border-radius: var(--radius); font-size: 13px; z-index: 60; }
+
+pre.csv { font-family: var(--font-mono); font-size: 12px; background: var(--muted); border-radius: var(--radius); padding: 12px 14px; overflow-x: auto; margin: 0; }
+.status-ok { color: var(--hue-green); }
+.status-bad { color: var(--hue-red); }
+.status-warn { color: var(--hue-amber); }
+
+/* Soft notice: a prompt, not an error */
+.notice {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 12px 28px; border-bottom: 1px solid var(--border);
+  background: color-mix(in oklab, var(--hue-amber) 7%, var(--card)); font-size: 13.5px;
+}
+.notice .grow { flex: 1; min-width: 200px; }
+.notice .badge { --h: var(--hue-amber); }
+
+/* Review: likely duplicate organisations, one row per group */
+.review { padding: 4px 28px 16px; background: color-mix(in oklab, var(--hue-amber) 4%, var(--card)); border-bottom: 1px solid var(--border); }
+.review-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; padding: 10px 0; border-top: 1px solid var(--border); }
+.review-names { flex: 1; min-width: 240px; font-size: 13.5px; }
+.review-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.review-actions .input { width: auto; padding: 5px 9px; font-size: 13px; }
+
+/* Bulk actions: appears when rows are ticked, right above the table */
+.bulk-bar { display: none; align-items: center; gap: 10px; padding: 10px 28px; border-bottom: 1px solid var(--border); background: var(--accent); color: var(--accent-foreground); font-size: 13.5px; font-weight: 500; }
+.bulk-bar.on { display: flex; }
+.bulk-bar .grow { flex: 1; }
+
+/* Picker: search a long list, or create something new */
+.picker .dialog { width: 480px; }
+.picker-list { max-height: 300px; overflow: auto; margin-top: 10px; border: 1px solid var(--border); border-radius: var(--radius); }
+.picker-item { display: block; width: 100%; text-align: left; font: inherit; background: var(--card); border: 0; border-bottom: 1px solid var(--border); padding: 9px 12px; cursor: pointer; }
+.picker-item:last-child { border-bottom: 0; }
+.picker-item:hover { background: color-mix(in oklab, var(--muted) 50%, var(--card)); }
+.picker-item .n { font-weight: 500; }
+.picker-item .e { display: block; color: var(--muted-foreground); font-size: 12.5px; }
+.picker-create { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+
+/* Organisation field on a contact: the current firm plus a button to change it */
+.org-field { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.org-field .org-field-name { font-size: 14px; }
+
+/* Collapsed form: just a heading until you need it */
+.collapsed-form { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+
+</style>
+</head>
+<body data-dl-theme="parchment">
+  <div id="app"></div>
+  <script>
+    // Which version of the CRM this is. Each version keeps its own demo data in the browser.
+    window.CRM_VERSION = { key: "branch-organisations-reviewed", label: "Branch: organisations (reviewed)", tone: "green" };
+  </script>
+  <script>
+// Demo data for Corella Finance. All people, firms and figures are fictional.
+// The app copies this into the browser's storage on first load; "Reset demo data" restores it.
+
+window.CRM_SEED = (function () {
+  const TOTAL_SHARES = 386400000;
+
+  // People. company and occupation are free text, typed by whoever added the contact.
+  const contacts = [
+    // Fund managers, super funds and brokers (from Josh's spreadsheet)
+    { id: "c01", firstName: "Priya", lastName: "Raman", email: "priya.raman@larkspurcapital.example", phone: "+61 2 9000 1101", company: "Larkspur Capital", occupation: "Portfolio manager, Emerging Leaders", tags: ["Insto", "Roadshow Aug-26"] },
+    { id: "c02", firstName: "David", lastName: "Okafor", email: "david.okafor@larkspurcapital.example", phone: "+61 2 9000 1102", company: "Larkspur Capital Mgmt", occupation: "Portfolio manager, Small Companies", tags: ["Instos"] },
+    { id: "c03", firstName: "Tom", lastName: "Avery", email: "tavery@larkspurcapital.example", phone: "", company: "LCM", occupation: "Analyst", tags: ["Fund manager"] },
+    { id: "c04", firstName: "Ella", lastName: "Ng", email: "ella.ng@larkspurcapital.example", phone: "+61 2 9000 1107", company: "Larkspur Capital", occupation: "Analyst", tags: ["Insto"] },
+    { id: "c05", firstName: "Daniel", lastName: "Moss", email: "dmoss@meridianlane.example", phone: "+61 3 9100 2201", company: "Meridian Lane AM", occupation: "Portfolio manager", tags: ["Insto", "Roadshow Aug-26"] },
+    { id: "c06", firstName: "Rachel", lastName: "Hu", email: "rachel.hu@meridianlane.example", phone: "", company: "Meridian Lane", occupation: "Co-portfolio manager", tags: ["Fund manager"] },
+    { id: "c07", firstName: "Sarah", lastName: "Kim", email: "skim@meridianlane.example", phone: "", company: "Meridian Lane AM", occupation: "Analyst", tags: [] },
+    { id: "c08", firstName: "Ash", lastName: "Kumar", email: "ash@bluegumpartners.example", phone: "+61 3 9200 3301", company: "Bluegum Partners", occupation: "Portfolio manager", tags: ["Insto"] },
+    { id: "c09", firstName: "Peter", lastName: "Corbett", email: "peter@corbettlane.example", phone: "+61 2 9300 4401", company: "Corbett & Lane", occupation: "Head of investments", tags: ["FM"] },
+    { id: "c10", firstName: "James", lastName: "Wu", email: "james.wu@corbettlane.example", phone: "", company: "Corbett and Lane", occupation: "Analyst", tags: [] },
+    { id: "c11", firstName: "Mark", lastName: "Ellery", email: "mellery@kestrelpoint.example", phone: "+61 2 9400 5501", company: "Kestrel Point Investments", occupation: "Portfolio manager, Financials Opportunities", tags: ["Insto", "Roadshow Aug-26"] },
+    { id: "c12", firstName: "Jo", lastName: "Tan", email: "jo.tan@kestrelpoint.example", phone: "", company: "Kestrel Point", occupation: "Portfolio manager, Small Caps", tags: ["Insto"] },
+    { id: "c13", firstName: "Research", lastName: "team", email: "research@seahavensuper.example", phone: "", company: "Seahaven Super", occupation: "", tags: ["Insto"] },
+    { id: "c14", firstName: "Grace", lastName: "Liu", email: "grace.liu@atlasfunds.example", phone: "", company: "Atlas Funds Management", occupation: "Analyst", tags: ["Instos", "Sydney conference 2026"] },
+    { id: "c15", firstName: "Lucy", lastName: "Park", email: "lucy@southerncrossequities.example", phone: "+61 2 9500 6601", company: "Southern Cross Equities", occupation: "Portfolio manager", tags: ["Fund manager"] },
+    { id: "c16", firstName: "Nick", lastName: "Hale", email: "nick.hale@hartleysecurities.example", phone: "+61 2 9600 7701", company: "Hartley Securities", occupation: "Institutional sales", tags: ["Broker"] },
+    { id: "c17", firstName: "Amy", lastName: "Tran", email: "amy.tran@hartleysecurities.example", phone: "", company: "Hartley", occupation: "Research analyst", tags: ["Broker"] },
+
+    // Banks holding shares for others. Created automatically from the share register.
+    { id: "c18", firstName: "HSBC Custody Nominees (Australia) Limited", lastName: "", email: "", phone: "", company: "", occupation: "", tags: [], holdings: [{ holderId: "X0001104412", accountName: "HSBC CUSTODY NOMINEES (AUSTRALIA) LIMITED", shares: 85394400 }] },
+    { id: "c19", firstName: "J P Morgan Nominees Australia Pty Limited", lastName: "", email: "", phone: "", company: "", occupation: "", tags: [], holdings: [{ holderId: "X0001104987", accountName: "J P MORGAN NOMINEES AUSTRALIA PTY LIMITED", shares: 59505600 }] },
+    { id: "c20", firstName: "Citicorp Nominees Pty Limited", lastName: "", email: "", phone: "", company: "", occupation: "", tags: [], holdings: [{ holderId: "X0001105233", accountName: "CITICORP NOMINEES PTY LIMITED", shares: 48686400 }] },
+    { id: "c21", firstName: "BNP Paribas Nominees Pty Ltd", lastName: "", email: "", phone: "", company: "", occupation: "", tags: [], holdings: [{ holderId: "X0001106020", accountName: "BNP PARIBAS NOMINEES PTY LTD <AGENCY LENDING A/C>", shares: 23956800 }] },
+    { id: "c22", firstName: "National Nominees Limited", lastName: "", email: "", phone: "", company: "", occupation: "", tags: [], holdings: [{ holderId: "X0001106551", accountName: "NATIONAL NOMINEES LIMITED", shares: 19320000 }] },
+
+    // Individual investors
+    { id: "c23", firstName: "Margaret", lastName: "Lowe", email: "margaret.lowe@mail.example", phone: "+61 412 000 231", company: "Self-employed", occupation: "Retired", tags: ["Retail"], hub: "2025-03-14", holdings: [{ holderId: "I0042218811", accountName: "MRS MARGARET ANNE LOWE", shares: 48200 }] },
+    { id: "c24", firstName: "Graham", lastName: "Teo", email: "gteo@mail.example", phone: "", company: "BHP", occupation: "Engineer", tags: ["Retail"], hub: "2026-02-02", holdings: [{ holderId: "I0051133902", accountName: "MR GRAHAM TEO", shares: 12500 }] },
+    { id: "c25", firstName: "Sophie", lastName: "Bennett", email: "sophie.b@mail.example", phone: "", company: "", occupation: "", tags: ["Retail"], hub: "2026-08-25", holdings: [{ holderId: "I0060012345", accountName: "MS SOPHIE BENNETT", shares: 3100 }] },
+    { id: "c26", firstName: "Liam", lastName: "O'Connor", email: "liam.oconnor@mail.example", phone: "", company: "", occupation: "", tags: ["Retail"], holdings: [{ holderId: "I0038821190", accountName: "MR LIAM PATRICK O'CONNOR", shares: 22000 }] },
+    { id: "c27", firstName: "Priyanka", lastName: "Shah", email: "pshah@mail.example", phone: "", company: "", occupation: "", tags: ["Retail"], hub: "2025-11-20", holdings: [{ holderId: "I0057730014", accountName: "MRS PRIYANKA SHAH", shares: 7450 }] },
+    { id: "c28", firstName: "Robert", lastName: "Chen", email: "robert.chen@mail.example", phone: "+61 418 000 772", company: "", occupation: "Company director", tags: ["Retail", "HNW"], hub: "2024-09-02", holdings: [{ holderId: "I0012209876", accountName: "MR ROBERT CHEN", shares: 104000 }, { holderId: "I0012209877", accountName: "CHEN SUPER PTY LTD <CHEN FAMILY S/F A/C>", shares: 46000 }] },
+    { id: "c29", firstName: "Aisha", lastName: "Rahman", email: "aisha.rahman@mail.example", phone: "", company: "", occupation: "", tags: [], holdings: [{ holderId: "I0063390021", accountName: "MS AISHA RAHMAN", shares: 5000 }] },
+    { id: "c30", firstName: "Michael", lastName: "Brooks", email: "mbrooks@mail.example", phone: "", company: "Brooks Family Super Fund", occupation: "", tags: ["Retail"], holdings: [{ holderId: "I0029945512", accountName: "BROOKS SUPER PTY LTD <BROOKS FAMILY S/F A/C>", shares: 61300 }] },
+    { id: "c31", firstName: "Helen", lastName: "Nguyen", email: "helen.nguyen@mail.example", phone: "", company: "", occupation: "", tags: ["Retail"], hub: "2026-05-11", holdings: [{ holderId: "I0058812230", accountName: "MS HELEN NGUYEN", shares: 9800 }] },
+    { id: "c32", firstName: "Tom", lastName: "Fraser", email: "", phone: "", company: "", occupation: "", tags: [], holdings: [{ holderId: "I0066001237", accountName: "MR THOMAS JAMES FRASER", shares: 1200 }] },
+    { id: "c33", firstName: "Kate", lastName: "Wilson", email: "kate.wilson@mail.example", phone: "", company: "", occupation: "", tags: [], hub: "2026-08-26" },
+    { id: "c34", firstName: "Ben", lastName: "Carter", email: "ben.carter@mail.example", phone: "", company: "", occupation: "", tags: [], hub: "2026-09-30" },
+    { id: "c35", firstName: "Andrew", lastName: "Walsh", email: "awalsh@mail.example", phone: "", company: "", occupation: "", tags: ["Retail"], holdings: [{ holderId: "I0047719001", accountName: "MR ANDREW WALSH", shares: 30000 }] },
+    { id: "c36", firstName: "Jenny", lastName: "Park", email: "jenny.park@mail.example", phone: "", company: "", occupation: "", tags: [], hub: "2026-03-03", holdings: [{ holderId: "I0061174320", accountName: "MISS JENNY PARK", shares: 2450 }] }
+  ].map(c => Object.assign({ holdings: [], hub: null, unsubscribed: false }, c));
+
+  // Notes, calls and meetings typed in, plus emails forwarded in. Each sits on one contact.
+  const activities = [
+    { id: "a01", contactId: "c01", type: "meeting", date: "2026-08-18", author: "Josh", text: "Met Larkspur team (Priya, David, Tom) with CEO and CFO. David asked about the arrears trend; may top up after the raise. Send David the late-repayments data." },
+    { id: "a02", contactId: "c04", type: "note", date: "2026-03-12", author: "Josh", text: "Caught up with Ella at Larkspur's Sydney office. Wants to visit our operations later in the year." },
+    { id: "a03", contactId: "c05", type: "meeting", date: "2026-08-19", author: "Hannah", text: "Met Daniel (CFO only). Worried about funding costs. Daniel prefers CFO-only meetings; Rachel wants the CEO next time." },
+    { id: "a04", contactId: "c11", type: "meeting", date: "2026-08-20", author: "Josh", text: "Kestrel Point: Mark, Jo and Ella, with CEO and Josh. Operations and collections. Book an operations visit for November." },
+    { id: "a05", contactId: "c11", type: "email_forwarded", date: "2026-08-20", author: "Josh", subject: "Re: Kestrel Point x Corella, thanks for today", text: "Thanks Josh, good session with Mark, Jo and Ella. Keen to book the operations visit for November. Ella will coordinate from our side." },
+    { id: "a06", contactId: "c15", type: "call", date: "2026-08-20", author: "Josh", text: "Lucy: questions on dividend policy. Invite to the Feb roadshow." },
+    { id: "a07", contactId: "c14", type: "note", date: "2026-08-21", author: "Josh", text: "Met at the Sydney conference. Interested in the income angle. Invite to the Feb roadshow." },
+    { id: "a08", contactId: "c16", type: "meeting", date: "2026-08-22", author: "Hannah", text: "Roadshow debrief with Nick. Amy to start writing research on us; first note in November." },
+    { id: "a09", contactId: "c08", type: "note", date: "2026-03-04", author: "Josh", text: "Ash: lost a big client in Q2. Watch for selling." },
+    { id: "a10", contactId: "c09", type: "meeting", date: "2026-02-12", author: "Hannah", text: "Peter and James. Asked about bad debts." },
+    { id: "a11", contactId: "c28", type: "call", date: "2026-09-02", author: "Josh", text: "Called about the dividend reinvestment plan." },
+    { id: "a12", contactId: "c13", type: "note", date: "2026-06-30", author: "Eddy (InvestorHub)", text: "Seahaven holds through an external manager. Josh to find out which one." }
+  ];
+
+  // Emails sent from the CRM. Recipients are worked out when the app first loads.
+  const emails = [
+    { id: "e01", subject: "Roadshow invitation: August", date: "2026-08-04", audience: { kind: "tags", tags: ["Insto", "Instos", "Fund manager", "FM"] }, body: "We'd like to meet with you during our results roadshow, 18 to 22 August." },
+    { id: "e02", subject: "FY26 results and roadshow", date: "2026-08-25", audience: { kind: "shareholders" }, body: "Corella Finance has released its FY26 results." },
+    { id: "e03", subject: "Investor update: September", date: "2026-09-28", audience: { kind: "all" }, body: "Our September investor update." }
+  ];
+
+  // Ownership report, as at 30 September 2026. Funds found behind the banks on the register.
+  const ownership = {
+    asAt: "2026-09-30",
+    comparedWith: "June 2026",
+    summary: [
+      { label: "Held by banks on behalf of others", pct: 61.3 },
+      { label: "Traced to a fund", pct: 48.2 },
+      { label: "Not traced", pct: 13.1 }
+    ],
+    funds: [
+      { manager: "Larkspur Capital", fund: "Emerging Leaders Fund", via: "HSBC", pct: 6.4, change: "+1.2" },
+      { manager: "Meridian Lane Asset Management", fund: "Australian Equities", via: "Citicorp", pct: 5.9, change: "−0.8" },
+      { manager: "Kestrel Point Investments", fund: "Financials Opportunities", via: "J.P. Morgan", pct: 4.7, change: "+2.1" },
+      { manager: "Larkspur Capital", fund: "Small Companies Fund", via: "J.P. Morgan", pct: 3.8, change: "0.0" },
+      { manager: "Bluegum Partners", fund: "Bluegum Small Caps", via: "BNP Paribas", pct: 3.1, change: "−1.4" },
+      { manager: "Atlas Funds Management", fund: "Income Fund", via: "HSBC", pct: 2.6, change: "new" },
+      { manager: "Seahaven Super", fund: "Balanced", via: "National Nominees", pct: 2.2, change: "+0.3" },
+      { manager: "Corbett & Lane", fund: "Value Fund", via: "Citicorp", pct: 1.9, change: "−1.1" }
+    ]
+  };
+
+  return { company: { name: "Corella Finance", totalShares: TOTAL_SHARES }, currentUser: "Josh", contacts, activities, emails, ownership };
+})();
+
+</script>
+  <script>
+// A simplified InvestorHub CRM. Plain JavaScript, no build step.
+// Pages are rendered from the state object and saved to the browser's localStorage.
+
+(function () {
+  "use strict";
+
+  const VERSION = window.CRM_VERSION;
+  const STORAGE_KEY = "corella-crm-" + VERSION.key;
+  const app = document.getElementById("app");
+
+  // ---------------------------------------------------------------------------
+  // State
+  // ---------------------------------------------------------------------------
+
+  let state = load();
+
+  function load() {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) { const old = JSON.parse(saved); if (old.schema === 3) return old; }
+    } catch (e) { /* storage unavailable: fall back to the seed */ }
+    const s = freshState();
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch (e) { /* ignore */ }
+    return s;
+  }
+
+  function save() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) { /* ignore */ }
+  }
+
+  function freshState() {
+    const s = JSON.parse(JSON.stringify(window.CRM_SEED));
+    s.schema = 3;
+    // Organisations are records of their own. On first run, each distinct
+    // company string becomes one; contacts point at it by id. Likely
+    // duplicates are suggested on the Organisations page for a person to
+    // confirm; nothing is merged automatically.
+    s.organisations = [];
+    s.dismissedMerges = [];
+    s.contacts.forEach(function (c) {
+      const name = (c.company || "").trim();
+      delete c.company;
+      c.organisationId = name ? findOrCreateOrg(s, name).id : null;
+    });
+    // Work out who each seeded email went to, and log it on each recipient.
+    s.emails.forEach(function (em) {
+      const recipients = audienceContacts(em.audience, s.contacts);
+      em.recipients = recipients.length;
+      em.opens = 0;
+      em.clicks = 0;
+      recipients.forEach(function (c, i) {
+        let status = "Not opened";
+        if (c.email.indexOf("larkspurcapital.example") > -1 && c.id === "c04") status = "Bounced";
+        else if ((i + em.id.charCodeAt(2)) % 3 === 0) status = "Clicked";
+        else if ((i + em.id.charCodeAt(2)) % 3 === 1) status = "Opened";
+        if (status === "Opened" || status === "Clicked") em.opens++;
+        if (status === "Clicked") em.clicks++;
+        s.activities.push({ id: uid("a"), contactId: c.id, type: "email_sent", date: em.date, author: "Josh", subject: em.subject, emailId: em.id, status: status });
+      });
+    });
+    return s;
+  }
+
+  function resetDemo() {
+    state = freshState();
+    save();
+    location.hash = "#/contacts";
+    render();
+    toast("Demo data reset");
+  }
+
+  // ---------------------------------------------------------------------------
+  // Helpers
+  // ---------------------------------------------------------------------------
+
+  function uid(prefix) { return prefix + Math.random().toString(36).slice(2, 9); }
+
+  function esc(v) {
+    return String(v == null ? "" : v)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
+  const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  function fmtDate(iso) {
+    if (!iso) return "–";
+    const p = iso.slice(0, 10).split("-");
+    return parseInt(p[2], 10) + " " + MONTHS[parseInt(p[1], 10) - 1] + " " + p[0];
+  }
+  function todayIso() { return new Date().toISOString().slice(0, 10); }
+  function fmtNum(n) { return Number(n || 0).toLocaleString("en-AU"); }
+  function pct(n, of) { return of ? (100 * n / of).toFixed(1) + "%" : "–"; }
+
+  function fullName(c) { return (c.firstName + " " + (c.lastName || "")).trim(); }
+  function sharesHeld(c) { return (c.holdings || []).reduce(function (t, h) { return t + h.shares; }, 0); }
+  function isShareholder(c) { return sharesHeld(c) > 0; }
+  function canEmail(c) { return !!c.email && !c.unsubscribed; }
+  function contactById(id) { return state.contacts.find(function (c) { return c.id === id; }); }
+
+  // ---------------------------------------------------------------------------
+  // Organisations: a record for a firm that people belong to
+  // ---------------------------------------------------------------------------
+
+  function orgById(id) { return (state.organisations || []).find(function (o) { return o.id === id; }); }
+  function orgOf(c) { return c.organisationId ? orgById(c.organisationId) : null; }
+  function orgName(c) { const o = orgOf(c); return o ? o.name : ""; }
+  function membersOf(orgId) {
+    return state.contacts.filter(function (c) { return c.organisationId === orgId; })
+      .sort(function (a, b) { return fullName(a).localeCompare(fullName(b)); });
+  }
+  function sortedOrgs() {
+    return (state.organisations || []).slice().sort(function (a, b) { return a.name.localeCompare(b.name); });
+  }
+
+  // Match a typed name to an existing organisation by its name or any earlier
+  // spelling it absorbed in a merge. Only exact (case-insensitive) matches count.
+  function findOrgByName(s, name) {
+    const key = name.trim().toLowerCase();
+    return (s.organisations || []).find(function (o) {
+      return o.name.toLowerCase() === key || (o.aliases || []).some(function (a) { return a.toLowerCase() === key; });
+    });
+  }
+
+  function findOrCreateOrg(s, name) {
+    name = name.trim();
+    let o = findOrgByName(s, name);
+    if (!o) { o = { id: uid("o"), name: name, aliases: [] }; s.organisations.push(o); }
+    return o;
+  }
+
+  function orgLink(c) {
+    const o = typeof c === "string" ? orgById(c) : orgOf(c);
+    return o ? '<a href="#/organisations/' + o.id + '">' + esc(o.name) + "</a>" : '<span class="muted">–</span>';
+  }
+
+  // When someone's organisation changes, note the move on their record so it isn't lost.
+  function setOrganisation(c, orgId) {
+    orgId = orgId || null;
+    const oldId = c.organisationId || null;
+    if (oldId === orgId) return;
+    const oldName = oldId && orgById(oldId) ? orgById(oldId).name : "";
+    const newName = orgId && orgById(orgId) ? orgById(orgId).name : "";
+    let text;
+    if (oldName && newName) text = "Moved from " + oldName + " to " + newName + ".";
+    else if (newName) text = "Added to " + newName + ".";
+    else text = "Removed from " + oldName + ".";
+    c.organisationId = orgId;
+    state.activities.push({ id: uid("a"), contactId: c.id, type: "org_change", date: todayIso(), author: state.currentUser, text: text });
+  }
+
+  // Words that vary between spellings of the same firm. Used only to *suggest*
+  // duplicates; a person confirms every merge.
+  const NOISE_WORDS = ["pty", "ltd", "limited", "plc", "inc", "llc", "co", "the", "mgmt", "management", "asset", "am",
+    "investments", "investment", "securities", "partners", "group", "holdings", "funds", "fund", "equities", "capital"];
+  function normName(name) {
+    const words = name.toLowerCase().replace(/&/g, " and ").replace(/[^a-z0-9 ]+/g, " ").split(/\s+/).filter(Boolean);
+    const kept = words.filter(function (w) { return NOISE_WORDS.indexOf(w) === -1; });
+    return (kept.length ? kept : words).join(" ");
+  }
+  function initials(name) {
+    return name.toLowerCase().replace(/&/g, " ").replace(/[^a-z0-9 ]+/g, " ").split(/\s+/).filter(Boolean)
+      .map(function (w) { return w[0]; }).join("");
+  }
+
+  // Groups of organisations that look like the same firm: same name once noise
+  // words are ignored, or one name is the initials of another (LCM → Larkspur Capital Mgmt).
+  function suggestedMerges() {
+    const orgs = sortedOrgs();
+    const byKey = {};
+    orgs.forEach(function (o) {
+      let key = normName(o.name);
+      const isInitials = /^[a-z]{2,5}$/.test(key) && o.name === o.name.toUpperCase();
+      if (isInitials) {
+        const target = orgs.find(function (p) { return p !== o && initials(p.name) === key; });
+        if (target) key = normName(target.name);
+      }
+      (byKey[key] = byKey[key] || []).push(o);
+    });
+    return Object.keys(byKey).map(function (k) { return { key: k, orgs: byKey[k] }; })
+      .filter(function (g) { return g.orgs.length > 1 && (state.dismissedMerges || []).indexOf(g.key) === -1; });
+  }
+
+  // Merge other organisations into one. People, meetings and notes move across;
+  // the old spellings are kept as aliases so later imports map to the same firm.
+  function mergeOrgs(masterId, otherIds) {
+    const master = orgById(masterId);
+    const merged = [];
+    otherIds.forEach(function (id) {
+      if (id === masterId) return;
+      const o = orgById(id);
+      if (!o) return;
+      state.contacts.forEach(function (c) { if (c.organisationId === id) c.organisationId = masterId; });
+      state.activities.forEach(function (a) { if (a.orgId === id) a.orgId = masterId; });
+      master.aliases = (master.aliases || []).concat([o.name], o.aliases || []).filter(function (a, i, arr) {
+        return a.toLowerCase() !== master.name.toLowerCase() && arr.indexOf(a) === i;
+      });
+      merged.push(o.name);
+      state.organisations = state.organisations.filter(function (p) { return p.id !== id; });
+    });
+    if (merged.length) {
+      state.activities.push({ id: uid("a"), orgId: masterId, attendeeIds: [], type: "org_merge", date: todayIso(), author: state.currentUser,
+        text: "Merged " + merged.join(" and ") + " into " + master.name + "." });
+    }
+    return merged.length;
+  }
+
+  // Not a firm (a retail investor's employer, say): unlink its people and drop it.
+  function removeOrg(orgId) {
+    const o = orgById(orgId);
+    if (!o) return;
+    membersOf(orgId).forEach(function (c) { setOrganisation(c, null); });
+    state.activities = state.activities.filter(function (a) { return a.orgId !== orgId; });
+    state.organisations = state.organisations.filter(function (p) { return p.id !== orgId; });
+  }
+
+  // Activity on a person: logged on them directly, or logged on their firm with them as an attendee.
+  function activitiesFor(contactId) {
+    return state.activities
+      .filter(function (a) { return a.contactId === contactId || (a.attendeeIds || []).indexOf(contactId) > -1; })
+      .sort(function (a, b) { return b.date.localeCompare(a.date); });
+  }
+
+  // Everything that's happened with a firm: logged on it, or on any of its people. Bulk emails are left out.
+  function activitiesForOrg(orgId) {
+    const ids = membersOf(orgId).map(function (c) { return c.id; });
+    return state.activities
+      .filter(function (a) { return a.orgId === orgId || (ids.indexOf(a.contactId) > -1 && a.type !== "email_sent"); })
+      .sort(function (a, b) { return b.date.localeCompare(a.date); });
+  }
+
+  function orgLastActivity(orgId) {
+    const a = activitiesForOrg(orgId)[0];
+    return a ? a.date : null;
+  }
+
+  // Most recent real contact: notes, calls, meetings, forwarded emails, website sign-up. Bulk emails don't count.
+  function lastActivity(c) {
+    const a = activitiesFor(c.id).filter(function (x) { return x.type !== "email_sent"; })[0];
+    const dates = [a ? a.date : null, c.hub].filter(Boolean).sort();
+    return dates.length ? dates[dates.length - 1] : null;
+  }
+
+  function allTags(contacts) {
+    const counts = {};
+    (contacts || state.contacts).forEach(function (c) {
+      c.tags.forEach(function (t) { counts[t] = (counts[t] || 0) + 1; });
+    });
+    return Object.keys(counts).sort(function (a, b) { return a.localeCompare(b); })
+      .map(function (t) { return { tag: t, count: counts[t] }; });
+  }
+
+  // Who an email goes to. kind: all | shareholders | tags | contacts
+  function audienceContacts(audience, contacts) {
+    contacts = contacts || state.contacts;
+    return contacts.filter(function (c) {
+      if (!canEmail(c)) return false;
+      if (audience.kind === "all") return true;
+      if (audience.kind === "shareholders") return isShareholder(c);
+      if (audience.kind === "tags") return c.tags.some(function (t) { return (audience.tags || []).indexOf(t) > -1; });
+      if (audience.kind === "contacts") return (audience.contactIds || []).indexOf(c.id) > -1;
+      return false;
+    });
+  }
+
+  function describeAudience(a) {
+    if (a.kind === "all") return "All contacts";
+    if (a.kind === "shareholders") return "Shareholders";
+    if (a.kind === "tags") return "Tagged " + (a.tags || []).join(", ");
+    if (a.kind === "contacts") return (a.contactIds || []).length + " chosen people";
+    return "";
+  }
+
+  function toast(msg) {
+    const el = document.createElement("div");
+    el.className = "toast";
+    el.textContent = msg;
+    document.body.appendChild(el);
+    setTimeout(function () { el.remove(); }, 2200);
+  }
+
+  function badge(text, tone) { return '<span class="badge ' + (tone || "") + '">' + esc(text) + "</span>"; }
+
+  function tagBadges(tags) {
+    if (!tags.length) return '<span class="muted">–</span>';
+    return '<div class="tags">' + tags.map(function (t) { return badge(t); }).join("") + "</div>";
+  }
+
+  const ACTIVITY_LABELS = {
+    meeting: ["Meeting", "violet"],
+    note: ["Note", "blue"],
+    call: ["Call", "blue"],
+    email_forwarded: ["Email forwarded in", "amber"],
+    email_sent: ["Email sent", ""],
+    website: ["Investor website", "green"],
+    org_change: ["Organisation changed", "amber"],
+    org_merge: ["Organisations merged", "amber"]
+  };
+
+  // ---------------------------------------------------------------------------
+  // Layout
+  // ---------------------------------------------------------------------------
+
+  // Top navigation. Each entry: [label, hash, matches-route-prefix]
+  function navItems() {
+    return [
+      ["Contacts", "#/contacts", "contacts"],
+      ["Organisations", "#/organisations", "organisations"],
+      ["Emails", "#/emails", "emails"],
+      ["Ownership", "#/ownership", "ownership"],
+      ["Import", "#/import", "import"]
+    ];
+  }
+
+  function layout(section, inner) {
+    const links = navItems().map(function (n) {
+      return '<a href="' + n[1] + '" class="' + (section === n[2] ? "active" : "") + '">' + n[0] + "</a>";
+    }).join("");
+    return (
+      '<nav class="nav">' +
+        '<div class="chip-company"><span class="logo">CF</span>' + esc(state.company.name) + "</div>" +
+        '<span class="badge version ' + VERSION.tone + '"><span class="dot"></span>' + esc(VERSION.label) + "</span>" +
+        '<div class="nav-links">' + links + "</div>" +
+        '<div class="nav-right">' +
+          '<form data-form="search"><input class="input nav-search" name="q" placeholder="Search" value="' + esc(currentSearch()) + '"></form>' +
+          '<div class="avatar" title="Josh (investor relations)">JO</div>' +
+        "</div>" +
+      "</nav>" +
+      '<main class="page"><div class="card">' + inner + "</div></main>" +
+      '<footer class="foot"><span>Demo data. All people and firms are fictional.</span>' +
+      '<button class="link-btn" data-action="reset">Reset demo data</button></footer>'
+    );
+  }
+
+  function head(eyebrow, title, sub, actions) {
+    return (
+      '<div class="card-head"><div>' +
+        '<div class="eyebrow">' + esc(eyebrow) + "</div>" +
+        "<h1>" + esc(title) + "</h1>" +
+        (sub ? '<div class="sub">' + sub + "</div>" : "") +
+      "</div>" +
+      (actions ? '<div class="actions">' + actions + "</div>" : "") +
+      "</div>"
+    );
+  }
+
+  function stats(items) {
+    return '<div class="stats">' + items.map(function (s) {
+      return '<div class="stat"><div class="eyebrow">' + esc(s[0]) + '</div><div class="value">' + s[1] + "</div></div>";
+    }).join("") + "</div>";
+  }
+
+  // ---------------------------------------------------------------------------
+  // Router
+  // ---------------------------------------------------------------------------
+
+  function parseHash() {
+    const h = (location.hash || "#/contacts").slice(2);
+    const qIndex = h.indexOf("?");
+    const path = qIndex > -1 ? h.slice(0, qIndex) : h;
+    const query = new URLSearchParams(qIndex > -1 ? h.slice(qIndex + 1) : "");
+    return { parts: path.split("/").filter(Boolean), query: query };
+  }
+
+  function currentSearch() {
+    const r = parseHash();
+    return r.parts[0] === "search" ? (r.query.get("q") || "") : "";
+  }
+
+  function render() {
+    const r = parseHash();
+    const p = r.parts;
+    let html;
+    if (p[0] === "contacts" && p[1]) html = contactPage(p[1]);
+    else if (p[0] === "organisations" && p[1]) html = organisationPage(p[1]);
+    else if (p[0] === "organisations") html = organisationsPage();
+    else if (p[0] === "emails" && p[1] === "new") html = composePage();
+    else if (p[0] === "emails") html = emailsPage();
+    else if (p[0] === "import") html = importPage();
+    else if (p[0] === "ownership") html = ownershipPage();
+    else if (p[0] === "search") html = searchPage(r.query.get("q") || "");
+    else html = contactsPage();
+    app.innerHTML = html;
+    afterRender();
+    window.scrollTo(0, 0);
+  }
+
+  // Pages that need wiring after they're drawn register a function here.
+  let afterRenderHook = null;
+  function afterRender() {
+    if (afterRenderHook) { const f = afterRenderHook; afterRenderHook = null; f(); }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Contacts list
+  // ---------------------------------------------------------------------------
+
+  const listFilter = { text: "", tag: "", holders: "all", org: "all" };
+
+  function contactRow(c) {
+    const shares = sharesHeld(c);
+    return (
+      '<tr class="click" data-href="#/contacts/' + c.id + '">' +
+        '<td class="name-cell"><div class="n">' + esc(fullName(c)) + '</div><div class="e">' + esc(c.email || "No email") + "</div></td>" +
+        '<td class="name-cell">' + orgLink(c) + (c.organisationId && c.occupation ? '<div class="e">' + esc(c.occupation) + "</div>" : "") + "</td>" +
+        '<td><button class="link-btn small" data-action="pick-org-row" data-id="' + c.id + '">' + (c.organisationId ? "Change" : "Set") + "</button></td>" +
+        "<td>" + tagBadges(c.tags) + "</td>" +
+        '<td class="num">' + (shares ? fmtNum(shares) : '<span class="muted">–</span>') + "</td>" +
+        '<td class="num">' + fmtDate(lastActivity(c)) + "</td>" +
+      "</tr>"
+    );
+  }
+
+  function contactTable(list) {
+    if (!list.length) return '<div class="empty">No contacts match.</div>';
+    return (
+      '<div class="table-wrap"><table class="t"><thead><tr>' +
+        "<th>Name</th><th>Organisation</th><th></th><th>Tags</th><th class=\"num\">Shares</th><th class=\"num\">Last activity</th>" +
+      "</tr></thead><tbody>" + list.map(contactRow).join("") + "</tbody></table></div>"
+    );
+  }
+
+  function filteredContacts() {
+    const q = listFilter.text.trim().toLowerCase();
+    return state.contacts.filter(function (c) {
+      if (listFilter.org === "yes" && !c.organisationId) return false;
+      if (listFilter.org === "no" && c.organisationId) return false;
+      if (q && (fullName(c) + " " + c.email + " " + orgName(c)).toLowerCase().indexOf(q) === -1) return false;
+      if (listFilter.tag && c.tags.indexOf(listFilter.tag) === -1) return false;
+      if (listFilter.holders === "yes" && !isShareholder(c)) return false;
+      if (listFilter.holders === "no" && isShareholder(c)) return false;
+      return true;
+    }).sort(function (a, b) { return fullName(a).localeCompare(fullName(b)); });
+  }
+
+  function contactsPage() {
+    const all = state.contacts;
+    const tagOptions = allTags().map(function (t) {
+      return '<option value="' + esc(t.tag) + '"' + (listFilter.tag === t.tag ? " selected" : "") + ">" + esc(t.tag) + " (" + t.count + ")</option>";
+    }).join("");
+    afterRenderHook = function () {
+      const box = document.getElementById("contact-filter");
+      box.addEventListener("input", function () { listFilter.text = box.value; refreshContactRows(); });
+    };
+    return layout("contacts",
+      head("CRM", "Contacts", "Everyone " + esc(state.company.name) + " keeps in its CRM",
+        '<a class="btn" href="#/import">Import contacts</a><button class="btn primary" data-action="add-contact">Add contact</button>') +
+      stats([
+        ["Contacts", fmtNum(all.length)],
+        ["Shareholders", fmtNum(all.filter(isShareholder).length)],
+        ["Emailable", fmtNum(all.filter(canEmail).length)],
+        ["Investor website", fmtNum(all.filter(function (c) { return c.hub; }).length)]
+      ]) +
+      '<div class="toolbar">' +
+        '<input id="contact-filter" class="input grow" placeholder="Filter by name, email or organisation" value="' + esc(listFilter.text) + '">' +
+        '<select class="input" data-change="tag-filter"><option value="">All tags</option>' + tagOptions + "</select>" +
+        '<select class="input" data-change="holder-filter">' +
+          '<option value="all"' + (listFilter.holders === "all" ? " selected" : "") + ">Everyone</option>" +
+          '<option value="yes"' + (listFilter.holders === "yes" ? " selected" : "") + ">Shareholders</option>" +
+          '<option value="no"' + (listFilter.holders === "no" ? " selected" : "") + ">Not shareholders</option>" +
+        "</select>" +
+        '<select class="input" data-change="org-filter">' +
+          '<option value="all"' + (listFilter.org === "all" ? " selected" : "") + ">Any organisation</option>" +
+          '<option value="yes"' + (listFilter.org === "yes" ? " selected" : "") + ">In an organisation</option>" +
+          '<option value="no"' + (listFilter.org === "no" ? " selected" : "") + ">No organisation</option>" +
+        "</select>" +
+        '<span class="muted small" id="contact-count"></span>' +
+      "</div>" +
+      '<div id="contact-rows">' + contactRowsHtml() + "</div>"
+    );
+  }
+
+  function contactRowsHtml() {
+    const list = filteredContacts();
+    setTimeout(function () {
+      const el = document.getElementById("contact-count");
+      if (el) el.textContent = list.length + " shown";
+    });
+    return contactTable(list);
+  }
+
+  function refreshContactRows() {
+    document.getElementById("contact-rows").innerHTML = contactRowsHtml();
+  }
+
+  // ---------------------------------------------------------------------------
+  // Contact page
+  // ---------------------------------------------------------------------------
+
+  let editingDetails = false;
+
+  // One row of a timeline. `view` says whose timeline: "contact" (the person's own page)
+  // or "org" (the firm's page), which decides what context to add underneath.
+  function activityRow(a, view) {
+    const label = ACTIVITY_LABELS[a.type] || [a.type, ""];
+    let body;
+    if (a.type === "email_sent") {
+      const tone = a.status === "Bounced" ? "rose" : a.status === "Clicked" ? "green" : a.status === "Opened" ? "green" : "";
+      body = '<div class="title">' + esc(a.subject) + " " + badge(a.status, tone) + "</div>";
+    } else if (a.type === "email_forwarded") {
+      body = '<div class="title">' + esc(a.subject) + "</div><div>" + esc(a.text) + "</div>";
+    } else {
+      body = "<div>" + esc(a.text) + "</div>";
+    }
+    const meta = [];
+    if (a.orgId) {
+      const o = orgById(a.orgId);
+      const names = (a.attendeeIds || []).map(function (id) { const c = contactById(id); return c ? fullName(c) : null; }).filter(Boolean);
+      if (view === "contact" && o) meta.push("With " + esc(o.name) + (names.length ? ": " + esc(names.join(", ")) : ""));
+      if (view === "org" && names.length) meta.push("Attended: " + esc(names.join(", ")));
+    } else if (view === "org" && a.contactId) {
+      const c = contactById(a.contactId);
+      if (c) meta.push("On " + '<a href="#/contacts/' + c.id + '">' + esc(fullName(c)) + "</a>");
+    }
+    if (a.author && a.type !== "email_sent") meta.push("Logged by " + esc(a.author));
+    return (
+      '<li><div class="when">' + fmtDate(a.date) + "</div><div>" +
+        '<div style="margin-bottom:4px">' + badge(label[0], label[1]) + "</div>" +
+        '<div class="what">' + body + "</div>" +
+        (meta.length ? '<div class="meta">' + meta.join(" · ") + "</div>" : "") +
+      "</div></li>"
+    );
+  }
+
+  function contactActivity(c) {
+    const list = activitiesFor(c.id).slice();
+    if (c.hub) list.push({ type: "website", date: c.hub, text: "Signed up to the investor website" });
+    list.sort(function (a, b) { return b.date.localeCompare(a.date); });
+    if (!list.length) return '<div class="empty">No activity yet.</div>';
+    return '<ul class="rows">' + list.map(function (a) { return activityRow(a, "contact"); }).join("") + "</ul>";
+  }
+
+  // ---------------------------------------------------------------------------
+  // Picker: search a long list and choose one, or create something new.
+  // Used to choose a person's organisation and to add people to a firm.
+  // ---------------------------------------------------------------------------
+
+  let picker = null;
+
+  function openPicker(opts) {
+    closePicker();
+    const el = document.createElement("div");
+    el.className = "overlay picker";
+    el.innerHTML =
+      '<div class="dialog">' +
+        '<div class="dh"><h2>' + esc(opts.title) + "</h2></div>" +
+        '<div class="db">' +
+          '<input class="input" id="picker-search" placeholder="' + esc(opts.placeholder || "Search") + '" autocomplete="off">' +
+          '<div class="picker-list" id="picker-list"></div>' +
+          (opts.create ?
+            '<form data-form="picker-create" class="picker-create">' +
+              '<div class="eyebrow" style="margin-bottom:6px">' + esc(opts.create.label) + "</div>" +
+              '<div class="row" style="gap:8px"><input class="input" name="name" placeholder="' + esc(opts.create.placeholder || "") + '" required>' +
+              '<button class="btn primary" type="submit" style="flex:0">' + esc(opts.create.button) + "</button></div>" +
+              (opts.create.help ? '<div class="help" style="margin-top:6px">' + esc(opts.create.help) + "</div>" : "") +
+            "</form>" : "") +
+        "</div>" +
+        '<div class="df"><button class="btn" type="button" data-action="close-picker">Cancel</button></div>' +
+      "</div>";
+    document.body.appendChild(el);
+    picker = opts;
+    renderPickerList("");
+    el.querySelector("#picker-search").focus();
+  }
+
+  function renderPickerList(q) {
+    const list = document.getElementById("picker-list");
+    if (!list || !picker) return;
+    q = q.trim().toLowerCase();
+    const items = picker.items.filter(function (i) { return !q || (i.label + " " + (i.sub || "")).toLowerCase().indexOf(q) > -1; });
+    const shown = items.slice(0, 50);
+    list.innerHTML = shown.length ? shown.map(function (i) {
+      return '<button type="button" class="picker-item" data-action="pick" data-id="' + i.id + '"><span class="n">' + esc(i.label) + "</span>" +
+        (i.sub ? '<span class="e">' + esc(i.sub) + "</span>" : "") + "</button>";
+    }).join("") + (items.length > shown.length ? '<div class="muted small" style="padding:8px 12px">' + (items.length - shown.length) + " more. Keep typing to narrow it down.</div>" : "")
+      : '<div class="muted small" style="padding:10px 12px">Nothing matches.</div>';
+  }
+
+  function closePicker() {
+    const el = document.querySelector(".overlay.picker");
+    if (el) el.remove();
+    picker = null;
+  }
+
+  function orgPickerItems(excludeId) {
+    return sortedOrgs().filter(function (o) { return o.id !== excludeId; }).map(function (o) {
+      const n = membersOf(o.id).length;
+      return { id: o.id, label: o.name, sub: (n ? n + (n === 1 ? " person" : " people") : "Nobody yet") + ((o.aliases || []).length ? " · also " + o.aliases.join(", ") : "") };
+    });
+  }
+
+  // Choose an organisation for a form (contact edit, add contact). The choice lands in
+  // hidden inputs; a brand-new firm is only created when the form is saved.
+  function pickOrgForField(field) {
+    const current = field.querySelector('input[name="organisationId"]').value;
+    openPicker({
+      title: "Choose an organisation",
+      placeholder: "Search organisations",
+      items: orgPickerItems(),
+      onPick: function (id) { setOrgField(field, id, orgById(id).name, false); },
+      create: {
+        label: "Not there yet?", placeholder: "Name of the new organisation", button: "Create",
+        help: "A name is enough. It's created when you save.",
+        onSubmit: function (name) {
+          const existing = findOrgByName(state, name);
+          if (existing) setOrgField(field, existing.id, existing.name, false);
+          else setOrgField(field, "__new", name, true);
+        }
+      }
+    });
+  }
+
+  function setOrgField(field, id, name, isNew) {
+    field.querySelector('input[name="organisationId"]').value = id || "";
+    field.querySelector('input[name="newOrganisation"]').value = isNew ? name : "";
+    field.querySelector(".org-field-name").innerHTML = id ? esc(name) + (isNew ? ' <span class="badge green">new</span>' : "") : '<span class="muted">None</span>';
+    field.querySelector('[data-action="pick-org"]').textContent = id ? "Change" : "Choose";
+    field.querySelector('[data-action="clear-org"]').style.display = id ? "" : "none";
+  }
+
+  function orgField(selectedId) {
+    const o = selectedId ? orgById(selectedId) : null;
+    return (
+      '<div class="org-field">' +
+        '<input type="hidden" name="organisationId" value="' + (o ? o.id : "") + '"><input type="hidden" name="newOrganisation" value="">' +
+        '<span class="org-field-name">' + (o ? esc(o.name) : '<span class="muted">None</span>') + "</span>" +
+        '<button type="button" class="btn sm" data-action="pick-org">' + (o ? "Change" : "Choose") + "</button>" +
+        '<button type="button" class="btn ghost sm" data-action="clear-org"' + (o ? "" : ' style="display:none"') + ">Remove</button>" +
+      "</div>"
+    );
+  }
+
+  // Read the field back into an organisation id, creating a new firm if one was named.
+  function orgIdFromForm(data) {
+    if (data.organisationId === "__new") {
+      const name = (data.newOrganisation || "").trim();
+      return name ? findOrCreateOrg(state, name).id : null;
+    }
+    return data.organisationId || null;
+  }
+
+  // Set a person's organisation straight from a list row or a firm's page.
+  function pickOrgForContact(c, after) {
+    openPicker({
+      title: "Organisation for " + fullName(c),
+      placeholder: "Search organisations",
+      items: orgPickerItems(c.organisationId),
+      onPick: function (id) { setOrganisation(c, id); save(); after(); toast(fullName(c) + " added to " + orgById(id).name); },
+      create: {
+        label: "Not there yet?", placeholder: "Name of the new organisation", button: "Create and add",
+        onSubmit: function (name) { const o = findOrCreateOrg(state, name); setOrganisation(c, o.id); save(); after(); toast(fullName(c) + " added to " + o.name); }
+      }
+    });
+  }
+
+  // Add a person to a firm: an existing contact, or someone new.
+  function pickPersonForOrg(o) {
+    const items = state.contacts.filter(function (c) { return c.organisationId !== o.id && c.lastName !== ""; })
+      .sort(function (a, b) { return fullName(a).localeCompare(fullName(b)); })
+      .map(function (c) { return { id: c.id, label: fullName(c), sub: [c.occupation, orgName(c), c.email].filter(Boolean).join(" · ") }; });
+    openPicker({
+      title: "Add a person to " + o.name,
+      placeholder: "Search contacts",
+      items: items,
+      onPick: function (id) { const c = contactById(id); setOrganisation(c, o.id); save(); render(); toast(fullName(c) + " added"); },
+      create: {
+        label: "Someone new?", placeholder: "Their name", button: "Add new",
+        help: "Opens the add-contact form with " + o.name + " already filled in.",
+        onSubmit: function (name) {
+          closePicker();
+          openAddContact(o.id);
+          const parts = name.trim().split(/\s+/);
+          const f = document.querySelector('form[data-form="add-contact"]');
+          if (f) { f.querySelector('[name="firstName"]').value = parts[0] || ""; f.querySelector('[name="lastName"]').value = parts.slice(1).join(" "); f.querySelector('[name="email"]').focus(); }
+        }
+      }
+    });
+  }
+
+  function logForm() {
+    return (
+      '<form data-form="log-activity" class="section">' +
+        '<div class="eyebrow">Log activity</div>' +
+        '<div class="row">' +
+          '<div class="field"><label>Type</label><select class="input" name="type"><option value="note">Note</option><option value="call">Call</option><option value="meeting">Meeting</option></select></div>' +
+          '<div class="field"><label>Date</label><input class="input mono" type="date" name="date" value="' + todayIso() + '"></div>' +
+        "</div>" +
+        '<div class="field"><label>What happened</label><textarea class="input" name="text" id="log-text" placeholder="Who was there, what they asked, what happens next"></textarea></div>' +
+        '<div class="actions" style="justify-content:flex-end"><button class="btn primary" type="submit">Log activity</button></div>' +
+      "</form>"
+    );
+  }
+
+  function detailsSection(c) {
+    if (editingDetails) {
+      return (
+        '<form class="section" data-form="edit-details" data-id="' + c.id + '">' +
+          '<div class="eyebrow">Details</div>' +
+          '<div class="row"><div class="field"><label>First name</label><input class="input" name="firstName" value="' + esc(c.firstName) + '"></div>' +
+          '<div class="field"><label>Last name</label><input class="input" name="lastName" value="' + esc(c.lastName) + '"></div></div>' +
+          '<div class="field"><label>Email</label><input class="input" name="email" value="' + esc(c.email) + '"></div>' +
+          '<div class="field"><label>Phone</label><input class="input" name="phone" value="' + esc(c.phone) + '"></div>' +
+          '<div class="field"><label>Organisation</label>' + orgField(c.organisationId) + "</div>" +
+          '<div class="field"><label>Role</label><input class="input" name="occupation" value="' + esc(c.occupation) + '" placeholder="Portfolio manager, analyst, broker…"></div>' +
+          '<div class="actions" style="justify-content:flex-end"><button class="btn" type="button" data-action="cancel-edit">Cancel</button><button class="btn primary" type="submit">Save</button></div>' +
+        "</form>"
+      );
+    }
+    return (
+      '<div class="section"><div class="eyebrow">Details</div><div class="kv">' +
+        '<div class="k">Email</div><div class="v">' + (c.email ? esc(c.email) : '<span class="muted">None</span>') + "</div>" +
+        '<div class="k">Phone</div><div class="v mono">' + (c.phone ? esc(c.phone) : '<span class="muted">–</span>') + "</div>" +
+        '<div class="k">Organisation</div><div class="v">' + orgLink(c) + ' <button class="link-btn small muted" data-action="pick-org-row" data-id="' + c.id + '">' + (c.organisationId ? "Change" : "Set") + "</button></div>" +
+        '<div class="k">Role</div><div class="v">' + (c.occupation ? esc(c.occupation) : '<span class="muted">–</span>') + "</div>" +
+        '<div class="k">Investor website</div><div class="v">' + (c.hub ? "Signed up " + fmtDate(c.hub) : '<span class="muted">Not signed up</span>') + "</div>" +
+      "</div></div>"
+    );
+  }
+
+  function tagsSection(c) {
+    const existing = allTags().map(function (t) { return '<option value="' + esc(t.tag) + '">'; }).join("");
+    return (
+      '<div class="section"><div class="eyebrow">Tags</div>' +
+        '<div class="tags" style="margin-bottom:10px">' +
+          (c.tags.length ? c.tags.map(function (t) {
+            return '<span class="badge">' + esc(t) + '<span class="x" data-action="remove-tag" data-id="' + c.id + '" data-tag="' + esc(t) + '">×</span></span>';
+          }).join("") : '<span class="muted small">No tags</span>') +
+        "</div>" +
+        '<form data-form="add-tag" data-id="' + c.id + '" class="row" style="gap:8px">' +
+          '<input class="input" name="tag" list="tag-list" placeholder="Add a tag"><datalist id="tag-list">' + existing + "</datalist>" +
+          '<button class="btn" type="submit" style="flex:0">Add</button>' +
+        "</form>" +
+      "</div>"
+    );
+  }
+
+  function holdingsSection(c) {
+    const h = c.holdings || [];
+    return (
+      '<div class="section"><div class="eyebrow">Holdings</div>' +
+        (h.length ? h.map(function (x) {
+          return '<div style="margin-bottom:10px"><div class="small">' + esc(x.accountName) + '</div><div class="row small"><span class="mono muted">' + esc(x.holderId) + '</span><span class="num">' + fmtNum(x.shares) + " shares</span></div></div>";
+        }).join("") : '<div class="muted small">No holdings linked. Holdings link to a contact by holder ID, then by email.</div>') +
+      "</div>"
+    );
+  }
+
+  function contactPage(id) {
+    const c = contactById(id);
+    if (!c) return layout("contacts", head("Contact", "Not found", "", ""));
+    const last = lastActivity(c);
+    const shares = sharesHeld(c);
+    return layout("contacts",
+      head(isShareholder(c) ? "Shareholder" : "Contact", fullName(c), esc(c.email || "No email address"),
+        '<a class="btn" href="#/contacts">Back to contacts</a>' +
+        '<button class="btn" data-action="edit-details">Edit details</button>' +
+        '<button class="btn primary" data-action="focus-log">Log activity</button>') +
+      stats([
+        ["Shares held", shares ? fmtNum(shares) : "–"],
+        ["% of company", shares ? pct(shares, state.company.totalShares) : "–"],
+        ["Accounts", fmtNum((c.holdings || []).length)],
+        ["Last activity", fmtDate(last)]
+      ]) +
+      '<div class="split"><div class="main">' +
+        logForm() +
+        '<div class="section" style="padding-bottom:0;border-bottom:0"><div class="eyebrow">Activity</div></div>' +
+        contactActivity(c) +
+      '</div><aside class="rail">' +
+        detailsSection(c) + tagsSection(c) + holdingsSection(c) +
+      "</aside></div>"
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // Add contact dialog
+  // ---------------------------------------------------------------------------
+
+  function openAddContact(orgId) {
+    const o = orgId ? orgById(orgId) : null;
+    const el = document.createElement("div");
+    el.className = "overlay";
+    el.innerHTML =
+      '<form class="dialog" data-form="add-contact">' +
+        '<div class="dh"><h2>' + (o ? "Add a person to " + esc(o.name) : "Add contact") + "</h2></div>" +
+        '<div class="db">' +
+          '<div class="row"><div class="field"><label>First name</label><input class="input" name="firstName" required></div>' +
+          '<div class="field"><label>Last name</label><input class="input" name="lastName"></div></div>' +
+          '<div class="field"><label>Email</label><input class="input" name="email" type="email"><div class="help">Email links notes, emails and holdings to this contact.</div></div>' +
+          '<div class="field"><label>Phone</label><input class="input" name="phone"></div>' +
+          '<div class="field"><label>Organisation</label>' + orgField(orgId || null) + "</div>" +
+          '<div class="field"><label>Role</label><input class="input" name="occupation" placeholder="Portfolio manager, analyst, broker…"></div>' +
+          '<div class="field"><label>Tags</label><input class="input" name="tags" placeholder="Separate tags with commas"></div>' +
+        "</div>" +
+        '<div class="df"><button class="btn" type="button" data-action="close-dialog">Cancel</button><button class="btn primary" type="submit">Add contact</button></div>' +
+      "</form>";
+    document.body.appendChild(el);
+    el.querySelector("input").focus();
+  }
+
+  // ---------------------------------------------------------------------------
+  // Organisations list
+  // ---------------------------------------------------------------------------
+
+  const orgListFilter = { text: "" };
+  const orgSelection = [];
+  let reviewOpen = false;
+
+  function reviewSection() {
+    const groups = suggestedMerges();
+    if (!groups.length) return "";
+    const n = groups.length;
+    const notice =
+      '<div class="notice">' +
+        '<span class="badge"><span class="dot"></span>' + n + (n === 1 ? " likely duplicate" : " likely duplicates") + "</span>" +
+        '<span class="grow">' + (reviewOpen ? "Pick the name to keep for each group. Nothing is merged until you click Merge." :
+          "Created from the old company field; they look like the same firm. Nothing is merged until you say so.") + "</span>" +
+        '<button class="btn sm" data-action="toggle-review">' + (reviewOpen ? "Hide" : "Review") + "</button>" +
+      "</div>";
+    if (!reviewOpen) return notice;
+    const rows = groups.map(function (g) {
+      const opts = g.orgs.map(function (o, i) {
+        return '<option value="' + o.id + '"' + (i === 0 ? " selected" : "") + ">" + esc(o.name) + " (" + membersOf(o.id).length + ")</option>";
+      }).join("");
+      const names = g.orgs.map(function (o) { return "<b>" + esc(o.name) + "</b> <span class=\"muted mono small\">" + membersOf(o.id).length + "</span>"; }).join(" · ");
+      return (
+        '<form data-form="merge-group" data-key="' + esc(g.key) + '" class="review-row">' +
+          '<div class="review-names">' + names + "</div>" +
+          '<div class="review-actions">' +
+            '<span class="small muted">Keep the name</span>' +
+            '<select class="input" name="masterId">' + opts + "</select>" +
+            '<input type="hidden" name="ids" value="' + g.orgs.map(function (o) { return o.id; }).join(",") + '">' +
+            '<button class="btn primary sm" type="submit">Merge</button>' +
+            '<button class="btn ghost sm" type="button" data-action="dismiss-group" data-key="' + esc(g.key) + '">Different firms</button>' +
+          "</div>" +
+        "</form>"
+      );
+    }).join("");
+    return (
+      notice +
+      '<div class="review">' +
+        rows +
+        '<div class="small muted" style="margin-top:10px">Merging moves everyone and everything across, and keeps the other spellings as "also known as" so later imports land in the right place.</div>' +
+      "</div>"
+    );
+  }
+
+  function bulkBar() {
+    const n = orgSelection.length;
+    return (
+      '<div class="bulk-bar' + (n ? " on" : "") + '" id="bulk-bar">' +
+        '<span id="bulk-count">' + n + " selected</span>" +
+        '<span class="grow"></span>' +
+        '<button class="btn sm" data-action="merge-selected"' + (n < 2 ? " disabled" : "") + ">Merge</button>" +
+        '<button class="btn sm" data-action="not-a-firm-selected">Not a firm</button>' +
+        '<button class="btn ghost sm" data-action="clear-selection">Clear</button>' +
+      "</div>"
+    );
+  }
+
+  function updateBulkBar() {
+    const bar = document.getElementById("bulk-bar");
+    if (!bar) return;
+    const n = orgSelection.length;
+    bar.classList.toggle("on", n > 0);
+    document.getElementById("bulk-count").textContent = n + " selected";
+    bar.querySelector('[data-action="merge-selected"]').disabled = n < 2;
+  }
+
+  function orgRow(o) {
+    const members = membersOf(o.id);
+    const checked = orgSelection.indexOf(o.id) > -1;
+    return (
+      '<tr class="click" data-href="#/organisations/' + o.id + '">' +
+        '<td style="width:36px"><input type="checkbox" class="org-check" data-change="org-check" value="' + o.id + '"' + (checked ? " checked" : "") + "></td>" +
+        '<td class="name-cell"><div class="n">' + esc(o.name) + "</div>" +
+          ((o.aliases || []).length ? '<div class="e">Also known as ' + esc(o.aliases.join(", ")) + "</div>" : "") + "</td>" +
+        "<td>" + (members.length ? esc(members.slice(0, 3).map(fullName).join(", ")) + (members.length > 3 ? '<span class="muted"> +' + (members.length - 3) + "</span>" : "") : '<span class="muted">Nobody yet</span>') + "</td>" +
+        '<td class="num">' + fmtNum(members.length) + "</td>" +
+        '<td class="num">' + fmtDate(orgLastActivity(o.id)) + "</td>" +
+      "</tr>"
+    );
+  }
+
+  function orgRowsHtml() {
+    const q = orgListFilter.text.trim().toLowerCase();
+    const list = sortedOrgs().filter(function (o) {
+      if (!q) return true;
+      const hay = (o.name + " " + (o.aliases || []).join(" ") + " " + membersOf(o.id).map(fullName).join(" ")).toLowerCase();
+      return hay.indexOf(q) > -1;
+    });
+    setTimeout(function () {
+      const el = document.getElementById("org-count");
+      if (el) el.textContent = list.length + " shown";
+      updateBulkBar();
+    });
+    if (!list.length) return '<div class="empty">No organisations match.</div>';
+    return (
+      '<div class="table-wrap"><table class="t"><thead><tr>' +
+        '<th></th><th>Organisation</th><th>People</th><th class="num">Count</th><th class="num">Last activity</th>' +
+      "</tr></thead><tbody>" + list.map(orgRow).join("") + "</tbody></table></div>"
+    );
+  }
+
+  function organisationsPage() {
+    const orgs = state.organisations || [];
+    const inOrg = state.contacts.filter(function (c) { return c.organisationId; }).length;
+    const meetings = state.activities.filter(function (a) { return a.orgId && a.type === "meeting"; }).length;
+    afterRenderHook = function () {
+      const box = document.getElementById("org-filter");
+      if (box) box.addEventListener("input", function () { orgListFilter.text = box.value; document.getElementById("org-rows").innerHTML = orgRowsHtml(); });
+    };
+    return layout("organisations",
+      head("CRM", "Organisations", "The firms " + esc(state.company.name) + " deals with: fund managers, brokers and super funds, each with its people",
+        '<button class="btn primary" data-action="add-org">New organisation</button>') +
+      stats([
+        ["Organisations", fmtNum(orgs.length)],
+        ["People in them", fmtNum(inOrg)],
+        ["Contacts without one", fmtNum(state.contacts.length - inOrg)],
+        ["Meetings logged on a firm", fmtNum(meetings)]
+      ]) +
+      reviewSection() +
+      '<div class="toolbar">' +
+        '<input id="org-filter" class="input grow" placeholder="Filter by organisation, or by a person to find their firm" value="' + esc(orgListFilter.text) + '">' +
+        '<span class="muted small" id="org-count"></span>' +
+      "</div>" +
+      bulkBar() +
+      '<div id="org-rows">' + orgRowsHtml() + "</div>"
+    );
+  }
+
+  function openAddOrg() {
+    const el = document.createElement("div");
+    el.className = "overlay";
+    el.innerHTML =
+      '<form class="dialog" data-form="add-org">' +
+        '<div class="dh"><h2>New organisation</h2></div>' +
+        '<div class="db">' +
+          '<div class="field"><label>Name</label><input class="input" name="name" required placeholder="Larkspur Capital"><div class="help">A name is enough. If a firm with this name already exists, you\'ll be taken to it.</div></div>' +
+        "</div>" +
+        '<div class="df"><button class="btn" type="button" data-action="close-dialog">Cancel</button><button class="btn primary" type="submit">Create</button></div>' +
+      "</form>";
+    document.body.appendChild(el);
+    el.querySelector("input").focus();
+  }
+
+  function openMergeDialog(ids) {
+    const orgs = ids.map(orgById).filter(Boolean);
+    if (orgs.length < 2) return;
+    const el = document.createElement("div");
+    el.className = "overlay";
+    el.innerHTML =
+      '<form class="dialog" data-form="merge-dialog">' +
+        '<div class="dh"><h2>Merge ' + orgs.length + " organisations</h2></div>" +
+        '<div class="db">' +
+          '<div class="small muted" style="margin-bottom:12px">' + esc(orgs.map(function (o) { return o.name; }).join(", ")) + "</div>" +
+          '<div class="field"><label>Keep the name</label><select class="input" name="masterId">' +
+            orgs.map(function (o) { return '<option value="' + o.id + '">' + esc(o.name) + " (" + membersOf(o.id).length + " people)</option>"; }).join("") +
+          "</select><div class=\"help\">Everyone and everything moves to this one. The other names are kept as “also known as”.</div></div>" +
+          '<input type="hidden" name="ids" value="' + orgs.map(function (o) { return o.id; }).join(",") + '">' +
+        "</div>" +
+        '<div class="df"><button class="btn" type="button" data-action="close-dialog">Cancel</button><button class="btn primary" type="submit">Merge</button></div>' +
+      "</form>";
+    document.body.appendChild(el);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Organisation page
+  // ---------------------------------------------------------------------------
+
+  let editingOrg = false;
+  let meetingOpen = false;
+
+  function orgMeetingForm(o) {
+    const members = membersOf(o.id);
+    if (!meetingOpen) {
+      return (
+        '<div class="section collapsed-form">' +
+          '<div><div class="eyebrow">Log a meeting once</div><div class="small muted">Tick who was there; it shows on each of them and here.</div></div>' +
+          '<button class="btn sm" data-action="focus-log">Log meeting</button>' +
+        "</div>"
+      );
+    }
+    const checks = members.length ? members.map(function (c) {
+      return '<label class="check"><input type="checkbox" name="attendee" value="' + c.id + '"> ' + esc(fullName(c)) +
+        (c.occupation ? ' <span class="muted small">' + esc(c.occupation) + "</span>" : "") + "</label>";
+    }).join("") : '<div class="muted small">Add people to ' + esc(o.name) + " first, then tick who came.</div>";
+    return (
+      '<form data-form="log-meeting" data-org="' + o.id + '" class="section">' +
+        '<div class="collapsed-form" style="margin-bottom:10px"><div class="eyebrow">Log a meeting once</div><button class="btn ghost sm" type="button" data-action="close-log">Cancel</button></div>' +
+        '<div class="row">' +
+          '<div class="field"><label>Type</label><select class="input" name="type"><option value="meeting">Meeting</option><option value="call">Call</option><option value="note">Note</option></select></div>' +
+          '<div class="field"><label>Date</label><input class="input mono" type="date" name="date" value="' + todayIso() + '"></div>' +
+        "</div>" +
+        '<div class="field"><label>Who from ' + esc(o.name) + " was there</label>" + checks + '<div class="help">It\'ll show on each person you tick, and here.</div></div>' +
+        '<div class="field"><label>What happened</label><textarea class="input" name="text" id="log-text" placeholder="What they asked, what we said, what happens next"></textarea></div>' +
+        '<div class="actions" style="justify-content:flex-end"><button class="btn primary" type="submit">Log it</button></div>' +
+      "</form>"
+    );
+  }
+
+  function orgTimeline(o) {
+    const list = activitiesForOrg(o.id);
+    if (!list.length) return '<div class="empty">Nothing logged with ' + esc(o.name) + " yet.</div>";
+    return '<ul class="rows">' + list.map(function (a) { return activityRow(a, "org"); }).join("") + "</ul>";
+  }
+
+  function orgPeopleSection(o) {
+    const members = membersOf(o.id);
+    return (
+      '<div class="section"><div class="collapsed-form" style="margin-bottom:10px"><div class="eyebrow">People · ' + members.length + "</div>" +
+        '<button class="btn sm" data-action="add-person" data-id="' + o.id + '">Add a person</button></div>' +
+        (members.length ? members.map(function (c) {
+          return '<div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline;margin-bottom:9px">' +
+            '<div><a href="#/contacts/' + c.id + '">' + esc(fullName(c)) + "</a>" +
+              '<div class="small muted">' + (c.occupation ? esc(c.occupation) : "Role not set") + "</div></div>" +
+            '<button class="link-btn small muted" data-action="remove-member" data-id="' + c.id + '" title="Remove from ' + esc(o.name) + '">Remove</button>' +
+          "</div>";
+        }).join("") : '<div class="muted small">Nobody yet. Add an existing contact, or someone new.</div>') +
+      "</div>"
+    );
+  }
+
+  function orgDetailsSection(o) {
+    if (editingOrg) {
+      return (
+        '<form class="section" data-form="edit-org" data-id="' + o.id + '">' +
+          '<div class="eyebrow">Details</div>' +
+          '<div class="field"><label>Name</label><input class="input" name="name" value="' + esc(o.name) + '" required>' +
+            '<div class="help">This becomes the name everyone sees. The old name is kept under "also known as", and every person, meeting and note stays attached.</div></div>' +
+          '<div class="actions" style="justify-content:flex-end"><button class="btn" type="button" data-action="cancel-edit-org">Cancel</button><button class="btn primary" type="submit">Save</button></div>' +
+        "</form>"
+      );
+    }
+    return (
+      '<div class="section"><div class="eyebrow">Details</div><div class="kv">' +
+        '<div class="k">Name</div><div class="v">' + esc(o.name) + "</div>" +
+        '<div class="k">Also known as</div><div class="v">' + ((o.aliases || []).length ? esc(o.aliases.join(", ")) : '<span class="muted">–</span>') + "</div>" +
+      "</div>" +
+      '<div style="margin-top:12px;display:flex;flex-direction:column;gap:8px;align-items:flex-start">' +
+        '<button class="link-btn small" data-action="edit-org">Rename</button>' +
+        '<button class="link-btn small" data-action="download-org-template" data-id="' + o.id + '">Download an import template for ' + esc(o.name) + "</button>" +
+        '<button class="link-btn small muted" data-action="not-a-firm" data-id="' + o.id + '">Not a firm: remove it, keep the people</button>' +
+      "</div></div>"
+    );
+  }
+
+  // A CSV template with the firm's name already in the company column, so a file
+  // Josh fills in for Larkspur comes back to Larkspur.
+  function downloadOrgTemplate(o) {
+    const q = function (v) { return '"' + String(v).replace(/"/g, '""') + '"'; };
+    const rows = [TEMPLATE_COLUMNS.join(",")];
+    for (let i = 0; i < 5; i++) rows.push(["", "", "", "", q(o.name), "", ""].join(","));
+    const blob = new Blob([rows.join("\n") + "\n"], { type: "text/csv" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "contacts-" + o.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") + ".csv";
+    a.click();
+    toast("Template for " + o.name + " downloaded");
+  }
+
+  function organisationPage(id) {
+    const o = orgById(id);
+    if (!o) return layout("organisations", head("Organisation", "Not found", 'It may have been merged into another. <a href="#/organisations">Back to organisations</a>', ""));
+    const members = membersOf(o.id);
+    const meetings = activitiesForOrg(o.id).filter(function (a) { return a.type === "meeting"; });
+    return layout("organisations",
+      head("Organisation", o.name,
+        ((o.aliases || []).length ? "Also known as " + esc(o.aliases.join(", ")) + " · " : "") + members.length + (members.length === 1 ? " person" : " people"),
+        '<a class="btn" href="#/organisations">Back to organisations</a>' +
+        '<button class="btn" data-action="add-person" data-id="' + o.id + '">Add a person</button>' +
+        '<button class="btn primary" data-action="focus-log">Log meeting</button>') +
+      stats([
+        ["People", fmtNum(members.length)],
+        ["Meetings", fmtNum(meetings.length)],
+        ["Last met", fmtDate(meetings.length ? meetings[0].date : null)],
+        ["Last activity", fmtDate(orgLastActivity(o.id))]
+      ]) +
+      '<div class="split"><div class="main">' +
+        orgMeetingForm(o) +
+        '<div class="section" style="padding-bottom:0;border-bottom:0"><div class="eyebrow">Everything with ' + esc(o.name) + "</div></div>" +
+        orgTimeline(o) +
+      '</div><aside class="rail">' +
+        orgPeopleSection(o) + orgDetailsSection(o) +
+      "</aside></div>"
+    );
+  }
+
+  function closeDialog() {
+    const el = document.querySelector(".overlay");
+    if (el) el.remove();
+  }
+
+  // ---------------------------------------------------------------------------
+  // Emails
+  // ---------------------------------------------------------------------------
+
+  function emailsPage() {
+    const list = state.emails.slice().sort(function (a, b) { return b.date.localeCompare(a.date); });
+    return layout("emails",
+      head("Emails", "Emails", "Emails sent to contacts from the CRM", '<a class="btn primary" href="#/emails/new">New email</a>') +
+      '<div class="table-wrap"><table class="t"><thead><tr><th>Subject</th><th>Audience</th><th class="num">Sent</th><th class="num">Recipients</th><th class="num">Opened</th><th class="num">Clicked</th></tr></thead><tbody>' +
+      list.map(function (e) {
+        return "<tr><td>" + esc(e.subject) + '</td><td class="muted">' + esc(describeAudience(e.audience)) + '</td><td class="num">' + fmtDate(e.date) +
+          '</td><td class="num">' + fmtNum(e.recipients) + '</td><td class="num">' + pct(e.opens, e.recipients) + '</td><td class="num">' + pct(e.clicks, e.recipients) + "</td></tr>";
+      }).join("") +
+      "</tbody></table></div>"
+    );
+  }
+
+  const draft = { kind: "shareholders", tags: [], contactIds: [], subject: "", body: "", peopleFilter: "" };
+
+  function composeAudienceCount() {
+    const recips = audienceContacts(draft);
+    const el = document.getElementById("recipient-count");
+    if (el) el.textContent = recips.length + (recips.length === 1 ? " recipient" : " recipients");
+  }
+
+  function composePage() {
+    const tagChecks = allTags().map(function (t) {
+      return '<label class="check"><input type="checkbox" data-change="draft-tag" value="' + esc(t.tag) + '"' + (draft.tags.indexOf(t.tag) > -1 ? " checked" : "") + "> " + esc(t.tag) + ' <span class="muted mono small">' + t.count + "</span></label>";
+    }).join("");
+    const people = state.contacts.filter(canEmail).sort(function (a, b) { return fullName(a).localeCompare(fullName(b)); });
+    const peopleChecks = people.map(function (c) {
+      return '<label class="check" data-person="' + esc((fullName(c) + " " + orgName(c)).toLowerCase()) + '"><input type="checkbox" data-change="draft-person" value="' + c.id + '"' + (draft.contactIds.indexOf(c.id) > -1 ? " checked" : "") + "> " + esc(fullName(c)) + (orgName(c) ? ' <span class="muted small">' + esc(orgName(c)) + "</span>" : "") + "</label>";
+    }).join("");
+    const radio = function (kind, label) {
+      return '<label class="check"><input type="radio" name="kind" data-change="draft-kind" value="' + kind + '"' + (draft.kind === kind ? " checked" : "") + "> " + label + "</label>";
+    };
+    afterRenderHook = composeAudienceCount;
+    return layout("emails",
+      head("Emails", "New email", "Choose who it goes to, then write it",
+        '<a class="btn" href="#/emails">Cancel</a><button class="btn primary" data-action="send-email">Send email</button>') +
+      '<div class="split"><div class="main">' +
+        '<div class="section"><div class="eyebrow">Message</div>' +
+          '<div class="field"><label>Subject</label><input class="input" id="draft-subject" value="' + esc(draft.subject) + '"></div>' +
+          '<div class="field"><label>Message</label><textarea class="input" id="draft-body" style="min-height:220px">' + esc(draft.body) + "</textarea></div>" +
+        "</div>" +
+      '</div><aside class="rail">' +
+        '<div class="section"><div class="eyebrow">Audience</div>' +
+          radio("all", "All contacts") + radio("shareholders", "Shareholders") + radio("tags", "Contacts with any of these tags") + radio("contacts", "Choose people") +
+          '<div class="well" style="margin-top:12px"><span class="mono" id="recipient-count"></span><div class="caption muted" style="margin-top:2px">Contacts without an email address, or who have unsubscribed, are left out.</div></div>' +
+        "</div>" +
+        (draft.kind === "tags" ? '<div class="section"><div class="eyebrow">Tags</div>' + tagChecks + "</div>" : "") +
+        (draft.kind === "contacts" ? '<div class="section"><div class="eyebrow">People</div><input class="input" id="people-filter" placeholder="Filter people" style="margin-bottom:8px">' + peopleChecks + "</div>" : "") +
+      "</aside></div>"
+    );
+  }
+
+  function sendEmail() {
+    draft.subject = document.getElementById("draft-subject").value.trim();
+    draft.body = document.getElementById("draft-body").value.trim();
+    const recips = audienceContacts(draft);
+    if (!draft.subject) { toast("Add a subject first"); return; }
+    if (!recips.length) { toast("Nobody is in this audience"); return; }
+    const em = {
+      id: uid("e"), subject: draft.subject, date: todayIso(), body: draft.body,
+      audience: { kind: draft.kind, tags: draft.tags.slice(), contactIds: draft.contactIds.slice() },
+      recipients: recips.length, opens: 0, clicks: 0
+    };
+    state.emails.push(em);
+    recips.forEach(function (c) {
+      state.activities.push({ id: uid("a"), contactId: c.id, type: "email_sent", date: em.date, author: state.currentUser, subject: em.subject, emailId: em.id, status: "Sent" });
+    });
+    save();
+    Object.assign(draft, { kind: "shareholders", tags: [], contactIds: [], subject: "", body: "" });
+    location.hash = "#/emails";
+    toast("Email sent to " + recips.length + " people");
+  }
+
+  // ---------------------------------------------------------------------------
+  // Import
+  // ---------------------------------------------------------------------------
+
+  const TEMPLATE_COLUMNS = ["first_name", "last_name", "email", "phone", "company", "occupation", "tags"];
+
+  const SAMPLE_FILES = {
+    template: {
+      label: "Template example",
+      csv: "first_name,last_name,email,phone,company,occupation,tags\n" +
+        "Olivia,Grant,olivia.grant@harbourfunds.example,+61 2 9700 1100,Harbour Funds,Analyst,Insto\n" +
+        "Marcus,Bell,,,Harbour Funds,Portfolio manager,Insto\n" +
+        "Sophie,Bennett,sophie.b@mail.example,,,,Retail;AGM 2026\n"
+    },
+    corella: {
+      label: "Corella Investor CRM v14.xlsx, Funds tab (saved as CSV)",
+      csv: "Fund manager,Type,Their funds that hold us,% of our shares (June),Their people,Ours,Last met,Notes,Next step\n" +
+        "Larkspur Capital,Fund manager,Emerging Leaders; Small Cos,9.0,Priya Raman (manager Emerging Leaders) / David Okafor (manager Small Cos) / Tom Avery (analyst both) / Ella Ng (analyst) moved to Kestrel Jul,Hannah,18-Aug,Priya keen on loan growth. David more cautious: asked about late repayments. May buy more after the raise.,Send David the late-repayments data\n" +
+        "Meridian Lane AM,Fund manager,Australian Equities,6.7,Daniel Moss (manager) / Rachel Hu (co-manager) / Sarah Kim (analyst),Hannah,19-Aug,Worried about funding costs. Daniel prefers CFO only; Rachel wants the CEO.,Follow up after Q1\n" +
+        "Bluegum Partners,Fund manager,Small Caps,4.5,Ash Kumar (manager),Josh,04-Mar,Lost a big client in Q2. Selling??,Check next ownership report\n" +
+        "Corbett & Lane,Fund manager,Value Fund,3.0,Peter Corbett (head of investments) / James Wu (analyst),Hannah,12-Feb,Asked about bad debts.,\n" +
+        "Kestrel Point Investments,Fund manager,Financials Opportunities,2.6,Mark Ellery (manager Financials Opps) / Jo Tan (manager Small Caps not holding) / Ella Ng (analyst ex-Larkspur),Josh,20-Aug,Ella new here. Jo may buy. Wants to visit our operations.,Book visit Nov\n" +
+        "Seahaven Super,Super fund,Balanced (via external manager?),1.9,research@seahaven,,,Holds through a manager. Who?,\n" +
+        "Atlas Funds Mgmt,Fund manager,not in ownership report,–,Grace Liu (analyst),Josh,21-Aug,Met at the Sydney conference. Interested in the income angle.,Invite to Feb roadshow\n" +
+        "Hartley Securities,Broker,–,–,Nick Hale (sales) / Amy Tran (research),Hannah,22-Aug,Our broker. Books our roadshow meetings.,First research in Nov\n"
+    },
+    conference: {
+      label: "Sydney conference attendees (from the organiser)",
+      csv: "first_name,last_name,email,phone,company,occupation,tags\n" +
+        "Grace,Liu,grace.liu@atlasfunds.example,,Atlas Funds Management,Analyst,Sydney conference 2026\n" +
+        "Sam,O'Neill,sam.oneill@larkspurcapital.example,,Larkspur,Analyst,Sydney conference 2026\n" +
+        "Olivia,Grant,olivia.grant@harbourfunds.example,,Harbour Funds,Analyst,Sydney conference 2026\n" +
+        "Marcus,Bell,marcus.bell@harbourfunds.example,,Harbour Funds,Portfolio manager,Sydney conference 2026\n" +
+        "Wei,Zhang,wei.zhang@tidewaterim.example,,Tidewater Investment Management,Portfolio manager,Sydney conference 2026\n"
+    }
+  };
+
+  let importText = "";
+  let importPreview = null;
+
+  // Minimal CSV parser: handles quoted fields with commas and doubled quotes.
+  function parseCsv(text) {
+    const rows = [];
+    let row = [], field = "", inQuotes = false;
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+      if (inQuotes) {
+        if (ch === '"' && text[i + 1] === '"') { field += '"'; i++; }
+        else if (ch === '"') inQuotes = false;
+        else field += ch;
+      } else if (ch === '"') inQuotes = true;
+      else if (ch === ",") { row.push(field); field = ""; }
+      else if (ch === "\n" || ch === "\r") {
+        if (ch === "\r" && text[i + 1] === "\n") i++;
+        row.push(field); field = "";
+        if (row.some(function (f) { return f.trim() !== ""; })) rows.push(row);
+        row = [];
+      } else field += ch;
+    }
+    row.push(field);
+    if (row.some(function (f) { return f.trim() !== ""; })) rows.push(row);
+    return rows;
+  }
+
+  function buildPreview(text) {
+    const rows = parseCsv(text);
+    if (rows.length < 2) return { error: "The file needs a header row and at least one person." };
+    const header = rows[0].map(function (h) { return h.trim().toLowerCase().replace(/\s+/g, "_"); });
+    const used = header.filter(function (h) { return TEMPLATE_COLUMNS.indexOf(h) > -1; });
+    const ignored = rows[0].filter(function (h, i) { return TEMPLATE_COLUMNS.indexOf(header[i]) === -1; });
+    const out = rows.slice(1).map(function (r) {
+      const rec = {};
+      header.forEach(function (h, i) { if (TEMPLATE_COLUMNS.indexOf(h) > -1) rec[h] = (r[i] || "").trim(); });
+      const email = (rec.email || "").toLowerCase();
+      let status;
+      if (!email) status = "Dropped: no email";
+      else if (state.contacts.some(function (c) { return c.email.toLowerCase() === email; })) status = "Updates existing contact";
+      else status = "New contact";
+      return { rec: rec, raw: r, status: status };
+    });
+    return { header: rows[0], used: used, ignored: ignored, rows: out };
+  }
+
+  function importPage() {
+    const sampleOptions = Object.keys(SAMPLE_FILES).map(function (k) {
+      return '<option value="' + k + '">' + esc(SAMPLE_FILES[k].label) + "</option>";
+    }).join("");
+    let preview = "";
+    if (importPreview && importPreview.error) {
+      preview = '<div class="section"><div class="eyebrow">Preview</div><div class="status-bad">' + esc(importPreview.error) + "</div></div>";
+    } else if (importPreview) {
+      const p = importPreview;
+      const n = function (s) { return p.rows.filter(function (r) { return r.status === s; }).length; };
+      const dropped = p.rows.filter(function (r) { return r.status.indexOf("Dropped") === 0; }).length;
+      const willImport = p.rows.length - dropped;
+      preview =
+        '<div class="section" style="padding-bottom:0"><div class="eyebrow">Preview</div></div>' +
+        stats([["New contacts", fmtNum(n("New contact"))], ["Updates", fmtNum(n("Updates existing contact"))], ["Dropped", fmtNum(dropped)]]) +
+        (p.ignored.length ? '<div class="section"><div class="well">These columns aren\'t in the template, so they\'ll be ignored: <b>' + esc(p.ignored.join(", ")) + "</b></div></div>" : "") +
+        '<div class="table-wrap"><table class="t"><thead><tr><th>Row</th>' + TEMPLATE_COLUMNS.map(function (c) { return "<th>" + c + "</th>"; }).join("") + "<th>Result</th></tr></thead><tbody>" +
+        p.rows.map(function (r, i) {
+          const tone = r.status.indexOf("Dropped") === 0 ? "status-bad" : r.status === "New contact" ? "status-ok" : "status-warn";
+          return '<tr><td class="num">' + (i + 2) + "</td>" + TEMPLATE_COLUMNS.map(function (c) { return "<td>" + esc(r.rec[c] || "") + "</td>"; }).join("") + '<td class="' + tone + '">' + esc(r.status) + "</td></tr>";
+        }).join("") +
+        "</tbody></table></div>" +
+        '<div class="section" style="display:flex;justify-content:flex-end;gap:8px"><button class="btn" data-action="clear-import">Start again</button>' +
+        '<button class="btn primary" data-action="run-import"' + (willImport ? "" : " disabled") + ">Import " + willImport + " contacts</button></div>";
+    }
+    return layout("import",
+      head("Contacts", "Import contacts", "Add or update contacts from a CSV file", '<button class="btn" data-action="download-template">Download template</button>') +
+      '<div class="section"><div class="eyebrow">How it works</div>' +
+        '<ul style="margin:0;padding-left:18px">' +
+          "<li>One person per row.</li>" +
+          "<li>Email is required. It links each row to a contact, so rows with no email are dropped.</li>" +
+          "<li>If the email already exists, that contact is updated.</li>" +
+          "<li>Notes and activity can't be imported.</li>" +
+        "</ul>" +
+        '<div style="margin-top:12px"><pre class="csv">' + TEMPLATE_COLUMNS.join(",") + "\nPriya,Raman,priya@example.com,+61 2 9000 0000,Example Capital,Analyst,Insto</pre></div>" +
+      "</div>" +
+      '<div class="section"><div class="eyebrow">Your file</div>' +
+        '<div class="row" style="align-items:flex-end">' +
+          '<div class="field"><label>Choose a file</label><input class="input" type="file" accept=".csv,text/csv" id="import-file"></div>' +
+          '<div class="field"><label>Or use a sample file</label><select class="input" data-change="import-sample"><option value="">Choose a sample…</option>' + sampleOptions + "</select></div>" +
+        "</div>" +
+        '<div class="field"><label>Or paste CSV</label><textarea class="input mono" id="import-text" style="min-height:120px;font-size:12.5px">' + esc(importText) + "</textarea></div>" +
+        '<div class="actions" style="justify-content:flex-end"><button class="btn primary" data-action="preview-import">Preview import</button></div>' +
+      "</div>" +
+      preview
+    );
+  }
+
+  function runImport() {
+    let added = 0, updated = 0;
+    importPreview.rows.forEach(function (r) {
+      if (r.status.indexOf("Dropped") === 0) return;
+      const rec = r.rec;
+      const tags = (rec.tags || "").split(/[;|]/).map(function (t) { return t.trim(); }).filter(Boolean);
+      const existing = state.contacts.find(function (c) { return c.email.toLowerCase() === rec.email.toLowerCase(); });
+      if (existing) {
+        ["first_name", "last_name", "phone", "occupation"].forEach(function (k) {
+          const key = { first_name: "firstName", last_name: "lastName" }[k] || k;
+          if (rec[k]) existing[key] = rec[k];
+        });
+        // The company column names the organisation. A known name or alias maps to the
+        // existing firm; anything else becomes a new one and shows up for review.
+        if (rec.company) setOrganisation(existing, findOrCreateOrg(state, rec.company).id);
+        tags.forEach(function (t) { if (existing.tags.indexOf(t) === -1) existing.tags.push(t); });
+        updated++;
+      } else {
+        state.contacts.push({
+          id: uid("c"), firstName: rec.first_name || rec.email, lastName: rec.last_name || "", email: rec.email,
+          phone: rec.phone || "", organisationId: rec.company ? findOrCreateOrg(state, rec.company).id : null, occupation: rec.occupation || "", tags: tags,
+          holdings: [], hub: null, unsubscribed: false
+        });
+        added++;
+      }
+    });
+    save();
+    importText = ""; importPreview = null;
+    location.hash = "#/contacts";
+    toast(added + " added, " + updated + " updated");
+  }
+
+  function downloadTemplate() {
+    const blob = new Blob([TEMPLATE_COLUMNS.join(",") + "\n"], { type: "text/csv" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "contact-import-template.csv";
+    a.click();
+  }
+
+  // ---------------------------------------------------------------------------
+  // Ownership report
+  // ---------------------------------------------------------------------------
+
+  function ownershipPage() {
+    const o = state.ownership;
+    return layout("ownership",
+      head("Ownership", "Ownership report", "Most shares are held by banks on behalf of funds, so the register shows the bank's name. This report asks the banks which funds are behind them. As at " + fmtDate(o.asAt) + ", compared with " + esc(o.comparedWith) + ".", "") +
+      stats(o.summary.map(function (s) { return [s.label, s.pct.toFixed(1) + "%"]; })) +
+      '<div class="section" style="padding-bottom:0;border-bottom:0"><div class="eyebrow">Largest funds found</div></div>' +
+      '<div class="table-wrap"><table class="t"><thead><tr><th>Fund manager</th><th>Fund</th><th>Held through</th><th class="num">% now</th><th class="num">Change since June</th></tr></thead><tbody>' +
+      o.funds.map(function (f) {
+        const tone = f.change === "new" ? "blue" : f.change.indexOf("+") === 0 ? "green" : f.change === "0.0" ? "" : "rose";
+        return "<tr><td>" + esc(f.manager) + "</td><td>" + esc(f.fund) + '</td><td class="muted">' + esc(f.via) + '</td><td class="num">' + f.pct.toFixed(1) + '</td><td class="num"><span class="badge mono ' + tone + '">' + esc(f.change) + "</span></td></tr>";
+      }).join("") +
+      "</tbody></table></div>" +
+      '<div class="section"><div class="caption muted">Only the 50 largest bank holdings are traced. Smaller holdings, and trades after the report date, aren\'t included. Next report: January 2027.</div></div>'
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // Search
+  // ---------------------------------------------------------------------------
+
+  function searchPage(q) {
+    const term = q.trim().toLowerCase();
+    const hits = !term ? [] : state.contacts.filter(function (c) {
+      return (fullName(c) + " " + c.email + " " + orgName(c) + " " + c.occupation + " " + c.tags.join(" ")).toLowerCase().indexOf(term) > -1;
+    });
+    return layout("",
+      head("Search", term ? "Results for “" + q + "”" : "Search", term ? hits.length + (hits.length === 1 ? " contact" : " contacts") : "Type in the search box above", "") +
+      (term ? contactTable(hits) : "")
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // Events
+  // ---------------------------------------------------------------------------
+
+  document.addEventListener("click", function (ev) {
+    const t = ev.target;
+    const row = t.closest("tr[data-href]");
+    if (row && !t.closest("a,button,input")) { location.hash = row.getAttribute("data-href"); return; }
+    const btn = t.closest("[data-action]");
+    if (!btn) return;
+    const action = btn.getAttribute("data-action");
+    const id = btn.getAttribute("data-id");
+    if (action === "reset") { if (confirm("Reset all demo data?")) resetDemo(); }
+    else if (action === "add-contact") openAddContact(btn.getAttribute("data-org"));
+    else if (action === "close-dialog") closeDialog();
+    else if (action === "edit-details") { editingDetails = true; render(); }
+    else if (action === "cancel-edit") { editingDetails = false; render(); }
+    else if (action === "add-org") openAddOrg();
+    else if (action === "edit-org") { editingOrg = true; render(); }
+    else if (action === "cancel-edit-org") { editingOrg = false; render(); }
+    else if (action === "merge-selected") openMergeDialog(orgSelection.slice());
+    else if (action === "dismiss-group") {
+      state.dismissedMerges = (state.dismissedMerges || []).concat([btn.getAttribute("data-key")]);
+      save(); render();
+    }
+    else if (action === "remove-member") {
+      const c = contactById(id);
+      const o = orgOf(c);
+      if (c && confirm("Remove " + fullName(c) + " from " + (o ? o.name : "this organisation") + "? Their notes and meetings stay on their record.")) {
+        setOrganisation(c, null); save(); render();
+      }
+    }
+    else if (action === "not-a-firm") {
+      const o = orgById(id);
+      if (o && confirm("Remove " + o.name + " as an organisation? Its people stay in the CRM with no organisation.")) {
+        removeOrg(id); save(); location.hash = "#/organisations"; toast(o.name + " removed");
+      }
+    }
+    else if (action === "focus-log") {
+      // On a firm's page the form is collapsed until asked for.
+      if (!meetingOpen && document.querySelector(".collapsed-form")) { meetingOpen = true; render(); }
+      const el = document.getElementById("log-text"); if (el) { el.focus(); el.scrollIntoView({ block: "center" }); }
+    }
+    else if (action === "close-log") { meetingOpen = false; render(); }
+    else if (action === "toggle-review") { reviewOpen = !reviewOpen; render(); }
+    else if (action === "clear-selection") { orgSelection.length = 0; render(); }
+    else if (action === "not-a-firm-selected") {
+      const names = orgSelection.map(function (x) { return orgById(x) ? orgById(x).name : null; }).filter(Boolean);
+      if (names.length && confirm("Remove " + names.join(", ") + " as organisations? Their people stay in the CRM with no organisation.")) {
+        orgSelection.slice().forEach(removeOrg); orgSelection.length = 0; save(); render(); toast(names.length + " removed");
+      }
+    }
+    else if (action === "pick") { const p = picker; closePicker(); if (p) p.onPick(id); }
+    else if (action === "close-picker") closePicker();
+    else if (action === "pick-org") pickOrgForField(btn.closest(".org-field"));
+    else if (action === "clear-org") setOrgField(btn.closest(".org-field"), "", "", false);
+    else if (action === "pick-org-row") {
+      const c = contactById(id);
+      if (c) pickOrgForContact(c, function () { if (document.getElementById("contact-rows")) refreshContactRows(); else render(); });
+    }
+    else if (action === "add-person") { const o = orgById(id); if (o) pickPersonForOrg(o); }
+    else if (action === "download-org-template") { const o = orgById(id); if (o) downloadOrgTemplate(o); }
+    else if (action === "remove-tag") {
+      const c = contactById(id);
+      c.tags = c.tags.filter(function (x) { return x !== btn.getAttribute("data-tag"); });
+      save(); render();
+    }
+    else if (action === "send-email") sendEmail();
+    else if (action === "preview-import") { importText = document.getElementById("import-text").value; importPreview = buildPreview(importText); render(); }
+    else if (action === "clear-import") { importText = ""; importPreview = null; render(); }
+    else if (action === "run-import") runImport();
+    else if (action === "download-template") downloadTemplate();
+  });
+
+  document.addEventListener("change", function (ev) {
+    const t = ev.target;
+    const kind = t.getAttribute("data-change");
+    if (t.id === "import-file" && t.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function () { importText = reader.result; importPreview = buildPreview(importText); render(); };
+      reader.readAsText(t.files[0]);
+      return;
+    }
+    if (!kind) return;
+    if (kind === "tag-filter") { listFilter.tag = t.value; refreshContactRows(); }
+    else if (kind === "holder-filter") { listFilter.holders = t.value; refreshContactRows(); }
+    else if (kind === "org-filter") { listFilter.org = t.value; refreshContactRows(); }
+    else if (kind === "org-check") {
+      const i = orgSelection.indexOf(t.value);
+      if (t.checked && i === -1) orgSelection.push(t.value); else if (!t.checked && i > -1) orgSelection.splice(i, 1);
+      updateBulkBar();
+    }
+    else if (kind === "draft-kind") { keepDraftText(); draft.kind = t.value; render(); }
+    else if (kind === "draft-tag") {
+      if (t.checked) draft.tags.push(t.value); else draft.tags = draft.tags.filter(function (x) { return x !== t.value; });
+      composeAudienceCount();
+    }
+    else if (kind === "draft-person") {
+      if (t.checked) draft.contactIds.push(t.value); else draft.contactIds = draft.contactIds.filter(function (x) { return x !== t.value; });
+      composeAudienceCount();
+    }
+    else if (kind === "import-sample" && t.value) { importText = SAMPLE_FILES[t.value].csv; importPreview = null; render(); }
+  });
+
+  document.addEventListener("input", function (ev) {
+    if (ev.target.id === "picker-search") { renderPickerList(ev.target.value); return; }
+    if (ev.target.id === "people-filter") {
+      const q = ev.target.value.toLowerCase();
+      document.querySelectorAll("[data-person]").forEach(function (el) {
+        el.style.display = el.getAttribute("data-person").indexOf(q) > -1 ? "" : "none";
+      });
+    }
+  });
+
+  function keepDraftText() {
+    const s = document.getElementById("draft-subject"), b = document.getElementById("draft-body");
+    if (s) draft.subject = s.value;
+    if (b) draft.body = b.value;
+  }
+
+  document.addEventListener("submit", function (ev) {
+    const f = ev.target;
+    const kind = f.getAttribute("data-form");
+    if (!kind) return;
+    ev.preventDefault();
+    const data = Object.fromEntries(new FormData(f).entries());
+    const r = parseHash();
+    if (kind === "search") {
+      location.hash = "#/search?q=" + encodeURIComponent(data.q || "");
+    } else if (kind === "log-activity") {
+      if (!data.text.trim()) { toast("Write what happened first"); return; }
+      state.activities.push({ id: uid("a"), contactId: r.parts[1], type: data.type, date: data.date || todayIso(), author: state.currentUser, text: data.text.trim() });
+      save(); render(); toast("Activity logged");
+    } else if (kind === "edit-details") {
+      const c = contactById(f.getAttribute("data-id"));
+      ["firstName", "lastName", "email", "phone", "occupation"].forEach(function (k) { c[k] = (data[k] || "").trim(); });
+      setOrganisation(c, orgIdFromForm(data));
+      editingDetails = false; save(); render(); toast("Details saved");
+    } else if (kind === "add-tag") {
+      const c = contactById(f.getAttribute("data-id"));
+      const tag = (data.tag || "").trim();
+      if (tag && c.tags.indexOf(tag) === -1) c.tags.push(tag);
+      save(); render();
+    } else if (kind === "add-contact") {
+      const orgId = orgIdFromForm(data);
+      const c = {
+        id: uid("c"), firstName: data.firstName.trim(), lastName: (data.lastName || "").trim(), email: (data.email || "").trim(),
+        phone: (data.phone || "").trim(), organisationId: orgId, occupation: (data.occupation || "").trim(),
+        tags: (data.tags || "").split(",").map(function (t) { return t.trim(); }).filter(Boolean),
+        holdings: [], hub: null, unsubscribed: false
+      };
+      state.contacts.push(c);
+      save(); closeDialog();
+      // Added from a firm's page: stay on the firm. Otherwise open the new person.
+      location.hash = (orgId && r.parts[0] === "organisations") ? "#/organisations/" + orgId : "#/contacts/" + c.id;
+      render(); toast("Contact added");
+    } else if (kind === "log-meeting") {
+      if (!data.text.trim()) { toast("Write what happened first"); return; }
+      const attendees = Array.from(f.querySelectorAll('input[name="attendee"]:checked')).map(function (el) { return el.value; });
+      state.activities.push({ id: uid("a"), orgId: f.getAttribute("data-org"), attendeeIds: attendees, type: data.type, date: data.date || todayIso(), author: state.currentUser, text: data.text.trim() });
+      meetingOpen = false;
+      save(); render();
+      toast(attendees.length ? "Logged once, shown on " + attendees.length + (attendees.length === 1 ? " person" : " people") : "Logged on the organisation");
+    } else if (kind === "picker-create") {
+      const p = picker; const name = (data.name || "").trim();
+      if (!p || !name) return;
+      if (p.create.onSubmit !== undefined) { if (picker) closePicker(); p.create.onSubmit(name); }
+    } else if (kind === "add-org") {
+      const name = (data.name || "").trim();
+      if (!name) return;
+      const existing = findOrgByName(state, name);
+      const o = existing || findOrCreateOrg(state, name);
+      save(); closeDialog(); location.hash = "#/organisations/" + o.id;
+      toast(existing ? name + " already exists" : name + " created");
+    } else if (kind === "edit-org") {
+      const o = orgById(f.getAttribute("data-id"));
+      const name = (data.name || "").trim();
+      if (o && name && name !== o.name) {
+        o.aliases = (o.aliases || []).concat([o.name]).filter(function (a, i, arr) { return a.toLowerCase() !== name.toLowerCase() && arr.indexOf(a) === i; });
+        o.name = name;
+      }
+      editingOrg = false; save(); render(); toast("Saved");
+    } else if (kind === "merge-group" || kind === "merge-dialog") {
+      const ids = (data.ids || "").split(",").filter(Boolean);
+      const n = mergeOrgs(data.masterId, ids);
+      orgSelection.length = 0;
+      save(); closeDialog(); render();
+      toast(n ? "Merged into " + orgById(data.masterId).name : "Nothing to merge");
+    }
+  });
+
+  window.addEventListener("hashchange", function () { editingDetails = false; editingOrg = false; meetingOpen = false; closePicker(); render(); });
+
+  render();
+})();
+
+</script>
+</body>
+</html>
