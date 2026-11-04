@@ -131,7 +131,7 @@ b, strong, h1, h2, h3 { font-weight: 500; }
 </ul>
 <p>Against the pitch&rsquo;s &ldquo;done looks like&rdquo;, none of the three steps works yet. Kept from week 1: the audit line when a person&rsquo;s firm changes, and the import mapping the company column.</p>
 <h2>The bet, and what&rsquo;s most likely wrong</h2>
-<p>If a firm is a record, and the clean-up suggests merges for a person to confirm, Josh will trust the CRM over his sheet. The likeliest thing to be wrong looks cheap here and may not be in production: Exhibit L says an activity belongs to one contact; &ldquo;logged once, shown on three people&rdquo; needs it on a firm and several people. First question for Jimmy; it decides whether day 2–3 is a day or a week.</p>
+<p>If a firm is a record, and the clean-up suggests merges for a person to confirm, Josh will trust the CRM over his sheet. The likeliest thing to be wrong: in this prototype, &ldquo;log it once, show it on three people&rdquo; is a few lines; in the real product a meeting is stored against one contact (Exhibit L), so it may mean changing how meetings are stored. First question for Jimmy; it decides whether day 2–3 is a day or a week.</p>
 <h2>The calls I made</h2>
 <ol>
 <li><strong>Organisation is a record</strong>: an id, a name, and the spellings it absorbed. Everything follows from this.</li>
@@ -162,15 +162,15 @@ b, strong, h1, h2, h3 { font-weight: 500; }
 </ul>
 <h2>Questions for Jimmy</h2>
 <ul>
-<li>Was the string a time call, or a view that a record wasn&rsquo;t needed? What does a record cost in the real schema?</li>
-<li>Is &ldquo;logged once, shown on three people&rdquo; a schema change in production, or a view?</li>
-<li>Across other clients, how dirty is the company field: hundreds of duplicate groups, or dozens?</li>
+<li>Organisation was built as a text field on each person rather than its own record. Was that a week-one time call, or a reason not to? If we make it a record, how much of the back end changes?</li>
+<li>A meeting is stored against one person today. To show one meeting on a firm and three people, does how meetings are stored have to change, or can it be handled on screen for now?</li>
+<li>In other clients&rsquo; CRMs, how messy is the company field: dozens of duplicate groups to review, or hundreds?</li>
 </ul>
 <h2>What I&rsquo;d want to learn from Josh</h2>
 <ul>
-<li>Does he have an email for everyone in the Funds tab? If not, import can&rsquo;t key on email.</li>
+<li>Does he have an email address for everyone in the Funds tab? The import matches people by email and drops rows without one; his sheet lists names.</li>
 <li>What he does with the Funds tab week to week: roadshows, % held, follow-ups. It decides what the firm page shows first.</li>
-<li>How often a meeting has more than one firm in it (the Hartley lunch, the conference).</li>
+<li>How often one meeting involves more than one firm (the Hartley lunch, the conference). I built one firm per meeting.</li>
 </ul>
 <h2>Assumptions</h2>
 <ul>

@@ -23,7 +23,7 @@ Against the pitch's "done looks like", none of the three steps works yet. Kept f
 
 ## The bet, and what's most likely wrong
 
-If a firm is a record, and the clean-up suggests merges for a person to confirm, Josh will trust the CRM over his sheet. The likeliest thing to be wrong looks cheap here and may not be in production: Exhibit L says an activity belongs to one contact; "logged once, shown on three people" needs it on a firm and several people. First question for Jimmy; it decides whether day 2–3 is a day or a week.
+If a firm is a record, and the clean-up suggests merges for a person to confirm, Josh will trust the CRM over his sheet. The likeliest thing to be wrong: in this prototype, "log it once, show it on three people" is a few lines; in the real product a meeting is stored against one contact (Exhibit L), so it may mean changing how meetings are stored. First question for Jimmy; it decides whether day 2–3 is a day or a week.
 
 ## The calls I made
 
@@ -57,15 +57,15 @@ Josh logs the February roadshow on firms, not in the sheet; the Funds tab stops 
 
 ## Questions for Jimmy
 
-- Was the string a time call, or a view that a record wasn't needed? What does a record cost in the real schema?
-- Is "logged once, shown on three people" a schema change in production, or a view?
-- Across other clients, how dirty is the company field: hundreds of duplicate groups, or dozens?
+- Organisation was built as a text field on each person rather than its own record. Was that a week-one time call, or a reason not to? If we make it a record, how much of the back end changes?
+- A meeting is stored against one person today. To show one meeting on a firm and three people, does how meetings are stored have to change, or can it be handled on screen for now?
+- In other clients' CRMs, how messy is the company field: dozens of duplicate groups to review, or hundreds?
 
 ## What I'd want to learn from Josh
 
-- Does he have an email for everyone in the Funds tab? If not, import can't key on email.
+- Does he have an email address for everyone in the Funds tab? The import matches people by email and drops rows without one; his sheet lists names.
 - What he does with the Funds tab week to week: roadshows, % held, follow-ups. It decides what the firm page shows first.
-- How often a meeting has more than one firm in it (the Hartley lunch, the conference).
+- How often one meeting involves more than one firm (the Hartley lunch, the conference). I built one firm per meeting.
 
 ## Assumptions
 

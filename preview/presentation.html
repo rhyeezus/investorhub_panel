@@ -445,7 +445,7 @@ body.show-overview .overview{display:block}
     <div><span class="k">Customer</span>Corella Finance. The deal waited on this.</div>
     <div><span class="k">Users</span>Josh and Hannah, investor relations.</div>
     <div><span class="k">In between</span>Customer success. They're close to clients and will run the clean-up for the ones who won't.</div>
-    <div><span class="k">Pattern, not one client</span>38 clients, an "institution" tag spelled 11 ways, two lost deals.</div>
+    <div><span class="k">Not just Corella</span>38 clients have invented their own "institution" tag, spelled 11 ways. Two prospects didn't buy because of it. One of them said: "we'd keep our spreadsheet".</div>
   </div>
 </div>
 </div><div class="notes" role="note" aria-label="Speaker notes">Say the source-of-truth line. That's the frame for everything else. Josh's own email: 'load it so we can run everything from there'.</div></section><section class="slide light" id="s4" data-label="What I found" aria-label="Slide 4: What I found"><div class="inner">
@@ -469,16 +469,16 @@ body.show-overview .overview{display:block}
 <div class="cols">
   <div class="card glass">
     <div class="eyebrow">A label</div>
-    <p>Words typed on each person. Nothing to open, nothing to rename, nothing for a meeting to attach to. Every spelling is a new firm.</p>
+    <p>The firm's name is a bit of text typed into each person's record. The CRM doesn't know Larkspur exists. It only knows three people have similar words in a box. Fix one, the other two don't follow.</p>
   </div>
   <div class="card glass neon">
     <div class="eyebrow">A record</div>
-    <p>The firm exists once, like a contact does. People point at it. Rename it and everyone follows. Log a meeting on it and it stays with it.</p>
+    <p>Larkspur exists once, like a contact does. Each person is linked to it. Rename it and everyone follows. Anything underneath inherits the change. A meeting logged on it stays with it.</p>
   </div>
 </div>
-<p class="lead">Every problem I'd listed traced back to this one thing. Fix it and the rest is assembly.</p>
+<p class="lead">Every problem I'd listed came back to this one thing. Make the firm a record and the rest is assembly.</p>
 <p class="muted">Kept from week 1: the audit line when a person's firm changes, and the import mapping the company column. Good instincts, both.</p>
-</div><div class="notes" role="note" aria-label="Speaker notes">One cause, several symptoms. This is the sentence for Jimmy: not 'the UI is wrong' but 'the model is a label and we need a record'. Then credit what he did well.</div></section><section class="slide light" id="s6" data-label="The idea" aria-label="Slide 6: The idea"><div class="inner">
+</div><div class="notes" role="note" aria-label="Speaker notes">One cause, several symptoms. For Jimmy: not 'the UI is wrong' but 'the firm is text on each person, and it needs to be a thing of its own that people link to'. Then credit what he did well.</div></section><section class="slide light" id="s6" data-label="The idea" aria-label="Slide 6: The idea"><div class="inner">
 <div class="eyebrow">The idea</div>
 <h2>Separate the two. Merge the duplicates. Never type a firm again.</h2>
 <ul class="idea">
@@ -494,8 +494,8 @@ body.show-overview .overview{display:block}
 <div class="cols">
   <div class="card warn">
     <div class="eyebrow">What's most likely to be wrong</div>
-    <p>It looks cheap in a prototype. Exhibit L says an activity belongs to <b>one</b> contact. "Logged once, shown on three people" needs it on a firm and several people.</p>
-    <p><b>That's my first question for Jimmy.</b> It decides whether days 2 to 3 are a day or a week.</p>
+    <p>In my prototype, "log it once, show it on three people" is a few lines. In the real product it may not be. The pack's data page says every meeting or note is stored against <b>one</b> contact. Showing one meeting on a firm and three people means changing how meetings are stored, not just a screen.</p>
+    <p><b>Only Jimmy knows how big that change is.</b> It's the first thing I'd ask, and it decides whether days 2 to 3 are a day or a week.</p>
   </div>
   <div>
     <div class="eyebrow">What I'm assuming</div>
@@ -506,7 +506,7 @@ body.show-overview .overview{display:block}
     </ul>
   </div>
 </div>
-</div><div class="notes" role="note" aria-label="Speaker notes">Say the riskiest assumption before anyone asks it. It's the one thing I can't verify from a mock.</div></section><section class="slide dark" id="s8" data-label="Built" aria-label="Slide 8: Built"><div class="inner">
+</div><div class="notes" role="note" aria-label="Speaker notes">Say the riskiest assumption before anyone asks it. In plain words: in the real database a meeting lives on one person; I need it to live on a firm and several people. I can't tell from a mock how hard that is.</div></section><section class="slide dark" id="s8" data-label="Built" aria-label="Slide 8: Built"><div class="inner">
 <div class="eyebrow">What I built</div>
 <h2>In their file, on their design system, clickable.</h2>
 <p class="lead">Four screens, then the four rounds of changes that got it here.</p>
@@ -541,9 +541,9 @@ body.show-overview .overview{display:block}
   <tr><td>"Log meeting twice is gratuitous."</td><td>One Log meeting, collapsed until you need it.</td></tr>
   <tr><td>"Set, that's bad. Make it an action: add to organisation."</td><td>A proper button, on the person and on every row of the contacts list.</td></tr>
   <tr><td>"Back to contacts is a button. I'd use breadcrumbs."</td><td>Breadcrumbs. The three header buttons went.</td></tr>
-  <tr><td>"Not the Chrome thing. An inline message."</td><td>Inline confirmations that say what's kept and what's lost.</td></tr>
+  <tr><td>"Not the browser's pop-up. A message in the product."</td><td>Inline confirmations that say what's kept and what's lost.</td></tr>
   <tr><td>"If I create a duplicate it should tell me in the flow."</td><td>New organisation checks the name as you type, then goes straight to adding people.</td></tr>
-  <tr><td>"I think we hallucinated that one."</td><td>Pulled the per-firm import template. It belongs with the importer.</td></tr>
+  <tr><td>"I'm not sure what the import template is doing for us."</td><td>Pulled it. It belongs with the importer, which is next cycle.</td></tr>
 </table>
 </div><div class="notes" role="note" aria-label="Speaker notes">Every row is a line from my own audit notes. Four passes, each one through the whole flow as Josh. The last one was an accessibility pass: eleven violation types down to zero.</div></section><section class="slide light" id="s12" data-label="Left out" aria-label="Slide 12: Left out"><div class="inner">
 <div class="eyebrow">What I didn't build, and why</div>
@@ -551,7 +551,7 @@ body.show-overview .overview{display:block}
 <div class="grid2">
   <div class="card"><h3>Josh's spreadsheet</h3><p>The second problem, bigger than this one. The importer keys on email and his sheet has names. The failing import is left visible on purpose.</p></div>
   <div class="card"><h3>The pitch's own "not this cycle"</h3><p>Linking firms to the ownership report, reporting per firm, firms shared across clients.</p></div>
-  <div class="card"><h3>Nice, not now</h3><p>Organisation type, owner per firm, follow-ups, permissions, a per-firm import template.</p></div>
+  <div class="card"><h3>Nice, not now</h3><p>Organisation type (fund manager, broker, super fund), an owner per firm, follow-ups with a done status, permissions.</p></div>
   <div class="card"><h3>A written summary per firm</h3><p>I wanted it. A canned one in a prototype would be a fake, so it waits for real data.</p></div>
 </div>
 </div><div class="notes" role="note" aria-label="Speaker notes">Being explicit about what's not built is discipline, not gaps. The summary one: I argued for it and then talked myself out of it.</div></section><section class="slide light" id="s13" data-label="Five days" aria-label="Slide 13: Five days"><div class="inner">
@@ -573,17 +573,17 @@ body.show-overview .overview{display:block}
   <div>
     <div class="eyebrow">Jimmy</div>
     <ul>
-      <li>Was the string a time call, or a view that a record wasn't needed? What does a record cost in the real schema?</li>
-      <li>Is "logged once, shown on three people" a schema change, or a view?</li>
-      <li>Across other clients, how dirty is the company field: hundreds of duplicate groups, or dozens?</li>
+      <li>You built organisation as a text field on each person rather than its own record. Was that to get something working in week one, or is there a reason not to? If we make it a record, how much of the back end changes?</li>
+      <li>Today a meeting is stored against one person. To show one meeting on a firm and on three people, do we have to change how meetings are stored, or can we handle it on screen for now?</li>
+      <li>In other clients' CRMs, how messy is the company field? Dozens of duplicate groups to review, or hundreds? That decides whether the clean-up is a one-off job for CS or a feature.</li>
     </ul>
   </div>
   <div>
     <div class="eyebrow">Josh</div>
     <ul>
-      <li>Does he have an email for everyone in the Funds tab? If not, import can't key on email.</li>
-      <li>What does he do with that tab week to week? That decides what the firm page shows first.</li>
-      <li>How often is a meeting with more than one firm, like the Hartley lunch?</li>
+      <li>Does Josh have an email address for everyone in his Funds tab? The CRM's import matches people by email and drops rows without one, and his sheet lists people by name. If the emails don't exist, loading the sheet needs a different approach.</li>
+      <li>What does he actually do with that tab week to week: plan roadshows, report on % held, chase follow-ups? Whichever it is decides what the firm's page shows first.</li>
+      <li>How often does one meeting involve more than one firm, like the Hartley lunch with six funds? I built one firm per meeting.</li>
     </ul>
   </div>
 </div>
@@ -597,19 +597,20 @@ body.show-overview .overview{display:block}
 <div class="cols">
   <div class="card lift">
     <h3>Do this</h3>
-    <p>On the org log form, replace the free-text attendees with checkboxes from the org's members, store their ids on the activity, and make each person's timeline include activities where they're an attendee.</p>
-    <p class="muted">About twenty lines. "Logged once, invisible to Priya" becomes "logged once, on all three".</p>
+    <p>In Jimmy's version the "who attended" box on a firm's log form is free text. Swap it for tick-boxes of the firm's people, save who was ticked on the meeting, and make each person's timeline show meetings they were ticked on.</p>
+    <p class="muted">About twenty lines. Result: the meeting Josh logs on Larkspur appears on Priya, David and Tom. That's the pitch's test, passing in his branch.</p>
   </div>
   <div class="card">
     <h3>Don't do this</h3>
-    <p>The record refactor. It's day 1 of the plan, not twenty minutes on someone else's laptop.</p>
+    <p>Don't try to rebuild organisation as a proper record in twenty minutes. That's the day 1 job in the plan, not a live demo.</p>
     <h3 style="margin-top:20px">Then ask</h3>
-    <p>"What would this cost in the real schema?" Then listen.</p>
+    <p>"If we made this real, what has to change in the database, and what else depends on it?" That's what I mean by cost: back-end changes, how many things lean on them, and how long. Then listen.</p>
   </div>
 </div>
 </div><div class="notes" role="note" aria-label="Speaker notes">For me, not the panel.</div></section><section class="slide light" id="s17" data-label="Decisions" aria-label="Slide 17: Decisions"><div class="inner">
 <div class="eyebrow">Appendix · decisions</div>
-<h2>Every fork, and why.</h2>
+<h2>Backup for questions.</h2>
+<p class="muted">If someone asks "why did you do it that way", the answer is in here. Not for presenting.</p>
 <table class="t small">
   <tr><th>Fork</th><th>Chose</th><th>Why</th></tr>
   <tr><td>Email vs pack</td><td>Email; plan folded in</td><td>Most recent instruction; covering both costs little</td></tr>
